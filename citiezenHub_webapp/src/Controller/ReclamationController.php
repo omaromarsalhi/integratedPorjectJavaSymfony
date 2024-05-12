@@ -108,5 +108,20 @@ public function deleteReclamation(ReclamationRepository $repo, EntityManagerInte
 }
 
 
+/**
+ * @Route("/api/reclamations/{id}", name="api_reclamation_show", methods={"GET"})
+ */
+public function apiShow(ReclamationRepository $reclamationRepository, $id): JsonResponse
+{
+    $reclamation = $reclamationRepository->find($id);
+    if (!$reclamation) {
+        return new JsonResponse(['message' => 'Reclamation not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    // Assuming your Reclamation entity has a method to convert the data to an array format
+    // You need to implement the toArray() method in your Reclamation entity
+    return new JsonResponse($reclamation->toArray(), Response::HTTP_OK);
+}
+
 
 }

@@ -107,3 +107,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('startRecording').addEventListener('click', startRecording);
 });
+
+
+function showReclamationDetails(reclamationId, event) {
+    event.preventDefault();
+  
+    // Fetch reclamation details from a backend API
+    fetch(`/api/reclamations/${reclamationId}`)
+      .then(response => response.json())
+      .then(data => {
+        // Assuming `data` is the object containing reclamation details
+        const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
+        modalBody.innerHTML = `
+          <p><strong>Subject:</strong> ${data.subject}</p>
+          <p><strong>Description:</strong> ${data.description}</p>
+          <p><strong>Date:</strong> ${data.date}</p>
+          <p><strong>Status:</strong> ${data.status}</p>
+          <!-- Include other fields as necessary -->
+        `;
+  
+        // Show the modal
+        var modal = new bootstrap.Modal(document.getElementById('reclamationDetailModal'));
+        modal.show();
+      })
+      .catch(error => console.error('Error fetching reclamation details:', error));
+  }
+  
+  function updateReclamation() {
+    // Logic to update the reclamation details
+    console.log('Update functionality needs to be implemented.');
+  }
+  

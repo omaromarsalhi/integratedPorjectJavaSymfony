@@ -110,4 +110,17 @@ class Reclamation
 
         return $this;
     }
+
+    public function toArray()
+{
+    return [
+        'id' => $this->getId(),
+        'subject' => $this->getSubject(),
+        'description' => $this->getDescription(),
+        'privateKey' => $this->getPrivateKey(),
+        'image' => $this->getImage(),  // Assuming there's a getter for the image
+        'user' => $this->getUser()->getId(),  // Assuming the user is related and you just want the ID
+        // Add other fields as necessary
+    ];
+}
 }
