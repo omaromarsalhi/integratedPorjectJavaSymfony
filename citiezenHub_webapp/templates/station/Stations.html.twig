@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+
+
+ {% block stylesheets %}
+     <link rel="stylesheet" href="{{ asset('css/map.css') }}"/>
+ {% endblock %}
+
+
+ {% block javascripts %}
+     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+     <script src="{{ asset('js/mapStations.js') }}"></script>
+ {% endblock %}
+
+
+{% block body %}
+
+    <div class="rn-live-bidding-area rn-section-gapTop">
+        <div class="container lg-product-wrapper mt-2">
+            <div class="row">
+                <div id="mapCss">
+                    <div id="map" style="min-height: 800px"></div>
+                    <div id="infowindow-content">
+                        <span id="place-name" class="title"></span><br/>
+                        <span id="place-address"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!--
+    <script>
+        initMap();
+    </script>-->
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        var nomstationArray = [];
+        {% for station in stationlist %}
+        nomstationArray.push("{{ station.AddressStation }}");
+        {% endfor %}
+    </script>
+    <script
+            src="https://maps.googleapis.com/maps/api/js?key={{ app.request.server.get('MAP_VARIABLE') }}&callback=initMap&libraries=places&v=weekly&solution_channel=GMP_CCS_autocomplete_v1"
+            defer
+    ></script>
+{% endblock %}

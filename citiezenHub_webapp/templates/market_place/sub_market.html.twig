@@ -1,0 +1,138 @@
+<input type="hidden" id="currentPage" value={{ current_page }}>
+<input type="hidden" id="previousPage" value={{ previous_page }}>
+
+{% for i,product in products %}
+    <!-- start single product -->
+    <div
+            class="col-lg-4 col-md-6 col-sm-12"
+            data-sal="slide-up"
+            data-sal-delay="{{ 200*i +100 }}"
+            data-sal-duration="800"
+    >
+        <div class="product-style-one no-overlay with-placeBid">
+
+            <div class="card-thumbnail">
+                <a href="../pages/product-details.html">
+                    {% if product.images|length > 1 %}
+                    <!-- Swiper -->
+                    <div class="swiper effect-creative-swiper rounded">
+                        <div class="swiper-wrapper">
+                            {% for image in product.images %}
+                            <div class="swiper-slide">
+                                <a href="#">
+                                    <img src="{{ asset(image.path)|default("Not available") }}"
+                                         alt="NFT_portfolio"
+                                         class="fixedSubImages4MarketPlace"/>
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                    {% else %}
+                    <div>
+                        <a href="#">
+                            <img src="{{ asset(product.images[0].path) }}"
+                                 alt="NFT_portfolio"
+                                 class="fixedSubImages4MarketPlace"
+                            >
+                        </a>
+                    </div>
+                    {% endif %}
+                </a>
+
+                <div class="rbt-quick-action--btns">
+                    <div
+                            class="quickview--box"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            title="Quick View">
+                        <a
+                                href="#"
+                                class="yith-wcqv-button"
+                                data-product_id="793"
+                        >
+                            <i class="feather-search"></i>
+                        </a>
+                    </div>
+                    {% if product.user != app.user %}
+                    <div
+                            class="quickview--box"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            title="Contact Seller">
+                        <a
+                                href="#"
+                                class="yith-wcqv-button"
+                                data-product_id="793"
+                        >
+                            <i class="mt-2 fi fi-rr-comment-alt"></i>
+                        </a>
+                    </div>
+                    <div
+                            class="quickview--box"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="right"
+                            title="Buy"
+
+                    >
+                        <a
+                                onclick="add2Card({{ product.idProduct }},{{ i+1 }})"
+                                class="yith-wcqv-button"
+                                id="product_{{ i+1 }}"
+                        >
+                            <i class="mt-2 fi fi-rr-shopping-cart-add"></i>
+                        </a>
+
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="product-share-wrapper">
+                <div class="profile-share">
+                    <a
+                            href="author.html"
+                            class="avatar"
+                            data-tooltip="Owener:Mr.{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}"
+                    ><img
+                                src="{{ asset('/marketPlaceImages/omar.jpg') }}"
+                                alt="Nft_Profile"
+                    />
+                    </a>
+                    <a class="more-author-text"
+                       href="#">{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}</a>
+                </div>
+            </div>
+            <a href="../pages/product-details.html">
+                <h2 id="name_model" class="product-name"
+                    style="margin: 4px 0 !important;font-size: 30px">{{ product.name|capitalize }}</h2>
+            </a>
+
+            <span class="latest-bid">
+                    <span class="latest-bid " style="margin-top: 4px !important;">Quantity : {{ product.quantity }} Pieces</span>
+                    <br>
+                    <span class="latest-bid">Category : {{ product.category|capitalize }}</span>
+            </span>
+            <div class="bid-react-area m-0 ">
+                {% if product.quantity > 0 %}
+                <div class="last-bid mt-3 " id="">
+                    In Stock
+                </div>
+                {% else %}
+                <div class="last-bid mt-3 " style="color: #a81515" id="">
+                    Out Of Stock
+                </div>
+
+                {% endif %}
+                <div class="last-bid mt-3 " id="price_model">{{ product.price }} DT</div>
+            </div>
+        </div>
+    </div>
+    <!-- end single product -->
+
+{% endfor %}
+
+
+
+
+
