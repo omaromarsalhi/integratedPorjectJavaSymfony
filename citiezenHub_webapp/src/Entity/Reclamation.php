@@ -27,7 +27,7 @@ class Reclamation
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(cascade: ['persist'])]
     #[ORM\JoinColumn(name: "idUser",referencedColumnName:"idUser")]
     private ?User $user = null;
 
