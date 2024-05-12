@@ -64,22 +64,34 @@ function addReclamation() {
 }
 
 
-function deleteReclamation(idReclamation){
+function deletee(reclamationId, event) {
+    event.preventDefault(); // Stop the link behavior
 
+    $.ajax({
+        url: "/reclamation/delete/" + reclamationId,
+        type: "POST",
+        success: function(response) {
+            if (response.success) {
+                // Remove the item from the DOM by ID
+                $('#reclamationItem' + reclamationId).remove();
+            } else {
+                alert('Failed to delete reclamation. Server returned an error.');
+            }
+        },
+        error: function() {
+            alert('Failed to delete reclamation. Check your network and try again.');
+        }
+    });
 }
 
-function deletee(index) {
-    let value = "../../marketPlaceImages/basketAnimation.gif"
-    $('#deleteReclamation' + index).removeClass('pdfBtn');
-    $('#deleteReclamation' + index).addClass('pdfBtn_disabled');
-    $('#deleteReclamation' + index).html('<img class="loaderPdf" src="' + value + '" />')
 
-    setTimeout(function () {
-        $('#deleteReclamation' + index).addClass('pdfBtn');
-        $('#deleteReclamation' + index).removeClass('pdfBtn_disabled');
-        $('#deleteReclamation' + index).html('<span class="text_pdf">Delete</span> <i class="fa-solid fa-download"></i>')
-    }, 2000)
-}
+
+
+
+
+
+
+//spech to text
 document.addEventListener('DOMContentLoaded', function() {
     function startRecording() {
         const recognition = new window.webkitSpeechRecognition();

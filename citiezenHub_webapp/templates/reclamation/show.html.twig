@@ -1,102 +1,73 @@
-<div
-        class="tab-pane  lg-product_tab-pane fade show active"
-        id="nav-home"
-        role="tabpanel"
-        aria-labelledby="nav-home-tab"
->
+<div class="tab-pane  lg-product_tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
 
-{% for index,reclamation in reclamations %}
-    <!-- start single product -->
-    <div class="lg-product-wrapper">
-        <div class="inner">
-            <div class="lg-left-content">
-                <a href="product-details.html" class="thumbnail">
-                    <img
-                            src="{{ asset('usersImg/'~reclamation.getImage()) }}"
-                            alt="Nft_Portfolio"
-                    />
-                </a>
-                <div class="read-content">
-                    <div class="product-share-wrapper">
-                        <!-- all bids -->
-                        <div class="profile-share">
-                            <a
-                                    href="author.html"
-                                    class="avatar"
-                                    data-tooltip="Farik Shaikh"
-                                    tabindex="0"
-                            ><img
-                                        src="../../assets/images/client/client-1.png"
-                                        alt="Nft_Profile"
-                                /></a>
+	{% for index,reclamation in reclamations %}
+		<!-- start single product -->
+		<div id="reclamationItem{{ reclamation.id }}" class="lg-product-wrapper">
+			<div class="inner">
+				<div class="lg-left-content">
+					<a href="product-details.html" class="thumbnail">
+						<img src="{{ asset('usersImg/'~reclamation.getImage()) }}" alt="Nft_Portfolio"/>
+					</a>
+					<div class="read-content">
+						<div
+							class="product-share-wrapper">
+							<!-- all bids -->
+							<div class="profile-share">
+								<a href="author.html" class="avatar" data-tooltip="Farik Shaikh" tabindex="0"><img src="../../assets/images/client/client-1.png" alt="Nft_Profile"/></a>
 
-                            <a class="more-author-text" href="#" tabindex="0"
-                            >Mr {{ app.user.firstName }}</a
-                            >
-                        </div>
-                        <!-- all bids End-->
-                        
-                    </div>
-                    <a href="product-details.html">
-                        <h6 class="title">{{ reclamation.subject}}</h6>
-                    </a>
-                    <h3 class="title">{{reclamation.privateKey}} </h3>
-                    <span class="latest-bid">{{ reclamation.description}}</span>
-                    <div class="share-wrapper d-flex">
-                        <!-- react area -->
-                        <div class="react-area mr--15">
-                            <svg
-                                    viewBox="0 0 17 16"
-                                    fill="none"
-                                    width="16"
-                                    height="16"
-                                    class="sc-bdnxRM sc-hKFxyN kBvkOu"
-                            >
-                                <path
-                                        d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                ></path>
-                            </svg>
-                            <span class="number">65</span>
-                        </div>
-                        <!-- end -->
-                        <!-- share area -->
-                        
-                        <!-- sharea End -->
-                    </div>
-                </div>
-            </div>
-            <!--{#<button
-                    type="button"
-                    class="btn btn-primary-alta mr&#45;&#45;30"
-                    data-bs-toggle="modal"
-                    data-bs-target="#placebidModal"
-            >
-                Place a Bid
-            </button>#}-->
+								<a class="more-author-text" href="#" tabindex="0">Mr
+									{{ app.user.firstName }}</a>
+							</div>
+							<!-- all bids End-->
 
-            <a
-                    href="{{  path('reclamationsh',{'id':reclamation.id}) }}"
-                    id="deleteReclamation{{ index }}"
-                    type="button"
-                    class="btn btn-primary-alta pdfBtn"
-                    onclick="deletee({{ index }})"
-            >
-                <span class="text_pdf">Delete</span>
-                <i class="fa-regular fa-trash-can"></i>
-            </a>
-        </div>
-    </div>
-    <!-- End single product -->
+						</div>
+						<a href="product-details.html">
+							<h6 class="title">{{ reclamation.subject}}</h6>
+						</a>
+						<h3 class="title">{{reclamation.privateKey}}
+						</h3>
+						<span class="latest-bid">{{ reclamation.description}}</span>
+						<div
+							class="share-wrapper d-flex">
+							<!-- react area -->
+							<div class="react-area mr--15">
+								<svg viewbox="0 0 17 16" fill="none" width="16" height="16" class="sc-bdnxRM sc-hKFxyN kBvkOu">
+									<path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z" stroke="currentColor" stroke-width="2"></path>
+								</svg>
+								<span class="number">65</span>
+							</div>
+							<!-- end -->
+						<!-- share area -->
+
+							<!-- sharea End -->
+						</div>
+					</div>
+				</div>
+				<!--{#<button
+				                    type="button"
+				                    class="btn btn-primary-alta mr&#45;&#45;30"
+				                    data-bs-toggle="modal"
+				                    data-bs-target="#placebidModal"
+				            >
+				                Place a Bid
+				            </button>#}-->
+
+				<a href="javascript:void(0);" id="deleteReclamation{{ reclamation.id }}" class="btn btn-primary-alta pdfBtn" onclick="deletee('{{ reclamation.id }}', event)">
+					<span class="text_pdf">Delete</span>
+					<i class="fa-regular fa-trash-can"></i>
+				</a>
+
+			</div>
+		</div>
+		<!-- End single product -->
 
 
- <!--{#   <form id="form_details_{{ type }}_{{ index }}" method="post"
-          action="{{ path('app_product_product_details',{'index': index }) }}">
-        <input type="hidden" name="_token_{{ index }}"
-               value="{{ transaction.product.idProduct }}">
-    </form>#}-->
-{% endfor %}
+		<!--{#   <form id="form_details_{{ type }}_{{ index }}" method="post"
+		          action="{{ path('app_product_product_details',{'index': index }) }}">
+		        <input type="hidden" name="_token_{{ index }}"
+		               value="{{ transaction.product.idProduct }}">
+		    </form>#}-->
+	{% endfor %}
 </div>
 
 <!-- end Tab Product list style area -->

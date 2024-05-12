@@ -5,15 +5,16 @@ namespace App\Controller;
 use App\Entity\Reclamation;
 use App\MyHelpers\ImageHelper;
 use App\MyHelpers\ImageHelperUser;
-use App\Repository\ReclamationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ReclamationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-
+use Psr\Log\LoggerInterface;
 class ReclamationController extends AbstractController
 {
     #[Route('/reclamation', name: 'app_reclamation')]
@@ -85,17 +86,27 @@ class ReclamationController extends AbstractController
         ]);
     }
 
-    #[Route('/delete/{id}', name: 'reclamationsh')]
-    public function delete(EntityManagerInterface $entityManager, $id,ReclamationRepository $reclamationRepository): Response
-    {
+// Assuming you're using Symfony Framework
 
-        $reclamation = $entityManager->getRepository(Reclamation::class)->find($id);
 
-        $entityManager->remove($reclamation);
-        $entityManager->flush();
-
-        return $this->render('reclamation/show.html.twig', [
-            'reclamations' => $reclamationRepository->findBy(['user' => $this->getUser()]),
-        ]);
+#[Route('/reclamation/delete/{id}', methods: ['POST'])]
+public function deleteReclamation(ReclamationRepository $repo, EntityManagerInterface $em, LoggerInterface $logger, $id): JsonResponse
+{
+    try {
+        $reclamation = $repo->find($id);
+        if (!$reclamation) {
+            return new JsonResponse(['success' => false, 'message' => 'Reclamation not found'], 404);
+        }
+        
+        $em->remove($reclamation);
+        $em->flush();
+        return new JsonResponse(['success' => true]);
+    } catch (\Exception $e) {
+        $logger->error('Failed to delete reclamation: ' . $e->getMessage());
+        return new JsonResponse(['success' => false, 'message' => 'Internal server error'], 500);
     }
+}
+
+
+
 }
