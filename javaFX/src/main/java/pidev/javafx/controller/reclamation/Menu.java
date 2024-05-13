@@ -100,11 +100,9 @@ public class Menu implements Initializable {
                 animateSearchBar();
         } );
 
-
         showGridPane( FXCollections.observableArrayList(ServiceReclamation.getInstance().getAll())  );
         searchTextField.textProperty().addListener((observable, oldValue, newValue) -> recherche());
         createChart();
-
 
     }
 

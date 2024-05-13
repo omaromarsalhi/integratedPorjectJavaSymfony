@@ -18,6 +18,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.crud.marketplace.CrudChat;
 import pidev.javafx.model.chat.Chat;
@@ -185,7 +186,7 @@ public class ChatController implements Initializable {
                 "-fx-border-radius: 50;" +
                 "-fx-background-radius: 50");
 
-        ImageView userImage=new ImageView(new Image( "file:src/main/resources/"+user.getPhotos() ,32,32,true,true));
+        ImageView userImage=new ImageView(new Image( GlobalVariables.IMAGEPATH+user.getPhotos() ,32,32,true,true));
         Label userName=new Label(user.getFirstname()+" "+user.getLastname());
         userName.setFont(Font.font( "System", FontWeight.LIGHT, FontPosture.ITALIC,14 ));
         userName.setMinWidth( 80 );
@@ -230,7 +231,7 @@ public class ChatController implements Initializable {
 
     public void setSelectedUserData(User user){
         this.reciver=user;
-        userImage.setImage(new Image( "file:src/main/resources/"+user.getPhotos() ,46,46,true,true)) ;
+        userImage.setImage(new Image( GlobalVariables.IMAGEPATH+user.getPhotos() ,46,46,true,true)) ;
         userName.setText( user.getFirstname().toUpperCase()+" "+user.getLastname().toUpperCase() );
         userName.setMinHeight( Region.USE_PREF_SIZE);
         connState.setImage(new Image( "file:src/main/resources/namedIcons/button.png" ,12,12,true,true));
@@ -304,7 +305,7 @@ public class ChatController implements Initializable {
 //        msgBox.setPadding( new Insets( 0,0,0,10 ) );
         msgBox.setSpacing( 4 );
 
-        ImageView image=new ImageView( new Image("file:src/main/resources"+path,80,100,true,true) );
+        ImageView image=new ImageView( new Image(GlobalVariables.IMAGEPATH+path,80,100,true,true) );
 //        msgLabel.setStyle( "-fx-background-color: blue" );
         image.setStyle( "-fx-background-radius: 10;" +
                 "-fx-border-radius: 10;");

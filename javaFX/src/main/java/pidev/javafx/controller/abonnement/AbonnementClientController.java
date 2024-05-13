@@ -44,6 +44,7 @@ import okhttp3.*;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyTools;
@@ -290,9 +291,8 @@ public class AbonnementClientController implements Initializable {
         IdLabel.setText("000" + id);
         imagePath = abonnementList.get(i).getImage();
         System.out.println(imagePath);
-        Image image = new Image("file:src/main/resources" + imagePath);
+        Image image = new Image( GlobalVariables.IMAGEPATH + imagePath);
         imageAbonne.setImage(image);
-
     }
 
     @FXML

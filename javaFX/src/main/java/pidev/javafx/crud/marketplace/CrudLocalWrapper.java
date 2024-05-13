@@ -26,8 +26,8 @@ public class CrudLocalWrapper{
 
     public ObservableList<LocalWrapper> selectItemsByIdSeller(int idUser,String trasactionMode) {
         String id=(trasactionMode.equals("PURCHSED"))?"t.idBuyer":"t.idSeller";
-        String sql = "SELECT * FROM transactions t JOIN products p ON t.idProd=p.idProd" +
-                " JOIN contracts c on t.idContract=c.idContract" +
+        String sql = "SELECT * FROM transaction t JOIN product p ON t.idProduct=p.idProduct" +
+                " JOIN contract c on t.idContract=c.idContract" +
                 " where "+id+" = ? and isdeleted = 0";
 
         connect = ConnectionDB.getInstance().getCnx();
@@ -44,10 +44,10 @@ public class CrudLocalWrapper{
 
             while (result.next()) {
                 if(result.getString( "type").equals( "BIEN" )) {
-                    product =new Bien(result.getInt("idProd"),
+                    product =new Bien(result.getInt("idProduct"),
                             result.getInt("idUser"),
                             result.getString("name"),
-                            result.getString("descreption"),
+                            result.getString("description"),
                             "",
                             result.getFloat("price"),
                             result.getFloat("quantity"),
@@ -67,7 +67,7 @@ public class CrudLocalWrapper{
                         result.getString( "recivingLocation" ));
 
                 transaction=new Transaction(result.getInt("idTransaction"),
-                        result.getInt("idProd"),
+                        result.getInt("idProduct"),
                         result.getInt("idContract"),
                         result.getInt("idSeller"),
                         result.getInt("idBuyer"),

@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import pidev.javafx.model.user.User;
+import pidev.javafx.tools.GlobalVariables;
 
 
 import java.net.URL;
@@ -45,7 +46,7 @@ public class UseritemController implements Initializable
         lastname.setText(user1.getLastname());
 
         email.setText(user1.getEmail());
-        Image image1 = new Image("file:src/main/resources"+user1.getPhotos(),32,32,true,true);
+        Image image1 = new Image( GlobalVariables.IMAGEPATH+user1.getPhotos(),32,32,true,true);
         image.setImage(image1);
 
 

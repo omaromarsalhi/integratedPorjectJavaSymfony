@@ -74,7 +74,7 @@ public class MainWindowController implements Initializable {
 //        mainBorderPane.getCenter())
 
         System.out.println( UserController.getInstance().getCurrentUser() );
-//        accountImg.setImage(new Image( "file:src/main/resources"+UserController.getInstance().getCurrentUser().getPhotos(),25,25,true,true)  );
+//        accountImg.setImage(new Image( GlobalVariables.IMAGEPATH+UserController.getInstance().getCurrentUser().getPhotos(),25,25,true,true)  );
 //        accountBtn.setText( UserController.getInstance().getCurrentUser().getFirstname()+" "+UserController.getInstance().getCurrentUser().getLastname() );
 //        ChatClient.getInstance().establishConnection();
         notifHbox.setVisible( false );
@@ -86,13 +86,13 @@ public class MainWindowController implements Initializable {
 
 
 
-//        StackPane dashbord = null;
-//        try {
-//            dashbord = FXMLLoader.load(getClass().getResource( "/fxml/user/newAccountOmar.fxml" ));
-//        } catch (IOException e) {
-//            throw new RuntimeException( e );
-//        }
-//        centerContainer.getChildren().add(dashbord);
+        StackPane dashbord = null;
+        try {
+            dashbord = FXMLLoader.load(getClass().getResource( "/fxml/user/newAccountOmar.fxml" ));
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+        centerContainer.getChildren().add(dashbord);
     }
 
 

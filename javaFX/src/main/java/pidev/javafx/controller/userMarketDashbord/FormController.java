@@ -30,6 +30,7 @@ import pidev.javafx.crud.marketplace.CrudBien;
 import pidev.javafx.model.MarketPlace.Bien;
 import pidev.javafx.model.MarketPlace.Categorie;
 import pidev.javafx.model.MarketPlace.Product;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.*;
 
@@ -175,16 +176,16 @@ public class FormController implements Initializable {
 
     public void dealWithImages4Update(){
         AtomicInteger curentIndex= new AtomicInteger( 0 );
-        relativeImageVieur.setImage( new Image( "file:src/main/resources/"+product.getImageSourceByIndex(curentIndex.get())));
+        relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH+product.getImageSourceByIndex(curentIndex.get())));
         rightArrow.setOnAction( event -> {
             curentIndex.getAndIncrement();
             if(curentIndex.get()>=product.getAllImagesSources().size()) {
                 curentIndex.set( 0 );
             }
-            relativeImageVieur.setImage( new Image( "file:src/main/resources/"+product.getImageSourceByIndex( curentIndex.get() ) ) );
+            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH+product.getImageSourceByIndex( curentIndex.get() ) ) );
         });
         leftArrow.setOnAction( event -> {
-            relativeImageVieur.setImage( new Image( "file:src/main/resources/"+product.getImageSourceByIndex( curentIndex.get() ) ) );curentIndex.getAndDecrement();
+            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH+product.getImageSourceByIndex( curentIndex.get() ) ) );curentIndex.getAndDecrement();
             if(curentIndex.get()<0)
                 curentIndex.set( product.getAllImagesSources().size()-1 );
         } );

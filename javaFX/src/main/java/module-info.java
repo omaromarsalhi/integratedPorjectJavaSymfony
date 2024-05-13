@@ -25,6 +25,7 @@ module pidev.javafx{
     requires kernel;
     requires xmlworker;
     requires client;
+    requires jbcrypt;
 
 
     opens pidev.javafx.controller.marketPlace to javafx.fxml;

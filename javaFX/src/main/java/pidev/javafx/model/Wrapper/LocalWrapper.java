@@ -42,4 +42,13 @@ public class LocalWrapper {
     public void setContract(Contract contract) {
         this.contract = contract;
     }
+
+    @Override
+    public String toString() {
+        return "LocalWrapper{" +
+                "product=" + product +
+                ", transaction=" + transaction +
+                ", contract=" + contract +
+                '}';
+    }
 }

@@ -21,10 +21,8 @@ class Station
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message:"Nom Station is required")]
-    #[Assert\Regex(pattern:"/^[A-Za-z,]+$/",message:"Nom Station should contain only letters")]
+    #[Assert\Regex(pattern:"/^[A-Za-z,\s0-9]+$/",message:"Nom Station should contain only letters")]
     #[Assert\Length(min: 5, minMessage: "Nom Station should be at least 5 characters long")]
-
-
     private ?string $nomstation = null;
 
     #[ORM\Column(length: 255)]
