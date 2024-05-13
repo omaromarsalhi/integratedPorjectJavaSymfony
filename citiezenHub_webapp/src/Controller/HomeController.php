@@ -19,6 +19,7 @@ class HomeController extends AbstractController
         $newsDataApi = new NewsDataApi();
         $newsList = $newsDataApi->getNews();
         $cinqPremier = array_slice($newsList, 0, 5);
+        //test
 
 
         //products
