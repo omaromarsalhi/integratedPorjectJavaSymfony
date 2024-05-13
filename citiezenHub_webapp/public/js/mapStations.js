@@ -1,4 +1,7 @@
-let map; // Define map variable in the global scope
+// Ensure stationArray is defined and initialized properly before calling initMap()
+
+// Initialize the map variable in the global scope
+let map;
 
 // Initialization function
 function initMap() {
@@ -8,15 +11,14 @@ function initMap() {
         mapTypeControl: true,
     });
 
-    // Call function to display all stations (assuming nomstationArray is defined somewhere)
-    displayAllStations(map, nomstationArray);
+    // Call function to display all stations (assuming stationArray is properly initialized)
+    displayAllStations(map, nomstationArray,stationArray);
 
     // Calculate the map bounds based on marker positions
-
     const bounds = new google.maps.LatLngBounds();
     nomstationArray.forEach(function (station) {
         const [lat, lng] = station.split(',').map(parseFloat);
-        bounds.extend(new google.maps.LatLng(lat, lng));
+        bounds.extend(new google.maps.LatLng(lat,lng));
     });
 
     // Fit the map to the calculated bounds
@@ -29,91 +31,66 @@ function initMap() {
             this.setZoom(maxZoom);
         }
     });
-
 }
 
+// // Function to display all stations
+// function displayAllStations(map, stationArray) {
+//     stationArray.forEach(function (station) {
+//         // Split the address string into latitude and longitude
+//         const [lat, lng] = station.split(',').map(parseFloat);
+//
+//         // Create a marker for each station
+//         const marker = new google.maps.Marker({
+//             position: { lat: lat, lng: lng },
+//             map: map,
+//             title: station.id,
+//         });
+//         marker.stationId = 64;
+//
+//         // Add click listener to each marker
+//         marker.addListener('click', function () {
+//             const stationId = this.stationId;
+//
+//             // Construct URL with station ID as query parameter
+//             const transportUrl = `/transportClientFilter/${stationId}`;
+//
+//             // Redirect to the transport page
+//             window.location.href = transportUrl;
+//         });
+//     });
+// }
 
-// Function to display all stations
-function displayAllStations(map, stationArray) {
-    stationArray.forEach(function (station) {
+function displayAllStations(map, addressArray, idArray) {
+    // Ensure both arrays have the same length
+    if (addressArray.length !== idArray.length) {
+        console.error("The address array and ID array must have the same length.");
+        return;
+    }
+
+    addressArray.forEach(function (address, index) {
         // Split the address string into latitude and longitude
-        const [lat, lng] = station.split(',').map(parseFloat);
+        const [lat, lng] = address.split(',').map(parseFloat);
 
         // Create a marker for each station
         const marker = new google.maps.Marker({
             position: { lat: lat, lng: lng },
             map: map,
-            title: station.nomstation,
+            title: idArray[index], // Assigning title with the ID
         });
 
         // Add click listener to each marker
         marker.addListener('click', function () {
-            // You can perform any action when a marker is clicked
-            console.log('Clicked station:', station.nomstation);
+            const stationId = idArray[index]; // Accessing the corresponding ID
+            // Construct URL with station ID as query parameter
+            const transportUrl = `/transportClientFilter/${stationId}`;
+            // Redirect to the transport page
+            window.location.href = transportUrl;
         });
     });
 }
 
-// Function to display path between stations
+// Example usage:
+// Assuming you have two arrays: addressArray and idArray
+// displayAllStations(map, addressArray, idArray);
 
-function displayPathBetweenStations(map, startPoint, endPoint) {
-    // Create a directions service object
-    const directionsService = new google.maps.DirectionsService();
-
-    // Define the directions request
-    const directionsRequest = {
-        origin: startPoint,
-        destination: endPoint,
-        travelMode: 'DRIVING', // Adjust travel mode as needed
-    };
-
-    // Request directions from the Directions API
-    directionsService.route(directionsRequest, (response, status) => {
-        if (status === 'OK') {
-            const route = response.routes[0];
-            const polyline = new google.maps.Polyline({
-                path: route.overview_path,
-                map: map,
-                strokeColor: '#0000FF',
-                strokeWeight: 2,
-            });
-
-            // Create a car marker
-            const carMarker = new google.maps.Marker({
-                position: startPoint,
-                map: map,
-            });
-
-            // Animate the car along the route
-            let step = 0;
-            const numSteps = route.overview_path.length;
-            const delay = 100; // 100 milliseconds interval
-
-            function animateCar() {
-                if (step >= numSteps) {
-                    step = 0;
-                }
-                carMarker.setPosition(route.overview_path[step]);
-                step++;
-                setTimeout(animateCar, delay);
-            }
-
-            // Start the animation
-            animateCar();
-        } else {
-            console.error('Directions request failed:', status);
-        }
-    });
-}
-
-// Add event listener to button for displaying path between stations
-const displayPathButton = document.getElementById("mapBtn"); // Ensure you have a button with this ID in your HTML
-
-displayPathButton.addEventListener("click", function () {
-    // Get the start and end point coordinates
-    const startPoint = { lat: 36.805551, lng: 10.179325 };
-    const endPoint = { lat: 36.7956335, lng: 10.0893454 };
-alert("displayed")
-    // Call the displayPathBetweenStations function with the points
-   // displayPathBetweenStations(map, startPoint, endPoint);
-});
+// Rest of your code remains unchanged...
