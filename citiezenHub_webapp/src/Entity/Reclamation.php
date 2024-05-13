@@ -3,9 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\ReclamationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use FontLib\Table\Type\name;
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 class Reclamation
@@ -33,6 +34,14 @@ class Reclamation
 
     #[ORM\Column(length: 255)]
     private ?string $image = null;
+
+    #[ORM\OneToMany(targetEntity: Reponse::class, mappedBy: 'reclamation', orphanRemoval: true)]
+    private Collection $reponses;
+
+    public function __construct()
+    {
+        $this->reponses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -111,16 +120,46 @@ class Reclamation
         return $this;
     }
 
+    /**
+     * @return Collection|Reponse[]
+     */
+    public function getReponses(): Collection
+    {
+        return $this->reponses;
+    }
+
+    public function addReponse(Reponse $reponse): static
+    {
+        if (!$this->reponses->contains($reponse)) {
+            $this->reponses[] = $reponse;
+            $reponse->setReclamation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReponse(Reponse $reponse): static
+    {
+        if ($this->reponses->removeElement($reponse)) {
+            // set the owning side to null (unless already changed)
+            if ($reponse->getReclamation() === $this) {
+                $reponse->setReclamation(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function toArray()
-{
-    return [
-        'id' => $this->getId(),
-        'subject' => $this->getSubject(),
-        'description' => $this->getDescription(),
-        'privateKey' => $this->getPrivateKey(),
-        'image' => $this->getImage(),  // Assuming there's a getter for the image
-        'user' => $this->getUser()->getId(),  // Assuming the user is related and you just want the ID
-        // Add other fields as necessary
-    ];
-}
+    {
+        return [
+            'id' => $this->getId(),
+            'subject' => $this->getSubject(),
+            'description' => $this->getDescription(),
+            'privateKey' => $this->getPrivateKey(),
+            'image' => $this->getImage(),
+            'user' => $this->getUser()->getId(),
+            // Add other fields as necessary
+        ];
+    }
 }
