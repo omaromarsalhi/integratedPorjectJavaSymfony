@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -38,6 +39,7 @@ import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
 import org.mindrot.jbcrypt.BCrypt;
 
+import static pidev.javafx.controller.user.AccountController.showAlert;
 
 
 public class NewLogInController implements Initializable {
@@ -248,10 +250,10 @@ public class NewLogInController implements Initializable {
         System.out.println(user.getPassword());
 
         if(user.getPassword()==null){
-//            Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
-//            alert.show();
-//            username.clear();
-//            password.clear();
+            Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
+            alert.show();
+            firstname.clear();
+            password.clear();
         }
 //        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
         else if(BCrypt.checkpw("Latifa123@l", user.getPassword().replace( "$2y$","$2a$" ))){
