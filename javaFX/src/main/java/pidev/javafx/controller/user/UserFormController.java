@@ -22,6 +22,7 @@ import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.MarketPlace.Product;
 import pidev.javafx.model.user.User;
 import pidev.javafx.test.Main;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyListener;
@@ -249,7 +250,7 @@ public class UserFormController implements Initializable {
         phone.setText(String.valueOf(user.getNum()));
         if(user.getDob()!=null)
             dob.setValue( LocalDate.parse( user.getDob().formatted( DateTimeFormatter.ofPattern( "yyy/MM/DD" )) ) );
-        img.setImage(new Image( "file:src/main/resources"+user.getPhotos()));
+        img.setImage(new Image( GlobalVariables.IMAGEPATH+user.getPhotos()));
         UserController.setUser(user);
 
     }

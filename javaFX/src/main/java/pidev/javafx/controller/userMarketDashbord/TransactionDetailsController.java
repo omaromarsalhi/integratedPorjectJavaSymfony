@@ -14,6 +14,7 @@ import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.Contrat.Contract;
 import pidev.javafx.model.MarketPlace.Transaction;
 import pidev.javafx.model.user.User;
+import pidev.javafx.tools.GlobalVariables;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -56,6 +57,7 @@ public class TransactionDetailsController  implements Initializable {
     }
 
     public void setData(Transaction transaction, Contract contract){
+
         Lprice.setText(  transaction.getQuantity()*transaction.getPricePerUnit()+"$" );
         LpaymentMode.setText(contract.getPaymentMethod().toString() );
         Ldate.setText( DateTimeFormatter.ofPattern("dd/MM/yy hh:mm").format(transaction.getEffectiveDate().toLocalDateTime())  );
@@ -65,14 +67,13 @@ public class TransactionDetailsController  implements Initializable {
         User seller=servideUser.getUserById( transaction.getIdSeller());
         User buyer=servideUser.getUserById( transaction.getIdBuyer());
 
-        sellerImage.setImage( new Image( "file:src/main/resources"+seller.getPhotos(),50,50,true,true) );
+        sellerImage.setImage( new Image( GlobalVariables.IMAGEPATH +seller.getPhotos(),50,50,true,true) );
         sellerName.setText( seller.getFirstname() );
         sellerLastName.setText( seller.getLastname() );
 
-        buyerImage.setImage( new Image( "file:src/main/resources"+buyer.getPhotos(),50,50,true,true) );
+        buyerImage.setImage( new Image( GlobalVariables.IMAGEPATH+buyer.getPhotos(),50,50,true,true) );
         buyerName.setText( buyer.getFirstname() );
         buyerLastName.setText( buyer.getLastname() );
-
 
     }
 

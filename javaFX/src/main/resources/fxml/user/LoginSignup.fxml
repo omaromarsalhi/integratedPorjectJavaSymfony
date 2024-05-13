@@ -116,7 +116,7 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="layoutSignin" opacity="0.0" prefHeight="302.0" prefWidth="200.0">
+                  <AnchorPane fx:id="layoutSignin" prefHeight="302.0" prefWidth="200.0">
                      <children>
                         <ImageView fitHeight="50.0" fitWidth="238.0" layoutX="81.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="81.0" AnchorPane.rightAnchor="81.0">
                            <image>
@@ -171,7 +171,7 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="layoutReset" opacity="0.0" prefHeight="302.0" prefWidth="200.0">
+                  <AnchorPane fx:id="layoutReset" prefHeight="302.0" prefWidth="200.0">
                      <children>
                         <ImageView fitHeight="50.0" fitWidth="238.0" layoutX="81.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="81.0" AnchorPane.rightAnchor="81.0">
                            <image>

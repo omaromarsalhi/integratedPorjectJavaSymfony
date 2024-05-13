@@ -12,6 +12,7 @@ import javafx.util.Duration;
 import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.user.Role;
 import pidev.javafx.model.user.User;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.model.blog.Account;
 import pidev.javafx.model.blog.Post;
@@ -318,7 +319,7 @@ public class PostController extends VBox implements Initializable {
 
         //path mtaa latifa lezm tetbadel
 
-        imgProfile.setImage(new Image("file:src/main/resources/" + user.getPhotos() ));
+        imgProfile.setImage(new Image( GlobalVariables.IMAGEPATH + user.getPhotos() ));
 
         username.setText(user.getFirstname() + " " + user.getLastname());
         imgVerified.setVisible(user.getRole() != Role.Citoyen);
@@ -345,7 +346,7 @@ public class PostController extends VBox implements Initializable {
         }
 
         if (!post.getImages().isEmpty() /*&& !post.getImage().isEmpty()*/) {
-            img = new Image("file:src/main/resources" + post.getImages().get(0));
+            img = new Image(GlobalVariables.IMAGEPATH + post.getImages().get(0));
             imgPost.setImage(img);
             if (post.getImages().size() > 1) {
                 rightArrow.setVisible(true);
@@ -396,7 +397,7 @@ public class PostController extends VBox implements Initializable {
         parallelTransition.play();
 
         parallelTransition.setOnFinished(event -> {
-            Image img = new Image("file:src/main/resources" + post.getImages().get(currentImgToShow));
+            Image img = new Image(GlobalVariables.IMAGEPATH + post.getImages().get(currentImgToShow));
             imgPost.setImage(img);
             imgPost.setTranslateX(0);
 

@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pidev.javafx.crud.reclamation.ServiceReclamation;
 import pidev.javafx.model.reclamation.Reclamation;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 
@@ -129,7 +130,7 @@ public class ReclamationFormShowController implements Initializable {
 
     void first_fonction( CustomMouseEvent<Reclamation> event ) {
         rec =event.getEventData();
-        img.setImage( new Image( "file:src/main/resources"+rec.getImagePath(),70,70,true,true) );
+        img.setImage( new Image( GlobalVariables.IMAGEPATH+rec.getImagePath(),70,70,true,true) );
         privatekey1.setText(rec.getPrivateKey());
         date1.setText(rec.getDate());
         Pname1.setText(rec.getDescription());

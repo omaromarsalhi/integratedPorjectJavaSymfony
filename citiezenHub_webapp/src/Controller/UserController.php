@@ -118,7 +118,7 @@ class UserController extends AbstractController
         $errorMessages = [];
         $current = new \DateTime('now', new \DateTimeZone('Africa/Tunis'));
         if ($req->isXmlHttpRequest()) {
-            if ($current->getTimestamp() < $expiryTime->getTimestamp() || $user->getState()) {
+//            if ($current->getTimestamp() < $expiryTime->getTimestamp() || $user->getState()) {
 //                $emailService->envoyerEmail($mailer);
                 $email = $req->get('email');
                 $name = $req->get('name');
@@ -173,10 +173,10 @@ class UserController extends AbstractController
                     'errors' => $errorMessages,
                 ], 422);
 
-            } else
-                return new JsonResponse([
-                    'redirect' => $this->generateUrl('page404')
-                ]);
+//            } else
+//                return new JsonResponse([
+//                    'redirect' => $this->generateUrl('page404')
+//                ]);
         }
 
         $map = new Map();

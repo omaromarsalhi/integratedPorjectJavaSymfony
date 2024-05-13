@@ -158,7 +158,6 @@ public class NewAccountController implements Initializable {
         editDetails.setOnAction( event -> showFormUser("editDetails") );
         showDetails.setOnAction( event -> showFormUser("showDetails") );
 
-
         disconnect.setOnAction( event ->disconnetcThread().start());
         deleteAccount.setOnAction( event -> {
             ServiceUser serviceUser = new ServiceUser();

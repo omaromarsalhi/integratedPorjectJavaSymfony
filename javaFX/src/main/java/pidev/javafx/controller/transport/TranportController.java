@@ -27,6 +27,7 @@ import pidev.javafx.crud.transport.ServicesTransport;
 import pidev.javafx.model.Transport.Station;
 import pidev.javafx.model.Transport.Transport;
 import pidev.javafx.model.Transport.Type_Vehicule;
+import pidev.javafx.tools.GlobalVariables;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -297,7 +298,7 @@ public class TranportController implements Initializable {
                     setGraphic(null);
                 } else {
                     // Set the image for the ImageView
-                    Image image = new Image("file:src/main/resources" + imagePath);
+                    Image image = new Image( GlobalVariables.IMAGEPATH + imagePath);
                     imageView.setImage(image);
                     imageView.setStyle("-fx-background-radius: 50%;  ");
                     imageView.getStyleClass().add("rounded-image");
@@ -306,7 +307,6 @@ public class TranportController implements Initializable {
                 }
             }
         });
-
 
         dataList = st.getAll();
         ObservableList<Transport> observableList = FXCollections.observableArrayList(dataList);
@@ -389,7 +389,7 @@ public class TranportController implements Initializable {
                     setGraphic(null);
                 } else {
                     // Set the image for the ImageView
-                    Image image = new Image("file:src/main/resources" + imagePath);
+                    Image image = new Image(GlobalVariables.IMAGEPATH + imagePath);
                     imageView.setImage(image);
                     imageView.setStyle("-fx-background-radius: 50%;  ");
                     imageView.getStyleClass().add("rounded-image");
@@ -619,7 +619,7 @@ public class TranportController implements Initializable {
         ReferenceText1.setText(loadedTransport.getReference());
         imagePath = loadedTransport.getVehicule_Image();
         BoxTypeVehicule1.setValue(loadedTransport.getType_vehicule());
-        javafx.scene.image.Image image = new Image("file:src/main/resources" + loadedTransport.getVehicule_Image());
+        javafx.scene.image.Image image = new Image(GlobalVariables.IMAGEPATH + loadedTransport.getVehicule_Image());
         Image1.setFitHeight(114);
         Image1.setFitWidth(114);
         Image1.setImage(image);

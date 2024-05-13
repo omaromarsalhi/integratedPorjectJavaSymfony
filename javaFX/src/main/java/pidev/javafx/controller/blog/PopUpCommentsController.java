@@ -27,6 +27,7 @@ import pidev.javafx.crud.blog.CommentService;
 import pidev.javafx.crud.blog.ReactionService;
 import pidev.javafx.model.user.Role;
 import pidev.javafx.model.user.User;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 
 import java.io.IOException;
@@ -112,7 +113,7 @@ public class PopUpCommentsController implements Initializable {
         });
         ConectedAccount = UserController.getInstance().getCurrentUser().getId();
         BlogService blogService = new BlogService();
-        Image img1 = new Image("file:src/main/resources/" + UserController.getInstance().getCurrentUser().getPhotos());
+        Image img1 = new Image( GlobalVariables.IMAGEPATH + UserController.getInstance().getCurrentUser().getPhotos());
         ProfileImg.setImage(img1);
         comments = new ArrayList<>(getComments());
         for (Comment comment : comments) {
@@ -170,7 +171,7 @@ public class PopUpCommentsController implements Initializable {
         User user = serviceUser.getUserById(post.getIdCompte());
         commentName.setText("Publication de " + user.getFirstname() + " " + user.getLastname());
         Image img;
-        CommentProp.setImage(new Image("file:src/main/resources/" + user.getPhotos() ));
+        CommentProp.setImage(new Image(GlobalVariables.IMAGEPATH + user.getPhotos() ));
         username.setText(user.getFirstname() + " " + user.getLastname());
         imgVerified.setVisible(user.getRole() != Role.Citoyen);
 
@@ -196,7 +197,7 @@ public class PopUpCommentsController implements Initializable {
             if (images.size() > 1) {
                 rightArrow.setVisible(true);
             }
-            img = new Image("file:src/main/resources" + images.get(0));
+            img = new Image(GlobalVariables.IMAGEPATH + images.get(0));
             imgPost.setImage(img);
 
             rightArrow.setOnMouseClicked(mouseEvent -> {
@@ -294,7 +295,7 @@ public class PopUpCommentsController implements Initializable {
         parallelTransition.play();
 
         parallelTransition.setOnFinished(event -> {
-            Image img = new Image("file:src/main/resources" + post.getImages().get(currentImgToShow));
+            Image img = new Image(GlobalVariables.IMAGEPATH + post.getImages().get(currentImgToShow));
             imgPost.setImage(img);
             imgPost.setTranslateX(0);
 

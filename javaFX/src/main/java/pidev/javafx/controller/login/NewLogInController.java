@@ -30,13 +30,15 @@ import pidev.javafx.tools.marketPlace.MyTools;
 import pidev.javafx.tools.user.EmailController;
 import pidev.javafx.tools.user.GoogleApi;
 import pidev.javafx.tools.user.PasswordHasher;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
+import org.mindrot.jbcrypt.BCrypt;
+
+
 
 public class NewLogInController implements Initializable {
 
@@ -197,70 +199,73 @@ public class NewLogInController implements Initializable {
     }
 
 
-    public void logIn(ActionEvent actionEvent) {
-
-        ServiceUser service = new ServiceUser();
-        User user = service.findParEmail( email.getText() );
-
-//        User user=service.findParEmail("salhiomar362@gmail.com");
-
-        if (user.getPassword() == null) {
-
-            System.out.println( "wrong" );
-        } else if (PasswordHasher.verifyPassword( password.getText(), user.getPassword() )) {
-            user.setIsConnected( 1 );
-            UserController.setUser( service.findParEmail( email.getText() ) );
-            System.out.println( UserController.getInstance().getCurrentUser().getFirstname() );
-            ((Stage) Stage.getWindows().get( 0 )).close();
-            if (user.getRole() == Role.Citoyen)
-                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-            else
-                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
-
-        }
-    }
+//    public void logIn(ActionEvent actionEvent) {
+//
+//        ServiceUser service = new ServiceUser();
+//        User user = service.findParEmail( email.getText() );
+//
+////        User user=service.findParEmail("salhiomar362@gmail.com");
+//
+//        if (user.getPassword() == null) {
+//
+//            System.out.println( "wrong" );
+//        } else if (PasswordHasher.verifyPassword( password.getText(), user.getPassword() )) {
+//            user.setIsConnected( 1 );
+//            UserController.setUser( service.findParEmail( email.getText() ) );
+//            System.out.println( UserController.getInstance().getCurrentUser().getFirstname() );
+//            ((Stage) Stage.getWindows().get( 0 )).close();
+//            if (user.getRole() == Role.Citoyen)
+//                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
+//            else
+//                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
+//
+//        }
+//    }
 
     public void setUser(int n) {
         nbr = n;
     }
 
+    public void logIn(ActionEvent actionEvent) {
 
-//    public void logIn(ActionEvent actionEvent) {
-//
-//        ServiceUser service=new ServiceUser();
-////        User user=service.findParEmail(email.getText());
-//        User user=new User();
-//        if(email.getText().equals( "1" ))
-//            user=service.findParEmail("salhiomar3622@gmail.com");
-//        else if(email.getText().equals( "2" ))
-//            user=service.findParEmail("latifa.benzaied@gmail.com");
-//        else if(email.getText().equals( "3" ))
-//            user=service.findParEmail("omar.marrakchi@gmail.com");
-//        else if(email.getText().equals( "4" ))
-//            user=service.findParEmail("aziz.gmaty@gmail.com");
-//        else if(email.getText().equals( "5" ))
-//            user=service.findParEmail("khalil rmila@gmail.com");
-//
-//        if(user.getPassword()==null){
-////            Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
-////            alert.show();
-////            username.clear();
-////            password.clear();
-//            System.out.println("wrong");
-//        }
-////        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
-//        else if(PasswordHasher.verifyPassword("Latifa123@",user.getPassword())){
-//            user.setIsConnected(1);
-//            UserController.setUser(user);
-//            ((Stage)Stage.getWindows().get(0)).close();
-//            System.out.println(user);
-//            if(user.getRole()== Role.Citoyen)
-//                loadManWindow("/fxml/mainWindow/mainWindow.fxml" );
-//            else {
-//                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
-//            }
-//        }
-//    }
+        ServiceUser service=new ServiceUser();
+        BCrypt.gensalt(15);
+//        User user=service.findParEmail(email.getText());
+        User user=new User();
+        if(email.getText().equals( "1" ))
+            user = service.findParEmail( "salhiomar362@gmail.com" );
+        else if(email.getText().equals( "2" ))
+            user=service.findParEmail("salhiomar3662@gmail.com");
+        else if(email.getText().equals( "3" ))
+            user=service.findParEmail("test2@gmail.com");
+        else if(email.getText().equals( "4" ))
+            user=service.findParEmail("test@gmail.com");
+        else if(email.getText().equals( "5" ))
+            user=service.findParEmail("test6@gmail.com");
+
+        System.out.println(email.getText());
+        System.out.println(user);
+        System.out.println(user.getPassword());
+
+        if(user.getPassword()==null){
+//            Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
+//            alert.show();
+//            username.clear();
+//            password.clear();
+        }
+//        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
+        else if(BCrypt.checkpw("Latifa123@l", "$2a$15$LURTVxazTVz1lfJr2uI2U.4BBOWs6tF8zCJsCAvRgkHT1TSCVQy56")){
+            user.setIsConnected(1);
+            UserController.setUser(user);
+            ((Stage)Stage.getWindows().get(0)).close();
+            System.out.println(user);
+            if(user.getRole()== Role.Citoyen)
+                loadManWindow("/fxml/mainWindow/mainWindow.fxml" );
+            else {
+                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
+            }
+        }
+    }
 
     @FXML
     public void signUp(ActionEvent actionEvent) {
@@ -449,7 +454,8 @@ public class NewLogInController implements Initializable {
         user.setFirstname( firstname.getText() );
         user.setEmail( emailSignUp.getText() );
         user.setLastname( lastName.getText() );
-        user.setPassword( PasswordHasher.hashPassword( passwordSignUp.getText() ) );
+//        user.setPassword( PasswordHasher.hashPassword( passwordSignUp.getText() ) );
+        user.setPassword( BCrypt.hashpw(passwordSignUp.getText(), BCrypt.gensalt(15))  );
         user.setRole( Role.Citoyen );
         UserController.setUser( user );
     }
