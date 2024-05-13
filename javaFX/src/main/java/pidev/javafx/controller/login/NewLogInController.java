@@ -241,7 +241,7 @@ public class NewLogInController implements Initializable {
         else if(email.getText().equals( "4" ))
             user=service.findParEmail("test@gmail.com");
         else if(email.getText().equals( "5" ))
-            user=service.findParEmail("test6@gmail.com");
+            user=service.findParEmail("test2@gmail.com");
 
         System.out.println(email.getText());
         System.out.println(user);
@@ -254,7 +254,7 @@ public class NewLogInController implements Initializable {
 //            password.clear();
         }
 //        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
-        else if(BCrypt.checkpw("Latifa123@l", "$2a$15$LURTVxazTVz1lfJr2uI2U.4BBOWs6tF8zCJsCAvRgkHT1TSCVQy56")){
+        else if(BCrypt.checkpw("Latifa123@l", user.getPassword().replace( "$2y$","$2a$" ))){
             user.setIsConnected(1);
             UserController.setUser(user);
             ((Stage)Stage.getWindows().get(0)).close();
