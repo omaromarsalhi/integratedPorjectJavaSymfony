@@ -102,41 +102,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Using event delegation to manage events for dynamically added content
-    document.body.addEventListener('click', function(event) {
-        if (event.target.matches('.title')) {
-            showReclamationDetails(event.target.closest('.lg-product-wrapper').id.replace('reclamationItem', ''), event);
-        } else if (event.target.closest('.pdfBtn')) {
-            deleteReclamation(event.target.closest('.lg-product-wrapper').id.replace('reclamationItem', ''), event);
-        }
-    });
-});
-
-function showReclamationDetails(reclamationId, event) {
-    event.preventDefault();
-    fetch(`/api/reclamations/${reclamationId}`)
-        .then(response => response.json())
-        .then(data => {
-            updateModalContent(data);
-            new bootstrap.Modal(document.getElementById('reclamationDetailModal')).show();
-        })
-        .catch(error => console.error('Error fetching reclamation details:', error));
-}
-
 function updateModalContent(data) {
     const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
     modalBody.setAttribute('data-reclamation-id', data.id); // Set the reclamation ID on the modal body for reference in the update function
 
     let detailsHtml = `
-        <div><label>Private Key: ${data.privateKey}</label></div>
+        <div><label>Private Key:</label> ${data.privatekey}</div>
         <div><label>Subject:</label><input type="text" id="modalSubject" value="${data.subject}"></div>
         <div><label>Description:</label><textarea id="modalDescription">${data.description}</textarea></div>
         ${data.image ? `<div><label>Image:</label><img src="${data.image}" alt="Reclamation Image" style="max-width:100px;"></div>` : ''}
     `;
     modalBody.innerHTML = detailsHtml;
 }
-
 
 function updateReclamationDetails() {
     const modal = document.getElementById('reclamationDetailModal');
@@ -150,14 +127,26 @@ function updateReclamationDetails() {
         body: JSON.stringify({ subject, description })
     })
     .then(response => response.json())
-    .then(() => {
+    .then((updatedReclamation) => {
         alert('Reclamation updated successfully');
-        document.querySelector(`#reclamationItem${reclamationId} .title`).textContent = subject;
-        document.querySelector(`#reclamationItem${reclamationId} .latest-bid`).textContent = description;
+        // Update the reclamation item in the DOM
+        document.querySelector(`#reclamationItem${reclamationId} .title`).textContent = updatedReclamation.subject;
+        document.querySelector(`#reclamationItem${reclamationId} .latest-bid`).textContent = updatedReclamation.description;
         new bootstrap.Modal(document.getElementById('reclamationDetailModal')).hide();
     })
     .catch(error => {
         console.error('Error updating reclamation:', error);
         alert('Failed to update reclamation.');
     });
+}
+
+function showReclamationDetails(reclamationId, event) {
+    event.preventDefault();
+    fetch(`/api/reclamations/${reclamationId}`)
+        .then(response => response.json())
+        .then(data => {
+            updateModalContent(data);
+            new bootstrap.Modal(document.getElementById('reclamationDetailModal')).show();
+        })
+        .catch(error => console.error('Error fetching reclamation details:', error));
 }
