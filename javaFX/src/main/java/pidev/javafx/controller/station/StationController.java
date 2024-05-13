@@ -259,6 +259,7 @@ import org.json.JSONObject;
 import pidev.javafx.crud.transport.ServicesStation;
 import pidev.javafx.model.Transport.Station;
 import pidev.javafx.model.Transport.Type_Vehicule;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.transport.allStat;
 
 import java.io.IOException;
@@ -568,7 +569,7 @@ else
         BoxTypeVehicule.setValue(selectedItem.getType_Vehicule());
         image_path = selectedItem.getImage_station();
         if (image_path != null) {
-            Image1.setImage(new Image("file:src/main/resources"+image_path));
+            Image1.setImage(new Image( GlobalVariables.IMAGEPATH+image_path));
         }
     }
 

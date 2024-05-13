@@ -55,4 +55,5 @@ class AiResultRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
 }

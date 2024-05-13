@@ -8,6 +8,7 @@ import pidev.javafx.crud.ConnectionDB;
 import pidev.javafx.crud.CrudInterface;
 import pidev.javafx.model.MarketPlace.Categorie;
 import pidev.javafx.model.MarketPlace.Bien;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 
 import java.sql.Connection;
@@ -40,7 +41,7 @@ public class CrudBien implements CrudInterface<Bien> {
     public ObservableList<Bien> searchItems(String culumn,String value) {
 
         Bien bien = null;
-        String sql = "SELECT * FROM products where "+culumn+" like ? and isDeleted=false ";
+        String sql = "SELECT * FROM product where "+culumn+" like ? and isDeleted=false ";
 
         connect = ConnectionDB.getInstance().getCnx();
         ObservableList<Bien> BienList = FXCollections.observableArrayList();
@@ -49,10 +50,10 @@ public class CrudBien implements CrudInterface<Bien> {
             prepare.setString(  1, "%"+value+"%");
             result = prepare.executeQuery();
             while (result.next()) {
-                bien=new Bien(result.getInt("idProd"),
+                bien=new Bien(result.getInt("idProduct"),
                         result.getInt("idUser"),
                         result.getString("name"),
-                        result.getString("descreption"),
+                        result.getString("description"),
                         "",
                         result.getFloat("price"),
                         result.getFloat("quantity"),
@@ -61,7 +62,7 @@ public class CrudBien implements CrudInterface<Bien> {
                         Categorie.valueOf(result.getString("category")));
                 bien.setAllImagesSources( selectImagesById(bien.getId()) );
                 bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                bien.setImage( new ImageView( new Image( "file:src/main/resources" + bien.getImgSource(), 35, 35, false, false ) ) );
+                bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 35, 35, false, false ) ) );
                 BienList.add(bien);
             }
         } catch (SQLException e) {
@@ -73,7 +74,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
 
     public void addItem(Bien bien) {
-        String sql = "INSERT INTO products "
+        String sql = "INSERT INTO product "
                 + "(idUser, name, descreption,isDeleted, price, quantity, state, type, category)"
                 + " VALUES (?, ?, ?, ?, ?, ? ,? , ?, ?)";
 
@@ -121,7 +122,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
     public void deleteItem(int id) {
 
-        String sql = "UPDATE products SET isDeleted = true WHERE idProd = ?";
+        String sql = "UPDATE product SET isDeleted = true WHERE idProduct = ?";
         connect = ConnectionDB.getInstance().getCnx();
 
         try {
@@ -150,7 +151,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
     public void updateItem(Bien bien) {
 
-        String sql = "UPDATE products SET name = ?," +
+        String sql = "UPDATE product SET name = ?," +
                 " descreption = ?,"+
 //                ((bien.getImgSource().equals( "DO_NOT_UPDATE_OR_ADD_IMAGE" ))?"":" imgSource = ?,")+
                 "price = ?,"+
@@ -184,7 +185,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
     public ObservableList<Bien> selectItemsById() {
         Bien bien = null;
-        String sql = "SELECT * FROM products  where isDeleted=false and idUser= ? order by idProd desc"; // Retrieve all items
+        String sql = "SELECT * FROM product  where isDeleted=false and idUser= ? order by idProduct desc"; // Retrieve all items
 
         connect = ConnectionDB.getInstance().getCnx();
         ObservableList<Bien> BienList = FXCollections.observableArrayList();
@@ -193,10 +194,10 @@ public class CrudBien implements CrudInterface<Bien> {
             prepare.setInt( 1, UserController.getInstance().getCurrentUser().getId() );
             result = prepare.executeQuery();
             while (result.next()) {
-                bien=new Bien(result.getInt("idProd"),
+                bien=new Bien(result.getInt("idProduct"),
                         result.getInt("idUser"),
                         result.getString("name"),
-                        result.getString("descreption"),
+                        result.getString("description"),
                         "",
                         result.getFloat("price"),
                         result.getFloat("quantity"),
@@ -206,7 +207,7 @@ public class CrudBien implements CrudInterface<Bien> {
                 bien.setAllImagesSources( selectImagesById(bien.getId()) );
                 if(bien.getAllImagesSources().size()>0) {
                     bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                    bien.setImage( new ImageView( new Image( "file:src/main/resources" + bien.getImgSource(), 40, 40, false, false ) ) );
+                    bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 40, 40, false, false ) ) );
                 }
                 BienList.add(bien);
             }
@@ -220,7 +221,7 @@ public class CrudBien implements CrudInterface<Bien> {
     @Override
     public ObservableList<Bien> selectItems() {
         Bien bien = null;
-        String sql = "SELECT * FROM products  where isDeleted=false order by idProd desc"; // Retrieve all items
+        String sql = "SELECT * FROM product  where isDeleted=false order by idProduct desc"; // Retrieve all items
 
         connect = ConnectionDB.getInstance().getCnx();
         ObservableList<Bien> BienList = FXCollections.observableArrayList();
@@ -228,10 +229,10 @@ public class CrudBien implements CrudInterface<Bien> {
             prepare = connect.prepareStatement(sql);
             result = prepare.executeQuery();
             while (result.next()) {
-                bien=new Bien(result.getInt("idProd"),
+                bien=new Bien(result.getInt("idProduct"),
                         result.getInt("idUser"),
                         result.getString("name"),
-                        result.getString("descreption"),
+                        result.getString("description"),
                         "",
                         result.getFloat("price"),
                         result.getFloat("quantity"),
@@ -241,7 +242,7 @@ public class CrudBien implements CrudInterface<Bien> {
                 bien.setAllImagesSources( selectImagesById(bien.getId()) );
                 if(bien.getAllImagesSources().size()>0) {
                     bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                    bien.setImage( new ImageView( new Image( "file:src/main/resources" + bien.getImgSource(), 40, 40, false, false ) ) );
+                    bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 40, 40, false, false ) ) );
                 }
                 BienList.add(bien);
             }
@@ -255,7 +256,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
     public ObservableList<Bien> filterItems(String fromDate,String todate,int minPrice,int maxPrice,int quantity,String categoryChoice) {
         Bien bien = null;
-        String sql = "SELECT * FROM products where isDeleted=false  " ;
+        String sql = "SELECT * FROM product where isDeleted=false  " ;
         sql+=(categoryChoice.isEmpty()||categoryChoice.equals( "ALL" ))?"":"and category = ?";
         sql+=(fromDate.isEmpty())?"":" and timestamp >= ?";
         sql+=(todate.isEmpty())?"":" and timestamp <= ?";
@@ -285,10 +286,10 @@ public class CrudBien implements CrudInterface<Bien> {
             System.out.println(prepare.toString());
             result = prepare.executeQuery();
             while (result.next()) {
-                bien=new Bien(result.getInt("idProd"),
+                bien=new Bien(result.getInt("idProduct"),
                         result.getInt("idUser"),
                         result.getString("name"),
-                        result.getString("descreption"),
+                        result.getString("description"),
                         "",
                         result.getFloat("price"),
                         result.getFloat("quantity"),
@@ -297,7 +298,7 @@ public class CrudBien implements CrudInterface<Bien> {
                         Categorie.valueOf(result.getString("category")));
                 bien.setAllImagesSources( selectImagesById(bien.getId()) );
                 bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                bien.setImage( new ImageView( new Image( "file:src/main/resources" + bien.getImgSource(), 35, 35, false, false ) ) );
+                bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 35, 35, false, false ) ) );
                 BienList.add(bien);
             }
         } catch (SQLException e) {
@@ -310,7 +311,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
     public String selectMaxValues4Filter() {
         Bien bien = null;
-        String sql = "SELECT  max(price) as mPrice , max(quantity) as mQuantity FROM products  where isDeleted=0; "; // Retrieve all items
+        String sql = "SELECT  max(price) as mPrice , max(quantity) as mQuantity FROM product  where isDeleted=0; "; // Retrieve all items
         String res="";
         connect = ConnectionDB.getInstance().getCnx();
         try {
@@ -359,17 +360,17 @@ public class CrudBien implements CrudInterface<Bien> {
 
 
     public Bien selectLastItem() {
-        String Sql = "SELECT * FROM products ORDER BY idProd DESC LIMIT 1";
+        String Sql = "SELECT * FROM product ORDER BY idProduct DESC LIMIT 1";
         connect = ConnectionDB.getInstance().getCnx();
         try {
             prepare = connect.prepareStatement(Sql);
             result = prepare.executeQuery();
 
             if (result.next()) {
-                Bien bien= new Bien(result.getInt("idProd"),
+                Bien bien= new Bien(result.getInt("idProduct"),
                         result.getInt("idUser"),
                         result.getString("name"),
-                        result.getString("descreption"),
+                        result.getString("description"),
                         "",
                         result.getFloat("price"),
                         result.getFloat("quantity"),
@@ -379,7 +380,7 @@ public class CrudBien implements CrudInterface<Bien> {
                 bien.setAllImagesSources( selectImagesById(bien.getId()) );
                 if(bien.getAllImagesSources().size()!=0) {
                     bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                    bien.setImage( new ImageView( new Image( "file:src/main/resources" + bien.getImgSource(), 35, 35, false, false ) ) );
+                    bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 35, 35, false, false ) ) );
                 }
                 return bien;
             }
@@ -392,7 +393,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
 
     public Bien selectItemById(int id) {
-        String Sql = "SELECT * FROM products where idProd= ?";
+        String Sql = "SELECT * FROM product where idProd= ?";
         connect = ConnectionDB.getInstance().getCnx();
         try {
             prepare = connect.prepareStatement(Sql);
@@ -400,10 +401,10 @@ public class CrudBien implements CrudInterface<Bien> {
             result = prepare.executeQuery();
 
             if (result.next()) {
-                Bien bien= new Bien(result.getInt("idProd"),
+                Bien bien= new Bien(result.getInt("idProduct"),
                         result.getInt("idUser"),
                         result.getString("name"),
-                        result.getString("descreption"),
+                        result.getString("description"),
                         "",
                         result.getFloat("price"),
                         result.getFloat("quantity"),
@@ -412,7 +413,7 @@ public class CrudBien implements CrudInterface<Bien> {
                         Categorie.valueOf(result.getString("category")));
                 bien.setAllImagesSources( selectImagesById(bien.getId()) );
                 bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                bien.setImage( new ImageView( new Image( "file:src/main/resources" + bien.getImgSource(), 35, 35, false, false ) ) );
+                bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 35, 35, false, false ) ) );
                 return bien;
             }
 
@@ -422,26 +423,7 @@ public class CrudBien implements CrudInterface<Bien> {
         return null;
     }
 
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

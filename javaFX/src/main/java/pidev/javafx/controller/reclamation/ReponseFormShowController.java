@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import pidev.javafx.crud.reclamation.ServiceReponse;
 import pidev.javafx.model.reclamation.Reclamation;
 import pidev.javafx.model.reclamation.Reponse;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyTools;
@@ -191,7 +192,7 @@ public class ReponseFormShowController implements Initializable {
     void first_fonction( CustomMouseEvent<Reclamation> event ) {
         recR =event.getEventData();
         System.out.println(recR.getIdReclamation());
-        img.setImage( new Image( "file:src/main/resources"+recR.getImagePath(),70,70,true,true) );
+        img.setImage( new Image( GlobalVariables.IMAGEPATH+recR.getImagePath(),70,70,true,true) );
         privatekey1.setText(recR.getPrivateKey());
         date1.setText(recR.getDate());
         Pname1.setText(recR.getSubject());

@@ -27,7 +27,7 @@ public class CrudTransaction implements CrudInterface<Transaction> {
 
     @Override
     public void addItem(Transaction transaction) {
-        String sql = "INSERT INTO transactions (idProd,idContract, idSeller, idBuyer,pricePerUnit,quantity, transactionMode) " +
+        String sql = "INSERT INTO transaction (idProduct,idContract, idSeller, idBuyer,pricePerUnit,quantity, transactionMode) " +
                 "VALUES (?, ?, ?, ? ,? ,?,?)";
 
         connect = ConnectionDB.getInstance().getCnx();
@@ -55,7 +55,7 @@ public class CrudTransaction implements CrudInterface<Transaction> {
     @Override
     public ObservableList<Transaction> selectItems() {
         ObservableList<Transaction> transactions = FXCollections.observableArrayList();
-        String selectSql = "SELECT * FROM transactions";
+        String selectSql = "SELECT * FROM transaction";
         connect = ConnectionDB.getInstance().getCnx();
 
 
@@ -90,7 +90,7 @@ public class CrudTransaction implements CrudInterface<Transaction> {
 
     @Override
     public Transaction selectFirstItem() {
-        String selectFirstSql = "SELECT * FROM transactions LIMIT 1";
+        String selectFirstSql = "SELECT * FROM transaction LIMIT 1";
         connect = ConnectionDB.getInstance().getCnx();
 
         try {
@@ -117,7 +117,7 @@ public class CrudTransaction implements CrudInterface<Transaction> {
 
     @Override
     public void deleteItem(int id) {
-        String deleteSql = "DELETE FROM transactions WHERE idTransaction = ?";
+        String deleteSql = "DELETE FROM transaction WHERE idTransaction = ?";
         connect = ConnectionDB.getInstance().getCnx();
 
         try {

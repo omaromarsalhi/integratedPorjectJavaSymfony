@@ -100,4 +100,19 @@ public class Transaction {
     public void setEffectiveDate(Timestamp effectiveDate) {
         this.effectiveDate = effectiveDate;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "idTransaction=" + idTransaction +
+                ", idProd=" + idProd +
+                ", idContract=" + idContract +
+                ", idSeller=" + idSeller +
+                ", idBuyer=" + idBuyer +
+                ", pricePerUnit=" + pricePerUnit +
+                ", quantity=" + quantity +
+                ", transactionMode=" + transactionMode +
+                ", effectiveDate=" + effectiveDate +
+                '}';
+    }
 }

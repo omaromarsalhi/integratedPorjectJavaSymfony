@@ -30,7 +30,7 @@ public class CrudContract implements CrudInterface<Contract> {
 
     @Override
     public void addItem(Contract contract) {
-        String sql = "INSERT INTO contracts (title, terminationDate, purpose, termsAndConditions, paymentMethod,recivingLocation) " +
+        String sql = "INSERT INTO contract (title, terminationDate, purpose, termsAndConditions, paymentMethod,recivingLocation) " +
                 "VALUES (?, ?, ?, ?, ? ,?)";
 
         connect = ConnectionDB.getInstance().getCnx();
@@ -54,7 +54,7 @@ public class CrudContract implements CrudInterface<Contract> {
     public void updateItem(Contract contract) {
         try {
 
-            String updateQuery = "UPDATE contracts SET title = ?," +
+            String updateQuery = "UPDATE contract SET title = ?," +
                     " terminationDate = ?, purpose = ?, termsAndConditions = ?, paymentMethod = ? ,recingLocation= ?" +
                     "WHERE idContrat = ?";
 
@@ -80,7 +80,7 @@ public class CrudContract implements CrudInterface<Contract> {
         ObservableList<Contract> contractList = FXCollections.observableArrayList();
         try {
             // Assuming you have a database table named "contrats"
-            String selectQuery = "SELECT * FROM contracts";
+            String selectQuery = "SELECT * FROM contract";
 
             connect = ConnectionDB.getInstance().getCnx();
 
@@ -107,7 +107,7 @@ public class CrudContract implements CrudInterface<Contract> {
     public Contract findById(int id) {
         try {
             // Assuming you have a database table named "contrats"
-            String selectQuery = "SELECT * FROM contracts where idContract= ?";
+            String selectQuery = "SELECT * FROM contract where idContract= ?";
 
             connect = ConnectionDB.getInstance().getCnx();
 
@@ -139,7 +139,7 @@ public class CrudContract implements CrudInterface<Contract> {
 
 
     public Contract selectLastItem() {
-        String sql = "SELECT * FROM contracts ORDER BY idContract DESC LIMIT 1";
+        String sql = "SELECT * FROM contract ORDER BY idContract DESC LIMIT 1";
         connect = ConnectionDB.getInstance().getCnx();
 
         try {
@@ -167,7 +167,7 @@ public class CrudContract implements CrudInterface<Contract> {
     @Override
     public void deleteItem(int id) {
         try {
-            String deleteQuery = "DELETE FROM contracts WHERE idContrat = ?";
+            String deleteQuery = "DELETE FROM contract WHERE idContrat = ?";
 
             connect = ConnectionDB.getInstance().getCnx();
 
