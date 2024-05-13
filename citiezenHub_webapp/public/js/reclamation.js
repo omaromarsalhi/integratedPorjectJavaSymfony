@@ -83,14 +83,6 @@ function deletee(reclamationId, event) {
         }
     });
 }
-
-
-
-
-
-
-
-
 //spech to text
 document.addEventListener('DOMContentLoaded', function() {
     function startRecording() {
@@ -109,87 +101,63 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Define the function globally
-function showReclamationDetails(reclamationId, event) {
-    event.preventDefault();
-  
-    fetch(`/api/reclamations/${reclamationId}`)
-      .then(response => response.json())
-      .then(data => {
-        const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
-        const basePath = document.querySelector('#basePath').dataset.basePath;
-  
-        // Check if modalBody exists before accessing it
-        if (modalBody) {
-          let detailsHtml = `
-            <div>
-              <label>Private Key: ${data.privateKey}</label>
-            </div>
-            <div>
-              <label>Subject:</label>
-              <input type="text" id="modalSubject" value="${data.subject}" />
-            </div>
-            <div>
-              <label>Description:</label>
-              <textarea id="modalDescription">${data.description}</textarea>
-            </div>`;
-          if (data.image) {
-            detailsHtml += `<div><label>Image:</label><img src="${basePath}${data.image}" alt="Reclamation Image" style="max-width:100px;"></div>`;
-          }
-          modalBody.innerHTML = detailsHtml;
-        } else {
-          console.error("Modal body element not found!");
-        }
-  
-        document.getElementById('updateButton').setAttribute('data-reclamation-id', reclamationId);
-        var modal = new bootstrap.Modal(document.getElementById('reclamationDetailModal'));
-        modal.show();
-      })
-      .catch(error => console.error('Error fetching reclamation details:', error));
-  }
-  
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Using event delegation to manage events for dynamically added content
     document.body.addEventListener('click', function(event) {
-        if (event.target.matches('[data-reclamation-detail]')) {
-            showReclamationDetails(event.target.getAttribute('data-reclamation-id'), event);
-        } else if (event.target.matches('#deleteReclamation')) {
-            deleteReclamation(event.target.getAttribute('data-reclamation-id'), event);
+        if (event.target.matches('.title')) {
+            showReclamationDetails(event.target.closest('.lg-product-wrapper').id.replace('reclamationItem', ''), event);
+        } else if (event.target.closest('.pdfBtn')) {
+            deleteReclamation(event.target.closest('.lg-product-wrapper').id.replace('reclamationItem', ''), event);
         }
     });
 });
-document.getElementById('updateButton').addEventListener('click', function() {
-    const reclamationId = this.getAttribute('data-reclamation-id');
+
+function showReclamationDetails(reclamationId, event) {
+    event.preventDefault();
+    fetch(`/api/reclamations/${reclamationId}`)
+        .then(response => response.json())
+        .then(data => {
+            updateModalContent(data);
+            new bootstrap.Modal(document.getElementById('reclamationDetailModal')).show();
+        })
+        .catch(error => console.error('Error fetching reclamation details:', error));
+}
+
+function updateModalContent(data) {
+    const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
+    modalBody.setAttribute('data-reclamation-id', data.id); // Set the reclamation ID on the modal body for reference in the update function
+
+    let detailsHtml = `
+        <div><label>Private Key: ${data.privateKey}</label></div>
+        <div><label>Subject:</label><input type="text" id="modalSubject" value="${data.subject}"></div>
+        <div><label>Description:</label><textarea id="modalDescription">${data.description}</textarea></div>
+        ${data.image ? `<div><label>Image:</label><img src="${data.image}" alt="Reclamation Image" style="max-width:100px;"></div>` : ''}
+    `;
+    modalBody.innerHTML = detailsHtml;
+}
+
+
+function updateReclamationDetails() {
+    const modal = document.getElementById('reclamationDetailModal');
+    const reclamationId = modal.querySelector('.modal-body').getAttribute('data-reclamation-id'); // Ensure this attribute is set correctly when loading the modal
     const subject = document.getElementById('modalSubject').value;
     const description = document.getElementById('modalDescription').value;
 
-    const updateData = {
-        subject: subject,
-        description: description
-    };
-
     fetch(`/api/reclamations/update/${reclamationId}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updateData)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, description })
     })
     .then(response => response.json())
-    .then(data => {
+    .then(() => {
         alert('Reclamation updated successfully');
-
-        // Dynamically update the elements on the page
         document.querySelector(`#reclamationItem${reclamationId} .title`).textContent = subject;
         document.querySelector(`#reclamationItem${reclamationId} .latest-bid`).textContent = description;
-
-        // Close the modal
-        var modal = bootstrap.Modal.getInstance(document.getElementById('reclamationDetailModal'));
-        modal.hide();
+        new bootstrap.Modal(document.getElementById('reclamationDetailModal')).hide();
     })
     .catch(error => {
         console.error('Error updating reclamation:', error);
         alert('Failed to update reclamation.');
     });
-});
-
+}
