@@ -148,7 +148,15 @@ public function apiUpdate(Request $request, ReclamationRepository $reclamationRe
     ], Response::HTTP_OK);
 }
 
+#[Route('/admin/reclamation', name: 'admin_reclamation')]
+    public function list(ReclamationRepository $reclamationRepository): Response
+    {
+        $reclamations = $reclamationRepository->findAll();
 
+        return $this->render('reponse/index.html.twig', [
+            'reclamations' => $reclamations,
+        ]);
+    }
 
 
 }

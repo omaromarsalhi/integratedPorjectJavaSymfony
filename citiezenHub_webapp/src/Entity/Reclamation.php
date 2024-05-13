@@ -22,6 +22,7 @@ class Reclamation
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date = null;
 
+
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $subject = null;
 
