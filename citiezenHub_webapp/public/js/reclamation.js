@@ -125,6 +125,8 @@ function updateReclamationDetails() {
     const subject = document.getElementById('modalSubject').value;
     const description = document.getElementById('modalDescription').value;
 
+    console.log(`Updating reclamation with ID: ${reclamationId}, subject: ${subject}, description: ${description}`);
+
     fetch(`/api/reclamations/update/${reclamationId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -132,11 +134,30 @@ function updateReclamationDetails() {
     })
     .then(response => response.json())
     .then((updatedReclamation) => {
-        alert('Reclamation updated successfully');
+        console.log('Reclamation updated successfully:', updatedReclamation);
 
-        // Update the reclamation item in the DOM
-        document.querySelector(`#reclamationItem${reclamationId} .title`).textContent = updatedReclamation.subject;
-        document.querySelector(`#reclamationItem${reclamationId} .latest-bid`).textContent = updatedReclamation.description;
+        // Ensure the reclamation item is updated in the DOM
+        const reclamationItem = document.getElementById(`reclamationItem${reclamationId}`);
+        if (reclamationItem) {
+            const titleElement = reclamationItem.querySelector('.title');
+            const descriptionElement = reclamationItem.querySelector('.latest-bid');
+
+            if (titleElement) {
+                console.log('Updating title:', titleElement, 'with', updatedReclamation.subject);
+                titleElement.textContent = updatedReclamation.subject;
+            } else {
+                console.error('Title element not found');
+            }
+
+            if (descriptionElement) {
+                console.log('Updating description:', descriptionElement, 'with', updatedReclamation.description);
+                descriptionElement.textContent = updatedReclamation.description;
+            } else {
+                console.error('Description element not found');
+            }
+        } else {
+            console.error(`Reclamation item with ID: ${reclamationId} not found`);
+        }
 
         // Close the modal
         const modalInstance = bootstrap.Modal.getInstance(document.getElementById('reclamationDetailModal'));
@@ -148,14 +169,39 @@ function updateReclamationDetails() {
     });
 }
 
+
+
+
 function showReclamationDetails(reclamationId, event) {
     event.preventDefault();
     fetch(`/api/reclamations/${reclamationId}`)
         .then(response => response.json())
         .then(data => {
+            console.log('Reclamation details fetched:', data);
             updateModalContent(data);
             new bootstrap.Modal(document.getElementById('reclamationDetailModal')).show();
         })
         .catch(error => console.error('Error fetching reclamation details:', error));
 }
 
+function updateModalContent(data) {
+    const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
+    modalBody.setAttribute('data-reclamation-id', data.id);
+
+    const imagePath = data.image ? `/usersImg/${data.image}` : '';
+    let detailsHtml = `
+        ${imagePath ? `<div><img src="${imagePath}" alt="Reclamation Image" style="max-width:400px;"></div>` : ''}
+        <div><label>Private Key:</label> ${data.privateKey}</div>
+        <div><label>Subject:</label><input type="text" id="modalSubject" value="${data.subject || ''}"></div>
+        <div><label>Description:</label><textarea id="modalDescription">${data.description || ''}</textarea></div>
+    `;
+    modalBody.innerHTML = detailsHtml;
+}
+
+
+const timestamp = new Date().getTime(); // Current timestamp to avoid caching issues
+fetch(`/api/reclamations/update/${reclamationId}?t=${timestamp}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subject, description })
+})
