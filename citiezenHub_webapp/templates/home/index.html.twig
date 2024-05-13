@@ -1,4 +1,3 @@
-
 {% extends 'base.html.twig' %}
 
 {% block stylesheets_wtf1 %}
@@ -19,7 +18,7 @@
                             <div class="icon">
                                 <img src="assets/images/icons/rating-2.png" alt="Icons Images">
                             </div>
-                            <span class="subtitle">8000+ Trust Customer</span>
+                            <span class="subtitle">800+ satisfied customer</span>
                         </div>
 
                         <div class="banner-badge-top" data-sal-delay="500" data-sal="slide-up" data-sal-duration="500">
@@ -30,12 +29,18 @@
                         </div>
                     </div>
 
-                    <h1 class="title large-height theme-color" data-sal-delay="200" data-sal="slide-up"
-                        data-sal-duration="800">Discover the new generation<br> smart city </h1>
-                    <p class="slide-disc" data-sal-delay="300" data-sal="slide-up" data-sal-duration="800">a
-                        non-interchangeable unit of data stored on a blockchain, a form of digital ledger, that can be
-                        sold
-                        and traded. Types of NFT data units.</p>
+                    <h1 class="title theme-color" data-sal-delay="200" data-sal="slide-up"
+                        data-sal-duration="800">Unite your municipality
+                    </h1>
+
+                    <h4 class="title theme-color" data-sal-delay="200" data-sal="slide-up"
+                        data-sal-duration="800">
+                        Connect, share, and act with ease.
+                    </h4>
+                    <p class="slide-disc" data-sal-delay="300" data-sal="slide-up" data-sal-duration="800"
+                       style="font-size: 14px">
+                        Easily connect with your local municipality, share neighborhood updates, and access essential
+                        services all in one convenient platform.</p>
                     <div class="button-group">
                         <a class="btn btn-large btn-primary" href="#" data-sal-delay="400" data-sal="slide-up"
                            data-sal-duration="800">check</a>
@@ -132,484 +137,47 @@
     </div>
     <!-- end category area -->
 
-    <!-- Explore Style Carousel -->
+    <!-- news Area -->
     <div class="rn-live-bidding-area rn-section-gapTop">
         <div class="container">
             <div class="row mb--50">
                 <div class="col-lg-12">
                     <div class="section-title">
                         <h3 class="title mb--0 live-bidding-title" data-sal-delay="150" data-sal="slide-up"
-                            data-sal-duration="800">Live Bidding</h3>
+                            data-sal-duration="800">Latest news</h3>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="banner-one-slick slick-activation-03 slick-arrow-style-one rn-slick-dot-style slick-gutter-15">
-                        <!-- start single product -->
-                        <div class="single-slide-product">
-                            <div class="product-style-one">
-                                <div class="card-thumbnail">
-                                    <a href="product-details.html"><img src="assets/images/portfolio/portfolio-07.jpg"
-                                                                        alt="NFT_portfolio"></a>
-                                    <div class="countdown" data-date="2022-11-09">
-                                        <div class="countdown-container days">
-                                            <span class="countdown-value">87</span>
-                                            <span class="countdown-heading">D's</span>
-                                        </div>
-                                        <div class="countdown-container hours">
-                                            <span class="countdown-value">23</span>
-                                            <span class="countdown-heading">H's</span>
-                                        </div>
-                                        <div class="countdown-container minutes">
-                                            <span class="countdown-value">38</span>
-                                            <span class="countdown-heading">Min's</span>
-                                        </div>
-                                        <div class="countdown-container seconds">
-                                            <span class="countdown-value">27</span>
-                                            <span class="countdown-heading">Sec</span>
+                        {% for news in newsList %}
+                            <div class="single-slide-product">
+                                <div class="product-style-one">
+                                    <div class="card-thumbnail">
+                                        <a href="{{ path('app_news') }}"><img src="{{ news.imageUrl }}"
+                                                                              alt="News_Image"></a>
+                                    </div>
+                                    <div class="product-share-wrapper">
+                                        <div class="profile-share">
+                                            <a class="more-author-text"
+                                               href="{{ path('app_news') }}">{{ news.sourceId }}</a>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="product-share-wrapper">
-                                    <div class="profile-share">
-                                        <a href="author.html" class="avatar" data-tooltip="Mark JOrdan"><img
-                                                    src="assets/images/client/client-2.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Mark"><img
-                                                    src="assets/images/client/client-3.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Jordan"><img
-                                                    src="assets/images/client/client-5.png" alt="Nft_Profile"></a>
-                                        <a class="more-author-text" href="#">20+ Place Bit.</a>
-                                    </div>
-                                    <div class="share-btn share-btn-activation dropdown">
-                                        <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                                 class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                                      d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                                      fill="currentColor"></path>
-                                            </svg>
-                                        </button>
-
-                                        <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="btn-setting-text share-text"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#shareModal">
-                                                Share
-                                            </button>
-                                            <button type="button" class="btn-setting-text report-text"
-                                                    data-bs-toggle="modal" data-bs-target="#reportModal">
-                                                Report
-                                            </button>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                                <a href="product-details.html"><span class="product-name">Preatent</span></a>
-                                <span class="latest-bid">Highest bid 1/20</span>
-                                <div class="bid-react-area">
-                                    <div class="last-bid">0.244wETH</div>
-                                    <div class="react-area">
-                                        <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                             class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                            <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                                  stroke="currentColor" stroke-width="2"></path>
-                                        </svg>
-                                        <span class="number">322</span>
+                                    <a href="{{ path('app_news') }}"><span class="product-name"
+                                                                           style="font-size: 14px">{{ news.title }}</span></a>
+                                    <div class="bid-react-area">
+                                        <span style="font-size: 10px;">{{ news.date }}</span>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- end single product -->
-
-                        <!-- start single product -->
-                        <div class="single-slide-product">
-                            <div class="product-style-one">
-                                <div class="card-thumbnail">
-                                    <a href="product-details.html"><img src="assets/images/portfolio/portfolio-10.jpg"
-                                                                        alt="NFT_portfolio"></a>
-                                    <div class="countdown" data-date="2022-10-09">
-                                        <div class="countdown-container days">
-                                            <span class="countdown-value">87</span>
-                                            <span class="countdown-heading">D's</span>
-                                        </div>
-                                        <div class="countdown-container hours">
-                                            <span class="countdown-value">23</span>
-                                            <span class="countdown-heading">H's</span>
-                                        </div>
-                                        <div class="countdown-container minutes">
-                                            <span class="countdown-value">38</span>
-                                            <span class="countdown-heading">Min's</span>
-                                        </div>
-                                        <div class="countdown-container seconds">
-                                            <span class="countdown-value">27</span>
-                                            <span class="countdown-heading">Sec</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-share-wrapper">
-                                    <div class="profile-share">
-                                        <a href="author.html" class="avatar" data-tooltip="Farik Shaikh"><img
-                                                    src="assets/images/client/client-1.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Shaikh"><img
-                                                    src="assets/images/client/client-6.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Farik"><img
-                                                    src="assets/images/client/client-8.png" alt="Nft_Profile"></a>
-                                        <a class="more-author-text" href="#">15+ Place Bit.</a>
-                                    </div>
-
-                                    <div class="share-btn share-btn-activation dropdown">
-                                        <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                                 class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                                      d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                                      fill="currentColor"></path>
-                                            </svg>
-                                        </button>
-
-                                        <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="btn-setting-text share-text"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#shareModal">
-                                                Share
-                                            </button>
-                                            <button type="button" class="btn-setting-text report-text"
-                                                    data-bs-toggle="modal" data-bs-target="#reportModal">
-                                                Report
-                                            </button>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-                                <a href="product-details.html"><span class="product-name">#21 The Wonder</span></a>
-                                <span class="latest-bid">Highest bid 1/20</span>
-                                <div class="bid-react-area">
-                                    <div class="last-bid">0.244wETH</div>
-                                    <div class="react-area">
-                                        <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                             class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                            <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                                  stroke="currentColor" stroke-width="2"></path>
-                                        </svg>
-                                        <span class="number">322</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end single product -->
-
-                        <!-- start single product -->
-                        <div class="single-slide-product">
-                            <div class="product-style-one">
-                                <div class="card-thumbnail">
-                                    <a href="product-details.html"><img src="assets/images/portfolio/portfolio-03.jpg"
-                                                                        alt="NFT_portfolio"></a>
-                                    <div class="countdown" data-date="2023-12-09">
-                                        <div class="countdown-container days">
-                                            <span class="countdown-value">87</span>
-                                            <span class="countdown-heading">D's</span>
-                                        </div>
-                                        <div class="countdown-container hours">
-                                            <span class="countdown-value">23</span>
-                                            <span class="countdown-heading">H's</span>
-                                        </div>
-                                        <div class="countdown-container minutes">
-                                            <span class="countdown-value">38</span>
-                                            <span class="countdown-heading">Min's</span>
-                                        </div>
-                                        <div class="countdown-container seconds">
-                                            <span class="countdown-value">27</span>
-                                            <span class="countdown-heading">Sec</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-share-wrapper">
-                                    <div class="profile-share">
-                                        <a href="author.html" class="avatar" data-tooltip="Mona Lisa"><img
-                                                    src="assets/images/client/client-8.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Lisa"><img
-                                                    src="assets/images/client/client-4.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Mona"><img
-                                                    src="assets/images/client/client-9.png" alt="Nft_Profile"></a>
-                                        <a class="more-author-text" href="#">12+ Place Bit.</a>
-                                    </div>
-                                    <div class="share-btn share-btn-activation dropdown">
-                                        <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                                 class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                                      d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                                      fill="currentColor"></path>
-                                            </svg>
-                                        </button>
-
-                                        <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="btn-setting-text share-text"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#shareModal">
-                                                Share
-                                            </button>
-                                            <button type="button" class="btn-setting-text report-text"
-                                                    data-bs-toggle="modal" data-bs-target="#reportModal">
-                                                Report
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <a href="product-details.html"><span class="product-name">OrBid6</span></a>
-                                <span class="latest-bid">Highest bid 2/31</span>
-                                <div class="bid-react-area">
-                                    <div class="last-bid">0.2128wETH</div>
-                                    <div class="react-area">
-                                        <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                             class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                            <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                                  stroke="currentColor" stroke-width="2"></path>
-                                        </svg>
-                                        <span class="number">12</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end single product -->
-
-                        <!-- start single product -->
-                        <div class="single-slide-product">
-                            <div class="product-style-one">
-                                <div class="card-thumbnail">
-                                    <a href="product-details.html"><img src="assets/images/portfolio/portfolio-04.jpg"
-                                                                        alt="NFT_portfolio"></a>
-                                    <div class="countdown" data-date="2024-10-08">
-                                        <div class="countdown-container days">
-                                            <span class="countdown-value">87</span>
-                                            <span class="countdown-heading">D's</span>
-                                        </div>
-                                        <div class="countdown-container hours">
-                                            <span class="countdown-value">23</span>
-                                            <span class="countdown-heading">H's</span>
-                                        </div>
-                                        <div class="countdown-container minutes">
-                                            <span class="countdown-value">38</span>
-                                            <span class="countdown-heading">Min's</span>
-                                        </div>
-                                        <div class="countdown-container seconds">
-                                            <span class="countdown-value">27</span>
-                                            <span class="countdown-heading">Sec</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-share-wrapper">
-                                    <div class="profile-share">
-                                        <a href="author.html" class="avatar" data-tooltip="Falak Sabbir"><img
-                                                    src="assets/images/client/client-2.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Sabbir"><img
-                                                    src="assets/images/client/client-1.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Falak"><img
-                                                    src="assets/images/client/client-11.png" alt="Nft_Profile"></a>
-                                        <a class="more-author-text" href="#">16+ Place Bit.</a>
-                                    </div>
-                                    <div class="share-btn share-btn-activation dropdown">
-                                        <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                                 class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                                      d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                                      fill="currentColor"></path>
-                                            </svg>
-                                        </button>
-
-                                        <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="btn-setting-text share-text"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#shareModal">
-                                                Share
-                                            </button>
-                                            <button type="button" class="btn-setting-text report-text"
-                                                    data-bs-toggle="modal" data-bs-target="#reportModal">
-                                                Report
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <a href="product-details.html"><span class="product-name">Morgan11</span></a>
-                                <span class="latest-bid">Highest bid 3/16</span>
-                                <div class="bid-react-area">
-                                    <div class="last-bid">0.265wETH</div>
-                                    <div class="react-area">
-                                        <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                             class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                            <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                                  stroke="currentColor" stroke-width="2"></path>
-                                        </svg>
-                                        <span class="number">20</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end single product -->
-
-                        <!-- start single product -->
-                        <div class="single-slide-product">
-                            <div class="product-style-one">
-                                <div class="card-thumbnail">
-                                    <a href="product-details.html"><img src="assets/images/portfolio/portfolio-06.jpg"
-                                                                        alt="NFT_portfolio"></a>
-                                    <div class="countdown" data-date="2023-11-08">
-                                        <div class="countdown-container days">
-                                            <span class="countdown-value">87</span>
-                                            <span class="countdown-heading">D's</span>
-                                        </div>
-                                        <div class="countdown-container hours">
-                                            <span class="countdown-value">23</span>
-                                            <span class="countdown-heading">H's</span>
-                                        </div>
-                                        <div class="countdown-container minutes">
-                                            <span class="countdown-value">38</span>
-                                            <span class="countdown-heading">Min's</span>
-                                        </div>
-                                        <div class="countdown-container seconds">
-                                            <span class="countdown-value">27</span>
-                                            <span class="countdown-heading">Sec</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-share-wrapper">
-                                    <div class="profile-share">
-                                        <a href="author.html" class="avatar" data-tooltip="Oram Kasin"><img
-                                                    src="assets/images/client/client-8.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Kasin"><img
-                                                    src="assets/images/client/client-2.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Oram"><img
-                                                    src="assets/images/client/client-1.png" alt="Nft_Profile"></a>
-                                        <a class="more-author-text" href="#">10+ Place Bit.</a>
-                                    </div>
-                                    <div class="share-btn share-btn-activation dropdown">
-                                        <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                                 class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                                      d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                                      fill="currentColor"></path>
-                                            </svg>
-                                        </button>
-
-                                        <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="btn-setting-text share-text"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#shareModal">
-                                                Share
-                                            </button>
-                                            <button type="button" class="btn-setting-text report-text"
-                                                    data-bs-toggle="modal" data-bs-target="#reportModal">
-                                                Report
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <a href="product-details.html"><span class="product-name">mAtal8</span></a>
-                                <span class="latest-bid">Highest bid 6/50</span>
-                                <div class="bid-react-area">
-                                    <div class="last-bid">0.244wETH</div>
-                                    <div class="react-area">
-                                        <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                             class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                            <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                                  stroke="currentColor" stroke-width="2"></path>
-                                        </svg>
-                                        <span class="number">205</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end single product -->
-                        <!-- start single product -->
-                        <div class="single-slide-product">
-                            <div class="product-style-one">
-                                <div class="card-thumbnail">
-                                    <a href="product-details.html"><img src="assets/images/portfolio/portfolio-10.jpg"
-                                                                        alt="NFT_portfolio"></a>
-                                    <div class="countdown" data-date="2023-11-08">
-                                        <div class="countdown-container days">
-                                            <span class="countdown-value">87</span>
-                                            <span class="countdown-heading">D's</span>
-                                        </div>
-                                        <div class="countdown-container hours">
-                                            <span class="countdown-value">23</span>
-                                            <span class="countdown-heading">H's</span>
-                                        </div>
-                                        <div class="countdown-container minutes">
-                                            <span class="countdown-value">38</span>
-                                            <span class="countdown-heading">Min's</span>
-                                        </div>
-                                        <div class="countdown-container seconds">
-                                            <span class="countdown-value">27</span>
-                                            <span class="countdown-heading">Sec</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-share-wrapper">
-                                    <div class="profile-share">
-                                        <a href="author.html" class="avatar" data-tooltip="Oram Kasin"><img
-                                                    src="assets/images/client/client-10.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Kasin"><img
-                                                    src="assets/images/client/client-6.png" alt="Nft_Profile"></a>
-                                        <a href="author.html" class="avatar" data-tooltip="Oram"><img
-                                                    src="assets/images/client/client-1.png" alt="Nft_Profile"></a>
-                                        <a class="more-author-text" href="#">11+ Place Bit.</a>
-                                    </div>
-                                    <div class="share-btn share-btn-activation dropdown">
-                                        <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                                 class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                                <path fill-rule="evenodd" clip-rule="evenodd"
-                                                      d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                                      fill="currentColor"></path>
-                                            </svg>
-                                        </button>
-
-                                        <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                            <button type="button" class="btn-setting-text share-text"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#shareModal">
-                                                Share
-                                            </button>
-                                            <button type="button" class="btn-setting-text report-text"
-                                                    data-bs-toggle="modal" data-bs-target="#reportModal">
-                                                Report
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <a href="product-details.html"><span class="product-name">Delta25</span></a>
-                                <span class="latest-bid">Highest bid 6/30</span>
-                                <div class="bid-react-area">
-                                    <div class="last-bid">0.234wETH</div>
-                                    <div class="react-area">
-                                        <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                             class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                            <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                                  stroke="currentColor" stroke-width="2"></path>
-                                        </svg>
-                                        <span class="number">205</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end single product -->
-
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Explore Style Carousel End-->
+    <!-- News Area End-->
 
     <!-- start service area -->
     <div class="rn-service-area rn-section-gapTop">
@@ -706,13 +274,14 @@
         </div>
     </div>
     <!-- End service area -->
-    <!-- New items Start -->
+
+    <!-- New Products Area (salhi) -->
     <div class="rn-new-items rn-section-gapTop">
         <div class="container">
             <div class="row mb--50 align-items-center">
                 <div class="col-lg-6 col-md-6 col-sm-6 col-12">
                     <h3 class="title mb--0" data-sal-delay="150" data-sal="slide-up" data-sal-duration="800">Newest
-                        Items</h3>
+                        Products</h3>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6 col-12 mt_mobile--15">
                     <div class="view-more-btn text-start text-sm-end" data-sal-delay="150" data-sal="slide-up"
@@ -723,305 +292,63 @@
             </div>
             <div class="row g-5">
                 <!-- start single product -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-4 col-md-6 col-sm-6 col-12">
-                    <div class="product-style-one no-overlay">
-                        <div class="card-thumbnail">
-                            <a href="product-details.html"><img src="assets/images/portfolio/portfolio-01.jpg"
-                                                                alt="NFT_portfolio"></a>
-                        </div>
-                        <div class="product-share-wrapper">
-                            <div class="profile-share">
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-1.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Jone Due"><img
-                                            src="assets/images/client/client-2.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Nisat Tara"><img
-                                            src="assets/images/client/client-3.png" alt="Nft_Profile"></a>
-                                <a class="more-author-text" href="#">9+ Place Bit.</a>
-                            </div>
-                            <div class="share-btn share-btn-activation dropdown">
-                                <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                         class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                              d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                              fill="currentColor"></path>
-                                    </svg>
-                                </button>
+                {% for prod in products %}
+                    <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
+                         class="col-5 col-lg-4 col-md-6 col-sm-6 col-12">
+                        <div class="product-style-one no-overlay">
+                            <div class="card-thumbnail">
+                                <a href="{{ path('app_market_place_index') }}"><img src="assets/images/portfolio/portfolio-01.jpg"
+                                                                    alt="Product image"></a>
 
-                                <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                    <button type="button" class="btn-setting-text share-text" data-bs-toggle="modal"
-                                            data-bs-target="#shareModal">
-                                        Share
-                                    </button>
-                                    <button type="button" class="btn-setting-text report-text" data-bs-toggle="modal"
-                                            data-bs-target="#reportModal">
-                                        Report
-                                    </button>
+                            </div>
+                            <div class="product-share-wrapper">
+                                <div class="profile-share">
+                                    <a class="avatar" data-tooltip={{ prod.user.firstName }}><img
+                                                src="{{ asset('../usersImg/'~ prod.user.image)  }}" alt="User Image"></a>
+                                    <a class="more-author-text">{{ prod.user.firstName }} {{ prod.user.lastName }}</a>
                                 </div>
-
                             </div>
-                        </div>
-                        <a href="product-details.html"><span class="product-name">Preatent</span></a>
-                        <span class="latest-bid">Highest bid 1/20</span>
-                        <div class="bid-react-area">
-                            <div class="last-bid">0.244wETH</div>
-                            <div class="react-area">
-                                <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                     class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                    <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                          stroke="currentColor" stroke-width="2"></path>
-                                </svg>
-                                <span class="number">322</span>
+                            <a href="{{ path('app_market_place_index') }}"><span class="product-name" style="font-size: 28px">{{ prod.name }}</span></a>
+                            <span class="latest-bid">Quantity : {{ prod.quantity }}</span>
+                            <br>
+                            <span class="latest-bid">Category : {{ prod.category }}</span>
+                            <div class="bid-react-area">
+                                <div class="last-bid">in Stock</div>
+                                <div class="react-area">
+                                    <span class="number">price :  {{ prod.price }} DT</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {% endfor %}
+                <!-- New Products Area end -->
+
+                <!-- start single product -->
+
                 <!-- end single product -->
 
                 <!-- start single product -->
-                <div data-sal="slide-up" data-sal-delay="200" data-sal-duration="800"
-                     class="col-5 col-lg-4 col-md-6 col-sm-6 col-12">
-                    <div class="product-style-one no-overlay">
-                        <div class="card-thumbnail">
-                            <a href="product-details.html"><img src="assets/images/portfolio/portfolio-02.jpg"
-                                                                alt="NFT_portfolio"></a>
-                        </div>
-                        <div class="product-share-wrapper">
-                            <div class="profile-share">
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-4.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Nira Ara"><img
-                                            src="assets/images/client/client-5.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Fatima Afrafy"><img
-                                            src="assets/images/client/client-6.png" alt="Nft_Profile"></a>
-                                <a class="more-author-text" href="#">10+ Place Bit.</a>
-                            </div>
-                            <div class="share-btn share-btn-activation dropdown">
-                                <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                         class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                              d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                              fill="currentColor"></path>
-                                    </svg>
-                                </button>
 
-                                <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                    <button type="button" class="btn-setting-text share-text" data-bs-toggle="modal"
-                                            data-bs-target="#shareModal">
-                                        Share
-                                    </button>
-                                    <button type="button" class="btn-setting-text report-text" data-bs-toggle="modal"
-                                            data-bs-target="#reportModal">
-                                        Report
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                        <a href="product-details.html"><span class="product-name">Diamond Dog</span></a>
-                        <span class="latest-bid">Highest bid 5/11</span>
-                        <div class="bid-react-area">
-                            <div class="last-bid">0.892wETH</div>
-                            <div class="react-area">
-                                <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                     class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                    <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                          stroke="currentColor" stroke-width="2"></path>
-                                </svg>
-                                <span class="number">420</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- end single product -->
 
                 <!-- start single product -->
-                <div data-sal="slide-up" data-sal-delay="250" data-sal-duration="800"
-                     class="col-5 col-lg-4 col-md-6 col-sm-6 col-12">
-                    <div class="product-style-one no-overlay">
-                        <div class="card-thumbnail">
-                            <a href="product-details.html"><img src="assets/images/portfolio/portfolio-03.jpg"
-                                                                alt="NFT_portfolio"></a>
-                        </div>
-                        <div class="product-share-wrapper">
-                            <div class="profile-share">
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-1.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Janin Ara"><img
-                                            src="assets/images/client/client-8.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Atif Islam"><img
-                                            src="assets/images/client/client-9.png" alt="Nft_Profile"></a>
-                                <a class="more-author-text" href="#">10+ Place Bit.</a>
-                            </div>
-                            <div class="share-btn share-btn-activation dropdown">
-                                <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                         class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                              d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                              fill="currentColor"></path>
-                                    </svg>
-                                </button>
 
-                                <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                    <button type="button" class="btn-setting-text share-text" data-bs-toggle="modal"
-                                            data-bs-target="#shareModal">
-                                        Share
-                                    </button>
-                                    <button type="button" class="btn-setting-text report-text" data-bs-toggle="modal"
-                                            data-bs-target="#reportModal">
-                                        Report
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                        <a href="product-details.html"><span class="product-name">OrBid6</span></a>
-                        <span class="latest-bid">Highest bid 2/31</span>
-                        <div class="bid-react-area">
-                            <div class="last-bid">0.2128wETH</div>
-                            <div class="react-area">
-                                <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                     class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                    <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                          stroke="currentColor" stroke-width="2"></path>
-                                </svg>
-                                <span class="number">12</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- end single product -->
 
                 <!-- start single product -->
-                <div data-sal="slide-up" data-sal-delay="300" data-sal-duration="800"
-                     class="col-5 col-lg-4 col-md-6 col-sm-6 col-12">
-                    <div class="product-style-one no-overlay">
-                        <div class="card-thumbnail">
-                            <a href="product-details.html"><img src="assets/images/portfolio/portfolio-04.jpg"
-                                                                alt="NFT_portfolio"></a>
-                        </div>
-                        <div class="product-share-wrapper">
-                            <div class="profile-share">
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-1.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-3.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-5.png" alt="Nft_Profile"></a>
-                                <a class="more-author-text" href="#">8+ Place Bit.</a>
-                            </div>
-                            <div class="share-btn share-btn-activation dropdown">
-                                <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                         class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                              d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                              fill="currentColor"></path>
-                                    </svg>
-                                </button>
 
-                                <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                    <button type="button" class="btn-setting-text share-text" data-bs-toggle="modal"
-                                            data-bs-target="#shareModal">
-                                        Share
-                                    </button>
-                                    <button type="button" class="btn-setting-text report-text" data-bs-toggle="modal"
-                                            data-bs-target="#reportModal">
-                                        Report
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                        <a href="product-details.html"><span class="product-name">Morgan11</span></a>
-                        <span class="latest-bid">Highest bid 3/16</span>
-                        <div class="bid-react-area">
-                            <div class="last-bid">0.265wETH</div>
-                            <div class="react-area">
-                                <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                     class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                    <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                          stroke="currentColor" stroke-width="2"></path>
-                                </svg>
-                                <span class="number">20</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- end single product -->
-
-                <!-- start single product -->
-                <div data-sal="slide-up" data-sal-delay="350" data-sal-duration="800"
-                     class="col-5 col-lg-4 col-md-6 col-sm-6 col-12">
-                    <div class="product-style-one no-overlay">
-                        <div class="card-thumbnail">
-                            <a href="product-details.html"><img src="assets/images/portfolio/portfolio-05.jpg"
-                                                                alt="NFT_portfolio"></a>
-                        </div>
-                        <div class="product-share-wrapper">
-                            <div class="profile-share">
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-2.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-7.png" alt="Nft_Profile"></a>
-                                <a href="author.html" class="avatar" data-tooltip="Jone lee"><img
-                                            src="assets/images/client/client-9.png" alt="Nft_Profile"></a>
-                                <a class="more-author-text" href="#">15+ Place Bit.</a>
-                            </div>
-                            <div class="share-btn share-btn-activation dropdown">
-                                <button class="icon" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg viewBox="0 0 14 4" fill="none" width="16" height="16"
-                                         class="sc-bdnxRM sc-hKFxyN hOiKLt">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                              d="M3.5 2C3.5 2.82843 2.82843 3.5 2 3.5C1.17157 3.5 0.5 2.82843 0.5 2C0.5 1.17157 1.17157 0.5 2 0.5C2.82843 0.5 3.5 1.17157 3.5 2ZM8.5 2C8.5 2.82843 7.82843 3.5 7 3.5C6.17157 3.5 5.5 2.82843 5.5 2C5.5 1.17157 6.17157 0.5 7 0.5C7.82843 0.5 8.5 1.17157 8.5 2ZM11.999 3.5C12.8274 3.5 13.499 2.82843 13.499 2C13.499 1.17157 12.8274 0.5 11.999 0.5C11.1706 0.5 10.499 1.17157 10.499 2C10.499 2.82843 11.1706 3.5 11.999 3.5Z"
-                                              fill="currentColor"></path>
-                                    </svg>
-                                </button>
-
-                                <div class="share-btn-setting dropdown-menu dropdown-menu-end">
-                                    <button type="button" class="btn-setting-text share-text" data-bs-toggle="modal"
-                                            data-bs-target="#shareModal">
-                                        Share
-                                    </button>
-                                    <button type="button" class="btn-setting-text report-text" data-bs-toggle="modal"
-                                            data-bs-target="#reportModal">
-                                        Report
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                        <a href="product-details.html"><span class="product-name">mAtal8</span></a>
-                        <span class="latest-bid">Highest bid 6/50</span>
-                        <div class="bid-react-area">
-                            <div class="last-bid">0.244wETH</div>
-                            <div class="react-area">
-                                <svg viewBox="0 0 17 16" fill="none" width="16" height="16"
-                                     class="sc-bdnxRM sc-hKFxyN kBvkOu">
-                                    <path d="M8.2112 14L12.1056 9.69231L14.1853 7.39185C15.2497 6.21455 15.3683 4.46116 14.4723 3.15121V3.15121C13.3207 1.46757 10.9637 1.15351 9.41139 2.47685L8.2112 3.5L6.95566 2.42966C5.40738 1.10976 3.06841 1.3603 1.83482 2.97819V2.97819C0.777858 4.36443 0.885104 6.31329 2.08779 7.57518L8.2112 14Z"
-                                          stroke="currentColor" stroke-width="2"></path>
-                                </svg>
-                                <span class="number">205</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- end single product -->
             </div>
         </div>
     </div>
-    <!-- New items End -->
+    <!-- New Products Area (salhi) End -->
+
     <!-- top top-seller start -->
     <div class="rn-top-top-seller-area nice-selector-transparent rn-section-gapTop">
         <div class="container">
             <div class="row  mb--30">
                 <div class="col-12 justify-sm-center d-flex">
-                    <h3 class="title" data-sal-delay="150" data-sal="slide-up" data-sal-duration="800">Top Seller
-                        in</h3>
+                    <h3 class="title" data-sal-delay="150" data-sal="slide-up" data-sal-duration="800">municipality ranking in</h3>
                     <select>
                         <option data-display="1 day"> 1 day</option>
                         <option value="1">7 Day's</option>
@@ -1032,6 +359,7 @@
             </div>
             <div class="row justify-sm-center g-5 top-seller-list-wrapper">
                 <!-- start single top-seller -->
+                {% for muni in top %}
                 <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
                      class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
                     <div class="top-seller-inner-one">
@@ -1042,214 +370,19 @@
                             </div>
                             <div class="top-seller-content">
                                 <a href="author.html">
-                                    <h6 class="name">Brodband</h6>
+                                    <h6 class="name">{{ muni.municipalite.name }}</h6>
                                 </a>
                                 <span class="count-number">
-                                $2500,000
+                                {{ muni.municipalite.goverment }}
+                            </span>
+                                <span class="count-number" style="font-size: 11px">
+                                {{ muni.userCount }} Users
                             </span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail">
-                                <a href="author.html"><img src="assets/images/client/client-2.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Ms. Parkline</h6>
-                                </a>
-                                <span class="count-number">
-                                $2300,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail">
-                                <a href="author.html"><img src="assets/images/client/client-3.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Methods</h6>
-                                </a>
-                                <span class="count-number">
-                                $2100,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail varified">
-                                <a href="author.html"><img src="assets/images/client/client-4.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Jone sone</h6>
-                                </a>
-                                <span class="count-number">
-                                $2000,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail">
-                                <a href="author.html"><img src="assets/images/client/client-5.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Siddhart</h6>
-                                </a>
-                                <span class="count-number">
-                                $200,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail varified">
-                                <a href="author.html"><img src="assets/images/client/client-6.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Sobuj Mk</h6>
-                                </a>
-                                <span class="count-number">
-                                $2000,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail varified">
-                                <a href="author.html"><img src="assets/images/client/client-7.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Trodband</h6>
-                                </a>
-                                <span class="count-number">
-                                $2500,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail">
-                                <a href="author.html"><img src="assets/images/client/client-8.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Yash</h6>
-                                </a>
-                                <span class="count-number">
-                                $2500,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail">
-                                <a href="author.html"><img src="assets/images/client/client-9.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">YASHKIB</h6>
-                                </a>
-                                <span class="count-number">
-                                $2500,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
-
-                <!-- start single top-seller -->
-                <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
-                     class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                    <div class="top-seller-inner-one">
-                        <div class="top-seller-wrapper">
-                            <div class="thumbnail varified">
-                                <a href="author.html"><img src="assets/images/client/client-10.png"
-                                                           alt="Nft_Profile"></a>
-                            </div>
-                            <div class="top-seller-content">
-                                <a href="author.html">
-                                    <h6 class="name">Brodband</h6>
-                                </a>
-                                <span class="count-number">
-                                $2500,000
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single top-seller -->
+                {% endfor %}
             </div>
         </div>
     </div>

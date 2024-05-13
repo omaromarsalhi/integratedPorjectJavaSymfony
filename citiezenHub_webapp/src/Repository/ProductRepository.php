@@ -173,4 +173,18 @@ class ProductRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findVerifiedAndInStock(): array
+{
+    $queryBuilder = $this->createQueryBuilder('p');
+    $queryBuilder->where('p.state = :state')
+        ->andWhere('p.quantity > :quantity')
+        ->setParameter('state', 'verified')
+        ->setParameter('quantity', 0)
+        ->orderBy('p.timestamp', 'DESC')
+        ->setMaxResults(5);
+
+    return $queryBuilder->getQuery()->getResult();
+}
+
+
 }

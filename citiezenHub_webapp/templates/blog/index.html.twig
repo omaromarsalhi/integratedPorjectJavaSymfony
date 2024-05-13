@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block body %}
+
         <!-- start page title area -->
         <div class="rn-breadcrumb-inner ptb--30">
             <div class="container">
@@ -31,13 +32,15 @@
         <!-- end page title area -->
 
         <!-- blog details area start -->
+
         <div class="rn-blog-area rn-blog-details-default rn-section-gapTop">
+
             <div class="container">
                 <div class="row g-5 flex-wrap">
                     <!-- login form -->
-                    <div class="col-lg-12" data-sal="slide-up" data-sal-delay="200" data-sal-duration="800">
+                    <div class="col-lg-10" data-sal="slide-up" data-sal-delay="200" data-sal-duration="800">
                         <div class="form-wrapper-one registration-area">
-                            <h3 class="mb--30">Exprimer Vous!</h3>
+                            <h3 class="mb--30">Expess your self!</h3>
                                 <div class="mb-5">
                                     <label for="contact-message" class="form-label">Write Message</label>
                                     <textarea name="contact-message" id="contact-message" rows="3"></textarea>
@@ -101,7 +104,7 @@
                     <!-- end single blog -->
                     <center>
                         <div id="loadingIcon" style="display: none;">
-                            <img src={{ asset('loading.gif') }} alt="Loading..." style="height: 150px"/>
+                            <img src="{{ asset('/images/blog/loading.gif') }}" style="height: 150px" alt="Loading..."/>
                         </div>
                     </center>
 
@@ -109,6 +112,7 @@
                 </div>
             </div>
         </div>
+
     <!-- blog details area end -->
 
     <!-- Modal de modification -->
@@ -219,6 +223,12 @@
             </div>
         </div>
     </div>
+
+    <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; height: 100%; width: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9998;"></div>
+    <div id="loadingLogo" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 200px; height: 200px;">
+        <img src="{{ asset('images/blog/loadingAdd.gif') }}" alt="Loading...">
+    </div>
+
 
 
 
