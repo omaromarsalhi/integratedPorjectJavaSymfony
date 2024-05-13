@@ -124,4 +124,25 @@ public function apiShow(ReclamationRepository $reclamationRepository, $id): Json
 }
 
 
+#[Route('/api/reclamations/update/{id}', name: 'api_reclamation_update', methods: ['POST'])]
+public function apiUpdate(Request $request, ReclamationRepository $reclamationRepository, EntityManagerInterface $entityManager, $id): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+    $reclamation = $reclamationRepository->find($id);
+    if (!$reclamation) {
+        return new JsonResponse(['message' => 'Reclamation not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    $reclamation->setSubject($data['subject'] ?? $reclamation->getSubject());
+    $reclamation->setDescription($data['description'] ?? $reclamation->getDescription());
+    // Add more fields as needed
+
+    $entityManager->persist($reclamation);
+    $entityManager->flush();
+
+    return new JsonResponse(['message' => 'Reclamation updated successfully'], Response::HTTP_OK);
+}
+
+
+
 }
