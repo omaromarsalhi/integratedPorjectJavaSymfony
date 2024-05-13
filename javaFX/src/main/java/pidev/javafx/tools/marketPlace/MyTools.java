@@ -13,6 +13,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -277,7 +279,19 @@ public class MyTools {
 
     public void showNotif(){
         showAndHideAnimation( notifHbox,1,500 );
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(6000), event1 -> {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(5000), event1 -> {
+            showAndHideAnimation( notifHbox,0,0 );
+        }) );
+        timeline.setCycleCount( Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    public void showErrorNotif(){
+        textNotif.setStyle( "-fx-background-color: red" );
+        imageNotif.setStyle( "-fx-background-color: red" );
+        imageNotif.setGraphic(new ImageView(new Image( String.valueOf( getClass().getResource("/icons/marketPlace/cancel.png")) ,16,16,false,false)) );
+        showAndHideAnimation( notifHbox,1,500 );
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(5000), event1 -> {
             showAndHideAnimation( notifHbox,0,0 );
         }) );
         timeline.setCycleCount( Animation.INDEFINITE);

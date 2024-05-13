@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -28,7 +29,7 @@
          <children>
             <HBox fx:id="toolBar" alignment="CENTER_LEFT" prefHeight="74.0" prefWidth="1040.0">
                <children>
-                  <MenuBar fx:id="menuBar" prefHeight="38.0" prefWidth="412.0">
+                  <MenuBar fx:id="menuBar" prefHeight="38.0" prefWidth="323.0">
                      <menus>
                         <Menu mnemonicParsing="false" text="Reclamation">
                            <graphic>
@@ -39,16 +40,7 @@
                               </ImageView>
                            </graphic>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Profile">
-                           <graphic>
-                              <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icons/marketPlace/profile.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Edit Profile">
+                        <Menu mnemonicParsing="false" text="Settings">
                            <graphic>
                               <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -81,63 +73,87 @@
                   <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
                </padding>
                <children>
-                  <VBox fx:id="accountBtnBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="175.0" prefWidth="204.0" spacing="10.0" stylesheets="@../../style/user/btn.css">
-                     <children>
-                        <Button fx:id="consultInfoBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Personal Info       ">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icons/marketPlace/profile.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <font>
-                              <Font name="Segoe UI Bold" size="12.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="editInfoBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Edit Info               ">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icons/marketPlace/settings.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <font>
-                              <Font name="Segoe UI Bold" size="12.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="editLocationBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Location Settings">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icons/marketPlace/map.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <font>
-                              <Font name="Segoe UI Bold" size="12.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="insertCinBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Insert Cin            ">
-                           <graphic>
-                              <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icons/marketPlace/id-card.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                           <font>
-                              <Font name="Segoe UI Bold" size="12.0" />
-                           </font>
-                        </Button>
-                     </children>
-                     <padding>
-                        <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
-                     </padding>
+                  <VBox>
                      <HBox.margin>
                         <Insets left="15.0" />
                      </HBox.margin>
+                     <children>
+                        <VBox fx:id="accountBtnBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="175.0" prefWidth="204.0" spacing="10.0" stylesheets="@../../style/user/btn.css">
+                           <children>
+                              <Button fx:id="consultInfoBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Personal Info       ">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../icons/marketPlace/profile.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="editInfoBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Edit Info               ">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../icons/marketPlace/settings.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="editLocationBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Location Settings">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../icons/marketPlace/map.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                              <Button fx:id="insertCinBtn" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Insert Cin            ">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../icons/marketPlace/id-card.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
+                        </VBox>
+                        <Separator blendMode="OVERLAY" orientation="VERTICAL" prefHeight="360.0" style="-fx-background-color: transparent;" />
+                        <VBox fx:id="accountBtnBoxLougout" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="41.0" prefWidth="204.0" spacing="10.0" stylesheets="@../../style/user/btn.css">
+                           <children>
+                              <Button fx:id="consultInfoBtn1" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" text="Logout" textFill="#cf4a4afd">
+                                 <graphic>
+                                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../../icons/marketPlace/logout.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <font>
+                                    <Font name="Segoe UI Bold" size="12.0" />
+                                 </font>
+                              </Button>
+                           </children>
+                           <padding>
+                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                           </padding>
+                        </VBox>
+                     </children>
                   </VBox>
                   <VBox fx:id="mainInterface" alignment="TOP_CENTER" prefHeight="592.0" prefWidth="796.0" />
                </children>
