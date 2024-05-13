@@ -104,20 +104,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function updateModalContent(data) {
     const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
-    modalBody.setAttribute('data-reclamation-id', data.id); // Set the reclamation ID on the modal body for reference in the update function
+    modalBody.setAttribute('data-reclamation-id', data.id);
 
+    const imagePath = data.image ? `/usersImg/${data.image}` : '';
     let detailsHtml = `
-        <div><label>Private Key:</label> ${data.privatekey}</div>
-        <div><label>Subject:</label><input type="text" id="modalSubject" value="${data.subject}"></div>
-        <div><label>Description:</label><textarea id="modalDescription">${data.description}</textarea></div>
-        ${data.image ? `<div><label>Image:</label><img src="${data.image}" alt="Reclamation Image" style="max-width:100px;"></div>` : ''}
+    ${imagePath ? `<div><img src="${imagePath}" alt="Reclamation Image" style="max-width:400px;"></div>` : ''}
+        <div><label>Private Key:</label> ${data.privateKey}</div>
+        <div><label>Subject:</label><input type="text" id="modalSubject" value="${data.subject || ''}"></div>
+        <div><label>Description:</label><textarea id="modalDescription">${data.description || ''}</textarea></div>
+       
     `;
     modalBody.innerHTML = detailsHtml;
 }
 
+
+
 function updateReclamationDetails() {
     const modal = document.getElementById('reclamationDetailModal');
-    const reclamationId = modal.querySelector('.modal-body').getAttribute('data-reclamation-id'); // Ensure this attribute is set correctly when loading the modal
+    const reclamationId = modal.querySelector('.modal-body').getAttribute('data-reclamation-id');
     const subject = document.getElementById('modalSubject').value;
     const description = document.getElementById('modalDescription').value;
 
@@ -129,10 +133,14 @@ function updateReclamationDetails() {
     .then(response => response.json())
     .then((updatedReclamation) => {
         alert('Reclamation updated successfully');
+
         // Update the reclamation item in the DOM
         document.querySelector(`#reclamationItem${reclamationId} .title`).textContent = updatedReclamation.subject;
         document.querySelector(`#reclamationItem${reclamationId} .latest-bid`).textContent = updatedReclamation.description;
-        new bootstrap.Modal(document.getElementById('reclamationDetailModal')).hide();
+
+        // Close the modal
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById('reclamationDetailModal'));
+        modalInstance.hide();
     })
     .catch(error => {
         console.error('Error updating reclamation:', error);
@@ -150,3 +158,4 @@ function showReclamationDetails(reclamationId, event) {
         })
         .catch(error => console.error('Error fetching reclamation details:', error));
 }
+
