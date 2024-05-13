@@ -140,8 +140,14 @@ public function apiUpdate(Request $request, ReclamationRepository $reclamationRe
     $entityManager->persist($reclamation);
     $entityManager->flush();
 
-    return new JsonResponse(['message' => 'Reclamation updated successfully'], Response::HTTP_OK);
+    return new JsonResponse([
+        'id' => $reclamation->getId(),
+        'subject' => $reclamation->getSubject(),
+        'description' => $reclamation->getDescription(),
+        'message' => 'Reclamation updated successfully'
+    ], Response::HTTP_OK);
 }
+
 
 
 

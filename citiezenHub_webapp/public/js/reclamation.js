@@ -172,6 +172,7 @@ function updateReclamationDetails() {
 
 
 
+
 function showReclamationDetails(reclamationId, event) {
     event.preventDefault();
     fetch(`/api/reclamations/${reclamationId}`)
