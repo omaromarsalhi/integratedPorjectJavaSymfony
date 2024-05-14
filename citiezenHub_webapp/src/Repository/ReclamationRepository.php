@@ -49,5 +49,13 @@ class ReclamationRepository extends ServiceEntityRepository
 
 // src/Repository/ReclamationRepository.php
 
+public function getStatistics(): array
+{
+    $qb = $this->createQueryBuilder('r')
+        ->select('r.subject, COUNT(r.id) as count')
+        ->groupBy('r.subject');
+
+    return $qb->getQuery()->getArrayResult();
+}
 
 }

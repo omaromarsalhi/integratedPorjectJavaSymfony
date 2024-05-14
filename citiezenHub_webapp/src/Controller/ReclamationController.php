@@ -149,15 +149,29 @@ public function apiUpdate(Request $request, ReclamationRepository $reclamationRe
 }
 
 #[Route('/admin/reclamation', name: 'admin_reclamation')]
-    public function list(ReclamationRepository $reclamationRepository): Response
-    {
-        $reclamations = $reclamationRepository->findAll();
+public function list(ReclamationRepository $reclamationRepository): Response
+{
+    $reclamations = $reclamationRepository->findAll();
+    $stats = $reclamationRepository->getStatistics();
 
-        return $this->render('reponse/index.html.twig', [
-            'reclamations' => $reclamations,
-        ]);
+    // Grouping by date
+    $dateCounts = [];
+    foreach ($reclamations as $reclamation) {
+        $date = $reclamation->getDate()->format('Y-m-d'); // Assuming $reclamation->getDate() returns a DateTime object
+        if (!isset($dateCounts[$date])) {
+            $dateCounts[$date] = 0;
+        }
+        $dateCounts[$date]++;
     }
 
+    $labels = array_keys($dateCounts);
+    $counts = array_values($dateCounts);
 
+    return $this->render('reponse/index.html.twig', [
+        'reclamations' => $reclamations,
+        'labels' => $labels,
+        'counts' => $counts
+    ]);
+}
 
 }
