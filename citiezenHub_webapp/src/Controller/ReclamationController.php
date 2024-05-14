@@ -13,7 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
+use DateTime;
+use DateInterval;
 use Psr\Log\LoggerInterface;
 class ReclamationController extends AbstractController
 {
@@ -148,21 +149,34 @@ public function apiUpdate(Request $request, ReclamationRepository $reclamationRe
     ], Response::HTTP_OK);
 }
 
+
+// In your controller
 #[Route('/admin/reclamation', name: 'admin_reclamation')]
 public function list(ReclamationRepository $reclamationRepository): Response
 {
     $reclamations = $reclamationRepository->findAll();
     $stats = $reclamationRepository->getStatistics();
 
-    // Grouping by date
+    // Current date
+    $currentDate = new DateTime();
+    // Date three months ago
+    $threeMonthsAgo = (clone $currentDate)->sub(new DateInterval('P3M'));
+
+    // Grouping by date and filtering last 3 months
     $dateCounts = [];
     foreach ($reclamations as $reclamation) {
-        $date = $reclamation->getDate()->format('Y-m-d'); // Assuming $reclamation->getDate() returns a DateTime object
-        if (!isset($dateCounts[$date])) {
-            $dateCounts[$date] = 0;
+        $reclamationDate = $reclamation->getDate(); // Assuming $reclamation->getDate() returns a DateTime object
+        if ($reclamationDate >= $threeMonthsAgo) {
+            $date = $reclamationDate->format('Y-m-d');
+            if (!isset($dateCounts[$date])) {
+                $dateCounts[$date] = 0;
+            }
+            $dateCounts[$date]++;
         }
-        $dateCounts[$date]++;
     }
+
+    // Sort by date (optional)
+    ksort($dateCounts);
 
     $labels = array_keys($dateCounts);
     $counts = array_values($dateCounts);
@@ -173,5 +187,6 @@ public function list(ReclamationRepository $reclamationRepository): Response
         'counts' => $counts
     ]);
 }
+
 
 }
