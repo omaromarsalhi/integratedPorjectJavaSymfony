@@ -33,8 +33,11 @@ class ReclamationController extends AbstractController
     #[Route('/reclamation/show', name: 'app_reclamation_show')]
     public function show(ReclamationRepository $reclamationRepository): Response
     {
+        $user = $this->getUser();
+        $reclamations = $reclamationRepository->findBy(['user' => $user]);
+
         return $this->render('reclamation/show.html.twig', [
-            'reclamations' => $reclamationRepository->findBy(['user' => $this->getUser()]),
+            'reclamations' => $reclamations,
         ]);
     }
 
