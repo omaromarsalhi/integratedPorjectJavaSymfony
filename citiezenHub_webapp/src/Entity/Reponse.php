@@ -11,14 +11,14 @@ class Reponse
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+    #[ORM\Column(name:'id', type: 'integer')]
+        private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
     #[ORM\ManyToOne(targetEntity: Reclamation::class, inversedBy: 'reponses')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName:"idReclamtion",name:'id_reclamation')]
     private ?Reclamation $reclamation = null;
 
     public function getId(): ?int

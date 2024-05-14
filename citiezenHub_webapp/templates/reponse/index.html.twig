@@ -16,10 +16,10 @@
                     </div>
                 </div>
                 <div class="card">
-                <div class="card-body">
-            <h4 class="card-title">Future Prediction</h4>
-            <p>Based on current trends, we predict there will be approximately {{ prediction }} reclamations tomorrow.</p>
-        </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Future Prediction</h4>
+                        <p>Based on current trends, we predict there will be approximately {{ prediction }} reclamations tomorrow.</p>
+                    </div>
                 </div>
             </div>
             <div class="col-xl-7 col-xxl-8">
@@ -44,7 +44,7 @@
                                 </thead>
                                 <tbody class="list" id="purchasers-sellers-body">
                                     {% for reclamation in reclamations %}
-                                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                        <tr class="hover-actions-trigger btn-reveal-trigger position-static" data-reclamation-id="{{ reclamation.id }}">
                                             <td class="fs-9 align-middle py-0">
                                                 <div class="form-check mb-0 fs-8">
                                                     <input class="form-check-input" type="checkbox" data-bulk-select-row='{"dealsName":"{{ reclamation.id }}"}'>
@@ -69,7 +69,7 @@
                                                         </svg>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-end py-2">
-                                                        <a class="dropdown-item" href="#!">add Response</a>
+                                                        <a class="dropdown-item add-response-btn" href="#" data-reclamation-id="{{ reclamation.id }}" data-reclamation-subject="{{ reclamation.subject }}" data-reclamation-description="{{ reclamation.description }}">Add Response</a>
                                                         <a class="dropdown-item" href="#!">Export</a>
                                                         <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item text-danger" href="#!">Remove</a>
@@ -132,9 +132,41 @@
                 </div>
             </div>
         </div>
-        
+
+        <!-- Modal HTML -->
+        <div class="modal fade" id="addResponseModal" tabindex="-1" aria-labelledby="addResponseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addResponseModalLabel">Add Response to Reclamation</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <strong>Subject:</strong>
+                            <span id="reclamationSubject"></span>
+                        </p>
+                        <p>
+                            <strong>Description:</strong>
+                            <span id="reclamationDescription"></span>
+                        </p>
+                        <div class="mb-4">
+                            <label class="fw-bold mb-2 error-label" id="error-label"></label>
+                        </div>
+                        <form id="responseForm">
+                            <div class="mb-3">
+                                <label for="responseText" class="form-label">Your Response</label>
+                                <textarea class="form-control" id="responseText" rows="3" required></textarea>
+                            </div>
+                            <input type="hidden" id="reclamationId">
+                            <button type="submit" class="btn btn-primary">Submit Response</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Prediction Section -->
-        
         <footer class="footer position-absolute">
             <div class="row g-0 justify-content-between align-items-center h-100">
                 <div class="col-12 col-sm-auto text-center">
@@ -173,6 +205,68 @@
                         }
                     }
                 }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const addResponseBtns = document.querySelectorAll('.add-response-btn');
+            const responseModal = new bootstrap.Modal(document.getElementById('addResponseModal'));
+
+            addResponseBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const reclamationId = btn.getAttribute('data-reclamation-id');
+                    const subject = btn.getAttribute('data-reclamation-subject');
+                    const description = btn.getAttribute('data-reclamation-description');
+
+                    document.getElementById('reclamationId').value = reclamationId;
+                    document.getElementById('reclamationSubject').textContent = subject;
+                    document.getElementById('reclamationDescription').textContent = description;
+
+                    responseModal.show();
+                });
+            });
+
+            document.getElementById('responseForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const reclamationId = document.getElementById('reclamationId').value;
+                const responseText = document.getElementById('responseText').value;
+
+                $.ajax({
+                    url: '/reclamation/' + reclamationId + '/add-response',
+                    method: 'POST',
+                    data: {
+                        response: responseText
+                    },
+                    success: function(response) {
+                        alert('Response added successfully');
+                        responseModal.hide();
+                        // Update the table row with the new response
+                        var rowToUpdate = document.querySelector('tr[data-reclamation-id="' + reclamationId + '"]');
+                        var responseCell = rowToUpdate.querySelector('.response-cell-class');
+                        responseCell.textContent = response.newResponse || 'Done';
+                        responseCell.classList.remove('badge-phoenix-danger');
+                        responseCell.classList.add('badge-phoenix-success');
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.responseJSON && xhr.responseJSON.error === 'VALIDATION_ERROR') {
+                            const errorMessage = xhr.responseJSON.messages.join(', ');
+                            const errorMessagesArray = errorMessage.split(',');
+                            let errorMessagesHTML = '';
+                            errorMessagesArray.forEach((message) => {
+                                errorMessagesHTML += `<div>${message.trim()}</div>`;
+                            });
+                            document.querySelector('.error-label').innerHTML = errorMessagesHTML;
+                        } else {
+                            var errorMessage = 'An error occurred';
+                            if (xhr.responseJSON && xhr.responseJSON.error) {
+                                errorMessage = xhr.responseJSON.error;
+                            }
+                            alert(errorMessage);
+                        }
+                    }
+                });
             });
         });
     </script>
