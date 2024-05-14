@@ -6,6 +6,9 @@
 <div class="content">
     <div class="pb-9">
         <h2 class="mb-4">Purchasers and Sellers</h2>
+        <!-- Add the response statistic here -->
+        <h4 class="text-success">Responses in the last 3 months: {{ responseCount }}</h4>
+
         <!-- Other buttons and search form here -->
 
         <div class="row gy-5">
@@ -186,17 +189,27 @@
             const ctx = document.getElementById('myChart').getContext('2d');
             const labels = {{ labels|json_encode|raw }};
             const counts = {{ counts|json_encode|raw }};
+            const responseCounts = {{ responseCounts|json_encode|raw }};
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: '# of Reclamations by Date',
-                        data: counts,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
+                    datasets: [
+                        {
+                            label: '# of Reclamations by Date',
+                            data: counts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: '# of Responses by Date',
+                            data: responseCounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
                 },
                 options: {
                     scales: {

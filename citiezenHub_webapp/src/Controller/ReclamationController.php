@@ -164,6 +164,8 @@ public function list(ReclamationRepository $reclamationRepository): Response
 
     // Grouping by date and filtering last 3 months
     $dateCounts = [];
+    $responseCounts = [];
+    $responseCount = 0; // Initialize response count
     foreach ($reclamations as $reclamation) {
         $reclamationDate = $reclamation->getDate(); // Assuming $reclamation->getDate() returns a DateTime object
         if ($reclamationDate >= $threeMonthsAgo) {
@@ -172,14 +174,24 @@ public function list(ReclamationRepository $reclamationRepository): Response
                 $dateCounts[$date] = 0;
             }
             $dateCounts[$date]++;
+
+            if ($reclamation->getReponses()->count() > 0) {
+                if (!isset($responseCounts[$date])) {
+                    $responseCounts[$date] = 0;
+                }
+                $responseCounts[$date]++;
+                $responseCount++;
+            }
         }
     }
 
     // Sort by date (optional)
     ksort($dateCounts);
+    ksort($responseCounts);
 
     $labels = array_keys($dateCounts);
     $counts = array_values($dateCounts);
+    $responseCounts = array_values($responseCounts);
 
     // Calculate the prediction for tomorrow
     $averageDailyReclamations = !empty($counts) ? array_sum($counts) / count($counts) : 0;
@@ -189,8 +201,12 @@ public function list(ReclamationRepository $reclamationRepository): Response
         'reclamations' => $reclamations,
         'labels' => $labels,
         'counts' => $counts,
-        'prediction' => $prediction // Pass the prediction to the Twig template
+        'responseCounts' => $responseCounts,
+        'prediction' => $prediction,
+        'responseCount' => $responseCount // Pass the response count to the Twig template
     ]);
 }
+
+
 
 }
