@@ -44,6 +44,16 @@
               </span>
             </div>
           </div>
+          {% if reclamation.reponses|length > 0 %}
+          <div class="responses">
+            <h5>Responses:</h5>
+            <ul>
+              {% for response in reclamation.reponses %}
+              <li>{{ response.description }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
         </div>
       </div>
       <a href="javascript:void(0);" id="deleteReclamation{{ reclamation.id }}" class="btn btn-primary-alta pdfBtn" onclick="deletee('{{ reclamation.id }}', event)">
