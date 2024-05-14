@@ -237,7 +237,7 @@ class AiVerification
     private
     function generateImageDescription($image_url): string
     {
-        $absolute_path = 'C:\Users\omar salhi\Desktop\PIDEV\citiezenHub_webapp\public\usersImg\\' . $image_url;
+        $absolute_path = 'C:\Users\omar salhi\Desktop\integratedPorjectJavaSymfony\citiezenHub_webapp\public\usersImg\\' . $image_url;
         return $this->Http('get-product_image_descreption?image_url=' . $absolute_path);
     }
 

@@ -24,11 +24,9 @@ class WtfDudeController extends AbstractController
 //
 //        dump($productRepository->findByPriceTest($filter));
 
-
-
         $aiVerification = new AiVerification();
-        $aiVerification->formatJsonFilesOfCin(md5('user_front' . ($this->getUser()->getId() * 1000 + 17)),md5('user_backCin' . ($this->getUser()->getId() * 1000 + 17)));
-die();
+        $aiVerification->formatJsonFilesOfCin(md5('user_front' . ($this->getUser()->getId() * 1000 + 17)), md5('user_backCin' . ($this->getUser()->getId() * 1000 + 17)));
+        die();
         return new Response("done");
     }
 }

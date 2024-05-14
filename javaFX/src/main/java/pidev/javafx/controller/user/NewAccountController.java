@@ -108,9 +108,6 @@ public class NewAccountController implements Initializable {
         addReclamation.setOnAction( event -> showFormReclamation() );
         menuBar.getMenus().get( 0 ).getItems().addAll( addReclamation );
 
-        var editDetails = new MenuItem( "Edit My Details", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
-        var showDetails = new MenuItem( "Show My Details", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
-
 
         Menu advancedSettings = new Menu( "Advanced Settings", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
 
@@ -129,8 +126,6 @@ public class NewAccountController implements Initializable {
         // Add submenus to "File" menu
         advancedSettings.getItems().addAll( updateCredentials, account );
 
-        editDetails.setOnAction( event -> showFormUser( "editDetails" ) );
-        showDetails.setOnAction( event -> showFormUser( "showDetails" ) );
 
         disconnect.setOnAction( event -> disconnetcThread().start() );
         deleteAccount.setOnAction( event -> {
@@ -142,15 +137,15 @@ public class NewAccountController implements Initializable {
         updatePassword.setOnAction( event -> showFormadvancedSettings( "updatePassword" ) );
         updateEmail.setOnAction( event -> showFormadvancedSettings( "updateEmail" ) );
 
-        menuBar.getMenus().get( 2 ).getItems().addAll( editDetails, showDetails, advancedSettings );
+        menuBar.getMenus().get( 1 ).getItems().addAll(advancedSettings );
 
         var openChat = new MenuItem( "Open Chat", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
 
-        menuBar.getMenus().get( 3 ).getItems().addAll( openChat );
+        menuBar.getMenus().get( 2 ).getItems().addAll( openChat );
         openChat.setOnAction( event -> EventBus.getInstance().publish( "showChat", event ) );
 
         if (UserController.getInstance().getCurrentUser().getLastname() == null)
-            editDetails.fire();
+            showFormUser( "editDetails" );
         if (UserController.getInstance().getCurrentUser().getPassReseted()) {
             StackPane form;
             FXMLLoader fxmlLoader = new FXMLLoader();
@@ -171,15 +166,61 @@ public class NewAccountController implements Initializable {
 
     @FXML
     public void initializeButtons() {
-        consultInfoBtn.setOnMouseClicked( event -> showFormUser( "showDetails" ) );
-        editInfoBtn.setOnMouseClicked( event -> showFormUser( "editDetails" ) );
-        editLocationBtn.setOnMouseClicked( event -> showMap( ) );
-        insertCinBtn.setOnMouseClicked( event -> showFormUser( "showDetails" ) );
+        consultInfoBtn.setOnMouseClicked( event -> {
+            editInfoBtn.setStyle( "" );
+            editLocationBtn.setStyle( "" );
+            insertCinBtn.setStyle( "" );
+            consultInfoBtn.setStyle( "-fx-border-color: #563f05;" +
+                    "    -fx-border-width: 0 0 0 2px ;" +
+                    "    -fx-border-radius: 0;" );
+            showFormUser( "showDetails" );
+        } );
+        editInfoBtn.setOnMouseClicked( event -> {
+            consultInfoBtn.setStyle( "" );
+            editLocationBtn.setStyle( "" );
+            insertCinBtn.setStyle( "" );
+            editInfoBtn.setStyle( "-fx-border-color: #563f05;" +
+                    "    -fx-border-width: 0 0 0 2px ;" +
+                    "    -fx-border-radius: 0;" );
+            showFormUser( "editDetails" );
+        } );
+        editLocationBtn.setOnMouseClicked( event -> {
+            consultInfoBtn.setStyle( "" );
+            editInfoBtn.setStyle( "" );
+            insertCinBtn.setStyle( "" );
+            editLocationBtn.setStyle( "-fx-border-color: #563f05;" +
+                    "    -fx-border-width: 0 0 0 2px ;" +
+                    "    -fx-border-radius: 0;" );
+            showMap();
+        } );
+        insertCinBtn.setOnMouseClicked( event -> {
+            consultInfoBtn.setStyle( "" );
+            editInfoBtn.setStyle( "" );
+            editLocationBtn.setStyle( "" );
+            insertCinBtn.setStyle( "-fx-border-color: #563f05;" +
+                    "    -fx-border-width: 0 0 0 2px ;" +
+                    "    -fx-border-radius: 0;" );
+            showCin();
+        });
     }
 
 
+    public void showCin() {
+        VBox cin;
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation( getClass().getResource( "/fxml/user/insertingCin.fxml" ) );
+        try {
+            cin = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+        mainInterface.getChildren().clear();
+        mainInterface.getChildren().add( cin );
+        MyTools.getInstance().showAnimation( cin );
+    }
+
     public void showMap() {
-        VBox map;
+        StackPane map;
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation( getClass().getResource( "/fxml/user/map.fxml" ) );
         try {
@@ -266,6 +307,9 @@ public class NewAccountController implements Initializable {
         AdvancedSettingsController advancedSettingsController = fxmlLoader.getController();
         advancedSettingsController.setUsageOfThisForm( usage );
         advancedSettingsController.setData( UserController.getInstance().getCurrentUser() );
+        mainInterface.setVisible( true );
+        mainInterface.getChildren().clear();
+        mainInterface.getChildren().add( form );
         MyTools.getInstance().showAnimation( form );
     }
 

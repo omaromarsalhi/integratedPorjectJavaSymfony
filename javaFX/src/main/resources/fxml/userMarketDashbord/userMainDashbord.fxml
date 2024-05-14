@@ -29,7 +29,7 @@
                            <children>
                               <AnchorPane fx:id="accountInfo" prefHeight="143.0" prefWidth="236.0" style="-fx-background-radius: 20; -fx-border-radius: 20; -fx-background-color: #D9D9D9;">
                                  <children>
-                                    <ImageView fx:id="userImage" fitHeight="94.0" fitWidth="83.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="userImage" fitHeight="94.0" fitWidth="83.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="144.2">
                                        <image>
                                           <Image url="@../../../../../../javaFX - Copy/src/main/resources/img/mySelf.jpg" />
                                        </image>
