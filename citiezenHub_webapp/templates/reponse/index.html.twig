@@ -77,6 +77,9 @@
                                                         <div class="form-check mb-0 fs-8">
                                                             <input class="form-check-input" type="checkbox" data-bulk-select-row='{"dealsName":"{{ reclamation.id }}"}'></div>
                                                         </td>
+                                                        <td>
+                                                            <img src="{{ asset('usersImg/' ~ reclamation.getImage()) }}" alt="Nft_Portfolio" style="width: 50px; height: 50px; object-fit: cover;"/>
+                                                        </td>
                                                         <td class="stage align-middle white-space-nowrap fw-bold text-body py-0">
                                                             {{ reclamation.privateKey }}
                                                         </td>
@@ -214,32 +217,43 @@
                     <div class="modal fade" id="reclamationDetailsModal" tabindex="-1" aria-labelledby="reclamationDetailsModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content">
-                                <div class="modal-header">
+                                <div class="modal-header bg-primary text-white">
                                     <h5 class="modal-title" id="reclamationDetailsModalLabel">
                                         Reclamation Details
                                     </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <h6>
-                                        <strong>
-                                            Subject:
-                                        </strong>
-                                        <span id="reclamationSubject"></span>
-                                    </h6>
-                                    <p>
-                                        <strong>
-                                            Description:
-                                        </strong>
-                                        <span id="reclamationDescription"></span>
-                                    </p>
-                                    <div id="reclamationResponses">
+                                    <div class="mb-3">
                                         <h6>
-                                            Responses:
+                                            <strong>
+                                                Subject:
+                                            </strong>
+                                        </h6>
+                                        <p class="form-control" id="reclamationSubject"></p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <h6>
+                                            <strong>
+                                                Description:
+                                            </strong>
+                                        </h6>
+                                        <p class="form-control" id="reclamationDescription"></p>
+                                    </div>
+                                    <div id="reclamationResponses" class="mb-3">
+                                        <h6>
+                                            <strong>
+                                                Responses:
+                                            </strong>
                                         </h6>
                                         <ul id="responsesList" class="list-group"><!-- Responses will be populated here -->
                                         </ul>
                                     </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -402,18 +416,20 @@
                             });
                             document.querySelector('.error-label').innerHTML = errorMessagesHTML;
                         } else {
+
                             var errorMessage = 'An error occurred';
                             if (xhr.responseJSON && xhr.responseJSON.error) {
                                 errorMessage = xhr.responseJSON.error;
                             }
                             alert(errorMessage);
-                        }
+                    
+                            }
                     }
                 });
             });
         });
     </script>
-    <script>
+                        <script>
         document.addEventListener('DOMContentLoaded', () => {
             const reclamationDetailsModal = document.getElementById('reclamationDetailsModal');
             reclamationDetailsModal.addEventListener('show.bs.modal', function (event) {
@@ -423,6 +439,7 @@
                 fetch(`/api/reclamations/${reclamationId}`)
                     .then(response => response.json())
                     .then(data => {
+
                         document.getElementById('reclamationSubject').textContent = data.subject;
                         document.getElementById('reclamationDescription').textContent = data.description;
                         
@@ -440,5 +457,5 @@
             });
         });
         </script>
-{% endblock %}
+                    {% endblock %}
                     
