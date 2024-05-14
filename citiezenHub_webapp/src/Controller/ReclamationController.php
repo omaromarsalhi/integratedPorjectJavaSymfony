@@ -206,6 +206,33 @@ public function list(ReclamationRepository $reclamationRepository): Response
         'responseCount' => $responseCount // Pass the response count to the Twig template
     ]);
 }
+/**
+ * @Route("/api/reclamations/{id}", name="api_reclamation_show", methods={"GET"})
+ */
+public function apiShow1(ReclamationRepository $reclamationRepository, $id): JsonResponse
+{
+    $reclamation = $reclamationRepository->find($id);
+    if (!$reclamation) {
+        return new JsonResponse(['message' => 'Reclamation not found'], Response::HTTP_NOT_FOUND);
+    }
+
+    $responseArray = [];
+    foreach ($reclamation->getReponses() as $response) {
+        $responseArray[] = [
+            'id' => $response->getId(),
+            'description' => $response->getDescription()
+        ];
+    }
+
+    return new JsonResponse([
+        'id' => $reclamation->getId(),
+        'subject' => $reclamation->getSubject(),
+        'description' => $reclamation->getDescription(),
+        'privateKey' => $reclamation->getPrivateKey(),
+        'image' => $reclamation->getImage(),
+        'responses' => $responseArray
+    ], Response::HTTP_OK);
+}
 
 
 
