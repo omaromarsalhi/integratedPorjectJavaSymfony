@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.VBox;
+import pidev.javafx.tools.ImageUploader;
 import pidev.javafx.tools.marketPlace.MyTools;
 
 import java.io.File;
@@ -28,6 +29,7 @@ public class CinController implements Initializable {
 
     @FXML
     private Button inserBtn;
+
 
 
     @Override

@@ -1,9 +1,6 @@
 package pidev.javafx.controller.userMarketDashbord;
 
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -20,7 +17,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
@@ -36,9 +32,11 @@ import pidev.javafx.tools.marketPlace.*;
 
 import java.io.File;
 import java.net.URL;
-import java.sql.*;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -84,10 +82,8 @@ public class FormController implements Initializable {
     private AnchorPane loadinPage;
 
 
-
-
     private File chosenFile;
-    private List<File>  chosenFiles;
+    private List<File> chosenFiles;
     private MyListener listener;
     private static String usageOfThisForm;
     private HBox buttonsBox;
@@ -96,22 +92,20 @@ public class FormController implements Initializable {
     private boolean[] isAllInpulValid;
     String formLayoutBeforRegexCheck;
     String formLayoutAfterRegexCheck;
-    private String  checkIfImageCompatableWithName;
-
-
+    private String checkIfImageCompatableWithName;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        usageOfThisForm="add_prod";
+        usageOfThisForm = "add_prod";
         loadinPage.setVisible( false );
         chatBtn.setStyle( "-fx-border-color: transparent;" );
         chatBtn.hoverProperty().addListener( (observable, oldValue, newValue) -> {
-            if(newValue)
-                chatBtn.setStyle("-fx-border-color: #fdc847;" +
-                        "-fx-border-radius: 15");
+            if (newValue)
+                chatBtn.setStyle( "-fx-border-color: #fdc847;" +
+                        "-fx-border-radius: 15" );
             else
-                chatBtn.setStyle("-fx-border-color: transparent;");
+                chatBtn.setStyle( "-fx-border-color: transparent;" );
 
         } );
 
@@ -119,18 +113,18 @@ public class FormController implements Initializable {
         seconfInterface.setVisible( false );
         exitImageBtn.setOnMouseClicked( event -> seconfInterface.setVisible( false ) );
 
-        formLayoutBeforRegexCheck="-fx-border-color:black;"+"-fx-border-width: 2;" +
+        formLayoutBeforRegexCheck = "-fx-border-color:black;" + "-fx-border-width: 2;" +
                 "-fx-border-radius: 10;" +
                 "-fx-background-color: white;" +
                 "-fx-background-radius: 10";
 
-        formLayoutAfterRegexCheck="-fx-border-width: 2;" +
+        formLayoutAfterRegexCheck = "-fx-border-width: 2;" +
                 "-fx-border-radius: 10;" +
                 "-fx-background-color: white;" +
                 "-fx-background-radius: 10";
 
-        isImageUpdated=false;
-        isAllInpulValid=new boolean[]{false,false,false};
+        isImageUpdated = false;
+        isAllInpulValid = new boolean[]{false, false, false};
 
         createFormBtns();
         Box1.getChildren().add( buttonsBox );
@@ -139,14 +133,13 @@ public class FormController implements Initializable {
             if (usageOfThisForm.equals( "update_prod" )) {
                 isImageUpdated = true;
                 seconfInterface.setVisible( true );
-                seconfInterface.setMinHeight(formBox.getHeight());
-                FadeTransition fade1 = new FadeTransition( Duration.seconds( 0.8 ), seconfInterface);
+                seconfInterface.setMinHeight( formBox.getHeight() );
+                FadeTransition fade1 = new FadeTransition( Duration.seconds( 0.8 ), seconfInterface );
                 fade1.setFromValue( 0 );
                 fade1.setToValue( 1 );
                 fade1.play();
                 dealWithImages4Update();
-            }
-            else {
+            } else {
                 FileChooser fileChooser = new FileChooser();
                 setExtFilters( fileChooser );
                 fileChooser.setTitle( "Save Image" );
@@ -158,66 +151,67 @@ public class FormController implements Initializable {
     }
 
 
-    private void setExtFilters(FileChooser chooser){
+    private void setExtFilters(FileChooser chooser) {
         chooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All Images", "*.*"),
-                new FileChooser.ExtensionFilter("PNG", "*.png")
+                new FileChooser.ExtensionFilter( "All Images", "*.*" ),
+                new FileChooser.ExtensionFilter( "PNG", "*.png" )
         );
     }
 
-    public ImageView createRegexImage(boolean isvalidated){
-        ImageView imageView=new ImageView();
-        if(isvalidated)
-            imageView.setImage( new Image( "file:src/main/resources/icons/marketPlace/green.png",34,34,true,true ) );
+    public ImageView createRegexImage(boolean isvalidated) {
+        ImageView imageView = new ImageView();
+        if (isvalidated)
+            imageView.setImage( new Image( "file:src/main/resources/icons/marketPlace/green.png", 34, 34, true, true ) );
         else
-            imageView.setImage( new Image( "file:src/main/resources/icons/marketPlace/red.png",34,34,true,true ) );
+            imageView.setImage( new Image( "file:src/main/resources/icons/marketPlace/red.png", 34, 34, true, true ) );
         return imageView;
     }
 
-    public void dealWithImages4Update(){
-        AtomicInteger curentIndex= new AtomicInteger( 0 );
-        relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH+product.getImageSourceByIndex(curentIndex.get())));
+    public void dealWithImages4Update() {
+        AtomicInteger curentIndex = new AtomicInteger( 0 );
+        relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ) );
         rightArrow.setOnAction( event -> {
             curentIndex.getAndIncrement();
-            if(curentIndex.get()>=product.getAllImagesSources().size()) {
+            if (curentIndex.get() >= product.getAllImagesSources().size()) {
                 curentIndex.set( 0 );
             }
-            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH+product.getImageSourceByIndex( curentIndex.get() ) ) );
-        });
+            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ) );
+        } );
         leftArrow.setOnAction( event -> {
-            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH+product.getImageSourceByIndex( curentIndex.get() ) ) );curentIndex.getAndDecrement();
-            if(curentIndex.get()<0)
-                curentIndex.set( product.getAllImagesSources().size()-1 );
+            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ) );
+            curentIndex.getAndDecrement();
+            if (curentIndex.get() < 0)
+                curentIndex.set( product.getAllImagesSources().size() - 1 );
         } );
         deleteBtn.setOnAction( event -> {
-            if(product.getAllImagesSources().size()>1) {
+            if (product.getAllImagesSources().size() > 1) {
                 new File( "src/main/resources" + product.getImageSourceByIndex( curentIndex.get() ) ).delete();
                 product.deleteFromImagesSources( curentIndex.get() );
                 rightArrow.fire();
             }
-        });
+        } );
     }
 
 
     @FXML
-    public void handelDragOver(DragEvent dragEvent){
-        if(dragEvent.getDragboard().hasFiles())
+    public void handelDragOver(DragEvent dragEvent) {
+        if (dragEvent.getDragboard().hasFiles())
             dragEvent.acceptTransferModes( TransferMode.ANY );
     }
 
     @FXML
-    public void handelDrag(DragEvent dragEvent){
-        for (File file : dragEvent.getDragboard().getFiles()){
+    public void handelDrag(DragEvent dragEvent) {
+        for (File file : dragEvent.getDragboard().getFiles()) {
             relativeImageVieur.setImage( new Image( file.getAbsolutePath() ) );
-            product.addFromImagesSources( MyTools.getInstance().getPathAndSaveIMG(file.getAbsolutePath() ) );
+            product.addFromImagesSources( MyTools.getInstance().getPathAndSaveIMG( file.getAbsolutePath() ) );
         }
     }
 
     @FXML
-    public void generateDescription(ActionEvent event){
-        if(!Pname.getText().isEmpty()&&isAllInpulValid[0]){
+    public void generateDescription(ActionEvent event) {
+        if (!Pname.getText().isEmpty() && isAllInpulValid[0]) {
 
-            Thread thread =loadingPageThread();
+            Thread thread = loadingPageThread();
             thread.start();
             loadinPage.setVisible( true );
         }
@@ -228,41 +222,40 @@ public class FormController implements Initializable {
         Task<String> myTask = new Task<>() {
             @Override
             protected String call() throws Exception {
-                return ChatGPTAPIDescriber.chatGPT( "describe "+Pname.getText()+" for sale specifying its benefits");
+                return ChatGPTAPIDescriber.chatGPT( "describe " + Pname.getText() + " for sale specifying its benefits" );
             }
         };
 
-        myTask.setOnSucceeded(e -> {
+        myTask.setOnSucceeded( e -> {
             Platform.runLater( () -> Pdescretion.setText( myTask.getValue() ) );
             loadinPage.setVisible( false );
-        });
+        } );
 
-        return new Thread(myTask);
+        return new Thread( myTask );
     }
 
-    private void setRegEx(){
-        var regexValidatedIcon1=createRegexImage(true);
-        var regexNotValidatedIcon1=createRegexImage(false);
+    private void setRegEx() {
+        var regexValidatedIcon1 = createRegexImage( true );
+        var regexNotValidatedIcon1 = createRegexImage( false );
 
-        var regexValidatedIcon2=createRegexImage(true);
-        var regexNotValidatedIcon2=createRegexImage(false);
+        var regexValidatedIcon2 = createRegexImage( true );
+        var regexNotValidatedIcon2 = createRegexImage( false );
 
-        var regexValidatedIcon3=createRegexImage(true);
-        var regexNotValidatedIcon3=createRegexImage(false);
+        var regexValidatedIcon3 = createRegexImage( true );
+        var regexNotValidatedIcon3 = createRegexImage( false );
 
-        Popup popup4Regex =MyTools.getInstance().createPopUp();
+        Popup popup4Regex = MyTools.getInstance().createPopUp();
 
         Pname.setOnKeyTyped( event -> {
-            isAllInpulValid[0]=Pname.getText().matches("^[A-Za-z0-9 ]*$");
-            Node node=(isAllInpulValid[0])?regexValidatedIcon1:regexNotValidatedIcon1;
-            String color=(isAllInpulValid[0])?"green":"red";
-            if(Pname.getText().isEmpty()){
-                formBox1.getChildren().removeAll(regexValidatedIcon1,regexNotValidatedIcon1 );
-                Pname.setStyle( "");
-                formBox.setStyle(formLayoutBeforRegexCheck);
-                isAllInpulValid[0]=true;
-            }
-            else {
+            isAllInpulValid[0] = Pname.getText().matches( "^[A-Za-z0-9 ]*$" );
+            Node node = (isAllInpulValid[0]) ? regexValidatedIcon1 : regexNotValidatedIcon1;
+            String color = (isAllInpulValid[0]) ? "green" : "red";
+            if (Pname.getText().isEmpty()) {
+                formBox1.getChildren().removeAll( regexValidatedIcon1, regexNotValidatedIcon1 );
+                Pname.setStyle( "" );
+                formBox.setStyle( formLayoutBeforRegexCheck );
+                isAllInpulValid[0] = true;
+            } else {
                 if (formBox1.getChildren().size() <= 1) {
                     formBox1.getChildren().add( node );
                 } else if (formBox1.getChildren().get( 1 ) != node) {
@@ -273,24 +266,23 @@ public class FormController implements Initializable {
                         "-fx-border-width:0 0 2 0;" +
                         "-fx-border-radius: 0" );
                 formBox.setStyle( "-fx-border-color:" + color + ";" +
-                        formLayoutAfterRegexCheck);
-            }
-            if((!isAllInpulValid[0]&&!Pname.getText().isEmpty())||(!isAllInpulValid[1]&&!Pprice.getText().isEmpty())||(!isAllInpulValid[2]&&!Pquantity.getText().isEmpty()))
-                formBox.setStyle( "-fx-border-color:red;"+
                         formLayoutAfterRegexCheck );
-        });
-        Pprice.setOnKeyTyped( event -> {
-            isAllInpulValid[1]=Pprice.getText().matches("([1-9]\\d{0,10}(,\\d{3})*)(\\.\\d{1,2})?");
-            Node node=(isAllInpulValid[1])?regexValidatedIcon2:regexNotValidatedIcon2;
-            String color=(isAllInpulValid[1])?"green":"red";
-
-            if(Pprice.getText().isEmpty()){
-                formBox2.getChildren().removeAll( regexValidatedIcon2,regexNotValidatedIcon2 );
-                Pprice.setStyle( "");
-                formBox.setStyle(formLayoutBeforRegexCheck);
-                isAllInpulValid[1]=true;
             }
-            else {
+            if ((!isAllInpulValid[0] && !Pname.getText().isEmpty()) || (!isAllInpulValid[1] && !Pprice.getText().isEmpty()) || (!isAllInpulValid[2] && !Pquantity.getText().isEmpty()))
+                formBox.setStyle( "-fx-border-color:red;" +
+                        formLayoutAfterRegexCheck );
+        } );
+        Pprice.setOnKeyTyped( event -> {
+            isAllInpulValid[1] = Pprice.getText().matches( "([1-9]\\d{0,10}(,\\d{3})*)(\\.\\d{1,2})?" );
+            Node node = (isAllInpulValid[1]) ? regexValidatedIcon2 : regexNotValidatedIcon2;
+            String color = (isAllInpulValid[1]) ? "green" : "red";
+
+            if (Pprice.getText().isEmpty()) {
+                formBox2.getChildren().removeAll( regexValidatedIcon2, regexNotValidatedIcon2 );
+                Pprice.setStyle( "" );
+                formBox.setStyle( formLayoutBeforRegexCheck );
+                isAllInpulValid[1] = true;
+            } else {
                 if (formBox2.getChildren().size() <= 1) {
                     formBox2.getChildren().add( node );
                 } else if (formBox2.getChildren().get( 1 ) != node) {
@@ -301,24 +293,23 @@ public class FormController implements Initializable {
                         "-fx-border-width: 0 0 2 0;" +
                         "-fx-border-radius: 0" );
                 formBox.setStyle( "-fx-border-color:" + color + ";" +
-                        formLayoutAfterRegexCheck);
-            }
-            if((!isAllInpulValid[0]&&!Pname.getText().isEmpty())||(!isAllInpulValid[1]&&!Pprice.getText().isEmpty())||(!isAllInpulValid[2]&&!Pquantity.getText().isEmpty()))
-                formBox.setStyle( "-fx-border-color:red;"+
                         formLayoutAfterRegexCheck );
-        });
-        Pquantity.setOnKeyTyped( event -> {
-            isAllInpulValid[2]=Pquantity.getText().matches("[0-9]{1,4}");
-            Node node=(isAllInpulValid[2])?regexValidatedIcon3:regexNotValidatedIcon3;
-            String color=(isAllInpulValid[2])?"green":"red";
-
-            if(Pquantity.getText().isEmpty()){
-                formBox3.getChildren().removeAll( regexValidatedIcon3,regexNotValidatedIcon3 );
-                Pquantity.setStyle( "");
-                formBox.setStyle(formLayoutBeforRegexCheck);
-                isAllInpulValid[2]=true;
             }
-            else {
+            if ((!isAllInpulValid[0] && !Pname.getText().isEmpty()) || (!isAllInpulValid[1] && !Pprice.getText().isEmpty()) || (!isAllInpulValid[2] && !Pquantity.getText().isEmpty()))
+                formBox.setStyle( "-fx-border-color:red;" +
+                        formLayoutAfterRegexCheck );
+        } );
+        Pquantity.setOnKeyTyped( event -> {
+            isAllInpulValid[2] = Pquantity.getText().matches( "[0-9]{1,4}" );
+            Node node = (isAllInpulValid[2]) ? regexValidatedIcon3 : regexNotValidatedIcon3;
+            String color = (isAllInpulValid[2]) ? "green" : "red";
+
+            if (Pquantity.getText().isEmpty()) {
+                formBox3.getChildren().removeAll( regexValidatedIcon3, regexNotValidatedIcon3 );
+                Pquantity.setStyle( "" );
+                formBox.setStyle( formLayoutBeforRegexCheck );
+                isAllInpulValid[2] = true;
+            } else {
                 if (formBox3.getChildren().size() <= 1) {
                     formBox3.getChildren().add( node );
                 } else if (formBox3.getChildren().get( 1 ) != node) {
@@ -329,61 +320,59 @@ public class FormController implements Initializable {
                         "-fx-border-width: 0 0 2 0;" +
                         "-fx-border-radius: 0" );
                 formBox.setStyle( "-fx-border-color:" + color + ";" +
-                        formLayoutAfterRegexCheck);
-            }
-            if((!isAllInpulValid[0]&&!Pname.getText().isEmpty())||(!isAllInpulValid[1]&&!Pprice.getText().isEmpty())||(!isAllInpulValid[2]&&!Pquantity.getText().isEmpty()))
-                formBox.setStyle( "-fx-border-color:red;"+
                         formLayoutAfterRegexCheck );
-        });
+            }
+            if ((!isAllInpulValid[0] && !Pname.getText().isEmpty()) || (!isAllInpulValid[1] && !Pprice.getText().isEmpty()) || (!isAllInpulValid[2] && !Pquantity.getText().isEmpty()))
+                formBox.setStyle( "-fx-border-color:red;" +
+                        formLayoutAfterRegexCheck );
+        } );
 
         Pname.setOnMouseEntered( event -> {
-            if(!isAllInpulValid[0]&&!Pname.getText().isEmpty()){
-                ((Label)popup4Regex.getContent().get( 0 )).setText("ONLY CHARACTERS AND NUMBERS ARE ALLOWED");
-                popup4Regex.getContent().get( 0 ).setStyle(popup4Regex.getContent().get( 0 ).getStyle()+"-fx-background-color: #ed1c27;"  );
-                popup4Regex.show(Stage.getWindows().get(0),event.getScreenX()+40,event.getScreenY()-40);
-            }
-            else{
-                ((Label)popup4Regex.getContent().get( 0 )).setText("Please Give a descriptive Name To help The description Generator");
-                popup4Regex.getContent().get( 0 ).setStyle(popup4Regex.getContent().get( 0 ).getStyle()+"-fx-background-color: #1ec92c;"  );
-                popup4Regex.show(Stage.getWindows().get(0),event.getScreenX()+40,event.getScreenY()-40);
+            if (!isAllInpulValid[0] && !Pname.getText().isEmpty()) {
+                ((Label) popup4Regex.getContent().get( 0 )).setText( "ONLY CHARACTERS AND NUMBERS ARE ALLOWED" );
+                popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: #ed1c27;" );
+                popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 40 );
+            } else {
+                ((Label) popup4Regex.getContent().get( 0 )).setText( "Please Give a descriptive Name To help The description Generator" );
+                popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: #1ec92c;" );
+                popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 40 );
             }
         } );
         Pname.setOnMouseExited( event -> {
-                popup4Regex.hide();
+            popup4Regex.hide();
         } );
         Pprice.setOnMouseEntered( event -> {
-            if(!isAllInpulValid[1]&&!Pprice.getText().isEmpty()){
-                ((Label)popup4Regex.getContent().get( 0 )).setText("ONLY NUMBERS ARE ALLOWED");
-                popup4Regex.getContent().get( 0 ).setStyle(popup4Regex.getContent().get( 0 ).getStyle()+"-fx-background-color: #ed1c27;"  );
-                popup4Regex.show(Stage.getWindows().get(0),event.getScreenX()+40,event.getScreenY()-40);
+            if (!isAllInpulValid[1] && !Pprice.getText().isEmpty()) {
+                ((Label) popup4Regex.getContent().get( 0 )).setText( "ONLY NUMBERS ARE ALLOWED" );
+                popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: #ed1c27;" );
+                popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 40 );
             }
         } );
         Pprice.setOnMouseExited( event -> {
-            if(!Pprice.getText().isEmpty())
+            if (!Pprice.getText().isEmpty())
                 popup4Regex.hide();
         } );
         Pquantity.setOnMouseEntered( event -> {
-            if(!isAllInpulValid[2]&&!Pquantity.getText().isEmpty()){
-                ((Label)popup4Regex.getContent().get( 0 )).setText("ONLY NUMBERS ARE ALLOWED");
-                popup4Regex.getContent().get( 0 ).setStyle(popup4Regex.getContent().get( 0 ).getStyle()+"-fx-background-color: #ed1c27;"  );
-                popup4Regex.show(Stage.getWindows().get(0),event.getScreenX()+40,event.getScreenY()-20);
+            if (!isAllInpulValid[2] && !Pquantity.getText().isEmpty()) {
+                ((Label) popup4Regex.getContent().get( 0 )).setText( "ONLY NUMBERS ARE ALLOWED" );
+                popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: #ed1c27;" );
+                popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 20 );
             }
         } );
         Pquantity.setOnMouseExited( event -> {
-            if(!Pquantity.getText().isEmpty())
+            if (!Pquantity.getText().isEmpty())
                 popup4Regex.hide();
         } );
     }
 
 
     public void onAddOrUpdateBienClicked(MouseEvent event) {
-//        System.out.println(UserController.getInstance().getCurrentUser());
-        if(isAllInpulValid[0]&&isAllInpulValid[1]&&isAllInpulValid[2]) {
+        if (isAllInpulValid[0] && isAllInpulValid[1] && isAllInpulValid[2]) {
             Bien bien = new Bien( (product == null) ? 0 : product.getId(),
                     UserController.getInstance().getCurrentUser().getId(),
                     Pname.getText(),
                     Pdescretion.getText(),
-                    (isImageUpdated) ?"":"DO_NOT_UPDATE_OR_ADD_IMAGE",
+                    (isImageUpdated) ? "" : "DO_NOT_UPDATE_OR_ADD_IMAGE",
                     Float.parseFloat( Pprice.getText() ),
                     Float.parseFloat( Pquantity.getText() ),
                     "unverified",
@@ -391,37 +380,35 @@ public class FormController implements Initializable {
                     Pcategory.getValue() );
 //            if(isImageUpdated)
 //                bien.setAllImagesSources( product.getAllImagesSources() );
-            if(chosenFiles!=null) {
+            if (chosenFiles != null) {
                 List<String> imagesList = new ArrayList<>();
                 for (File file : chosenFiles)
-                    imagesList.add(MyTools.getInstance().getPathAndSaveIMG(file.getAbsolutePath()) );
+                    imagesList.add( MyTools.getInstance().getPathAndSaveIMG( file.getAbsolutePath() ) );
                 bien.setAllImagesSources( imagesList );
-            }
-            else {
+            } else {
                 bien.setAllImagesSources( product.getAllImagesSources() );
             }
             if (usageOfThisForm.equals( "add_prod" )) {
                 CrudBien.getInstance().addItem( bien );
-                bien=CrudBien.getInstance().selectLastItem();
+                bien = CrudBien.getInstance().selectLastItem();
                 MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             } else if (usageOfThisForm.equals( "update_prod" )) {
                 bien.setState( product.getState() );
                 CrudBien.getInstance().updateItem( bien );
                 MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             }
-            product=bien;
+            product = bien;
             aiVerifyThread().start();
-            Thread thread = sleepThread(event);
+            Thread thread = sleepThread( event );
             loadinPage.setVisible( true );
             thread.start();
-        }
-        else{
+        } else {
             Alert confirmationAlert = new Alert( Alert.AlertType.ERROR );
-            confirmationAlert.setTitle("Error");
+            confirmationAlert.setTitle( "Error" );
             confirmationAlert.setHeaderText( null );
             confirmationAlert.setGraphic( null );
-            confirmationAlert.getDialogPane().getStylesheets().add("file:src/main/resources/style/alertStyle.css");
-            confirmationAlert.setContentText("There is some wrong Data please fix it !!!");
+            confirmationAlert.getDialogPane().getStylesheets().add( "file:src/main/resources/style/alertStyle.css" );
+            confirmationAlert.setContentText( "There is some wrong Data please fix it !!!" );
             confirmationAlert.show();
         }
 
@@ -432,12 +419,12 @@ public class FormController implements Initializable {
         Task<Void> myTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                Thread.sleep(1000);
+                Thread.sleep( 1000 );
                 return null;
             }
         };
 
-        myTask.setOnSucceeded(e -> {
+        myTask.setOnSucceeded( e -> {
             if (usageOfThisForm.equals( "add_prod" ))
                 EventBus.getInstance().publish( "updateTabProds", new CustomMouseEvent<>( product ) );
             else
@@ -446,46 +433,48 @@ public class FormController implements Initializable {
             loadinPage.setVisible( false );
             MyTools.getInstance().getTextNotif().setText( "Prod Has Been Added And Under Verification" );
             MyTools.getInstance().showNotif();
-        });
-        return new Thread(myTask);
+        } );
+        return new Thread( myTask );
     }
 
     private Thread aiVerifyThread() {
         Task<String> myTask = new Task<>() {
             @Override
             protected String call() throws Exception {
-                String descreption=CallPythonFromJava.run( "src/main/resources"+product.getImageSourceByIndex(0));
-                return "does this paragraph "+descreption.substring( 0,descreption.indexOf( "." ) )+" speaks about "+product.getName() +" and please answer me with yes or no?";
+//                String descreption = CallPythonFromJava.run( "src/main/resources" + product.getImageSourceByIndex( 0 ) );
+//                return "does this paragraph " + descreption.substring( 0, descreption.indexOf( "." ) ) + " speaks about " + product.getName() + " and please answer me with yes or no?";
+                var aiVerification=new AiVerification();
+                aiVerification.run(CrudBien.getInstance().selectLastItem().getId());
+                return "yes";
             }
         };
 
         myTask.setOnSucceeded( event -> {
-            String respose=ChatGPTAPIDescriber.chatGPT(myTask.getValue());
-            if(respose.toLowerCase().contains( "yes" )){
-                product.setState( "verified" );
-                CrudBien.getInstance().updateItem( product );
-                MyTools.getInstance().getTextNotif().setText( "Prod Has Been Verified" );
-                MyTools.getInstance().showNotif();
-            }
-            else {
-                CrudBien.getInstance().deleteItem( product.getId() );
-                MyTools.getInstance().getTextNotif().setText( "Prod Has Been Disqualified" );
-                MyTools.getInstance().showNotif();
-            }
-            EventBus.getInstance().publish( "doUpdateTabprodAfterAIverif",new CustomMouseEvent<>(product) );
-            System.out.println("done");
+//            String respose = ChatGPTAPIDescriber.chatGPT( myTask.getValue() );
+//            if (respose.toLowerCase().contains( "yes" )) {
+//                product.setState( "verified" );
+//                CrudBien.getInstance().updateItem( product );
+//                MyTools.getInstance().getTextNotif().setText( "Prod Has Been Verified" );
+//                MyTools.getInstance().showNotif();
+//            } else {
+//                CrudBien.getInstance().deleteItem( product.getId() );
+//                MyTools.getInstance().getTextNotif().setText( "Prod Has Been Disqualified" );
+//                MyTools.getInstance().showNotif();
+//            }
+            EventBus.getInstance().publish( "doUpdateTabprodAfterAIverif", new CustomMouseEvent<>( product ) );
+            System.out.println( "done 2" );
         } );
 
-        return new Thread(myTask);
+        return new Thread( myTask );
     }
 
 
-    public void createFormBtns(){
-        Button addProd= new Button();
+    public void createFormBtns() {
+        Button addProd = new Button();
         Button clearProd = new Button();
-        Button cancel= new Button();
+        Button cancel = new Button();
 
-        buttonsBox =new HBox();
+        buttonsBox = new HBox();
 
         addProd.setPrefWidth( 50 );
         clearProd.setPrefWidth( 50 );
@@ -495,39 +484,39 @@ public class FormController implements Initializable {
         clearProd.setPrefHeight( 32 );
         cancel.setPrefHeight( 32 );
 
-        Image  img1= new Image(String.valueOf( getClass().getResource( "/icons/marketPlace/tab2.png" ) ));
-        Image img2= new Image(String.valueOf( getClass().getResource( "/icons/marketPlace/broom.png" )));
-        Image img3= new Image(String.valueOf( getClass().getResource( "/icons/marketPlace/paper.png" )));
+        Image img1 = new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/tab2.png" ) ) );
+        Image img2 = new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/broom.png" ) ) );
+        Image img3 = new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/paper.png" ) ) );
 
-        addProd.setGraphic( new ImageView( img1 ));
-        clearProd.setGraphic( new ImageView( img2 ));
-        cancel.setGraphic( new ImageView( img3 ));
+        addProd.setGraphic( new ImageView( img1 ) );
+        clearProd.setGraphic( new ImageView( img2 ) );
+        cancel.setGraphic( new ImageView( img3 ) );
 
-        addProd.setOnMouseClicked( this::onAddOrUpdateBienClicked);
+        addProd.setOnMouseClicked( this::onAddOrUpdateBienClicked );
         clearProd.setOnMouseClicked( event -> {
-            if(formBox1.getChildren().size()>1)
+            if (formBox1.getChildren().size() > 1)
                 formBox1.getChildren().removeAll( formBox1.getChildren().get( 1 ) );
-            Pname.setStyle( "");
-            if(formBox2.getChildren().size()>1)
-                formBox2.getChildren().remove(formBox2.getChildren().get( 1 ) );
-            Pprice.setStyle( "");
-            if(formBox3.getChildren().size()>1)
+            Pname.setStyle( "" );
+            if (formBox2.getChildren().size() > 1)
+                formBox2.getChildren().remove( formBox2.getChildren().get( 1 ) );
+            Pprice.setStyle( "" );
+            if (formBox3.getChildren().size() > 1)
                 formBox3.getChildren().removeAll( formBox3.getChildren().get( 1 ) );
-            Pquantity.setStyle( "");
-            formBox.setStyle(formLayoutBeforRegexCheck);
+            Pquantity.setStyle( "" );
+            formBox.setStyle( formLayoutBeforRegexCheck );
             Pdescretion.setText( "" );
             Pname.setText( "" );
             Pprice.setText( "" );
             Pquantity.setText( "" );
         } );
-        cancel.setOnMouseClicked( event -> EventBus.getInstance().publish( "onExitForm",event ) );
+        cancel.setOnMouseClicked( event -> EventBus.getInstance().publish( "onExitForm", event ) );
 
-        buttonsBox.getChildren().addAll( addProd,clearProd,cancel );
+        buttonsBox.getChildren().addAll( addProd, clearProd, cancel );
         buttonsBox.setSpacing( 20 );
-        buttonsBox.setAlignment( Pos.CENTER);
+        buttonsBox.setAlignment( Pos.CENTER );
         buttonsBox.setId( "itemInfo" );
         buttonsBox.getStylesheets().add( String.valueOf( getClass().getResource( "/style/marketPlace/Buttons.css" ) ) );
-        buttonsBox.setPadding( new Insets( 0,0,10,0 ) );
+        buttonsBox.setPadding( new Insets( 0, 0, 10, 0 ) );
     }
 
 //    public void setExitFunction(MyListener listener) {
@@ -535,20 +524,20 @@ public class FormController implements Initializable {
 //    }
 
     public void setInformaton(Product product) {
-        if(product!=null) {
-            product=(Bien)product;
-            this.product =(Bien) product;
+        if (product != null) {
+            product = (Bien) product;
+            this.product = (Bien) product;
             Pname.setText( product.getName() );
             Pdescretion.setText( product.getDescreption() );
             Pprice.setText( Float.toString( product.getPrice() ) );
             Pquantity.setText( Float.toString( product.getQuantity() ) );
-            usageOfThisForm="update_prod";
-            Image img1= new Image(String.valueOf( getClass().getResource( "/icons/marketPlace/validation.png" ) ));
-            ((Button)buttonsBox.getChildren().get( 0 )).setGraphic( new ImageView(img1) );
-            Pcategory.setValue(  ((Bien) product).getCategorie());
-            isAllInpulValid[0]=true;
-            isAllInpulValid[1]=true;
-            isAllInpulValid[2]=true;
+            usageOfThisForm = "update_prod";
+            Image img1 = new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/validation.png" ) ) );
+            ((Button) buttonsBox.getChildren().get( 0 )).setGraphic( new ImageView( img1 ) );
+            Pcategory.setValue( ((Bien) product).getCategorie() );
+            isAllInpulValid[0] = true;
+            isAllInpulValid[1] = true;
+            isAllInpulValid[2] = true;
         }
     }
 

@@ -245,10 +245,6 @@ public class NewLogInController implements Initializable {
         else if(email.getText().equals( "5" ))
             user=service.findParEmail("test2@gmail.com");
 
-        System.out.println(email.getText());
-        System.out.println(user);
-        System.out.println(user.getPassword());
-
         if(user.getPassword()==null){
             Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
             alert.show();
@@ -297,7 +293,6 @@ public class NewLogInController implements Initializable {
                                 UserController.setUser( user );
                                 loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
                                 layoutCode.setVisible( false );
-//                                  firstLayout.setOpacity(1);
                                 clean();
                             } else {
                                 System.out.println( "ghlalet " );

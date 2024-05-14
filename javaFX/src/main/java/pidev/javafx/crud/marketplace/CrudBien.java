@@ -75,14 +75,14 @@ public class CrudBien implements CrudInterface<Bien> {
 
     public void addItem(Bien bien) {
         String sql = "INSERT INTO product "
-                + "(idUser, name, descreption,isDeleted, price, quantity, state, type, category)"
+                + "(idUser, name, description,isDeleted, price, quantity, state, type, category)"
                 + " VALUES (?, ?, ?, ?, ?, ? ,? , ?, ?)";
 
         connect = ConnectionDB.getInstance().getCnx();
 
         try {
             prepare = connect.prepareStatement(sql);
-            prepare.setInt(1, 1);
+            prepare.setInt(1, bien.getIdUser());
             prepare.setString(2, bien.getName());
             prepare.setString(3, bien.getDescreption());
 //            prepare.setString(4,(bien.getImgSource().equals( "DO_NOT_UPDATE_OR_ADD_IMAGE" ))?"":getPathAndSaveIMG(bien.getImgSource()));
@@ -152,7 +152,7 @@ public class CrudBien implements CrudInterface<Bien> {
     public void updateItem(Bien bien) {
 
         String sql = "UPDATE product SET name = ?," +
-                " descreption = ?,"+
+                " description = ?,"+
 //                ((bien.getImgSource().equals( "DO_NOT_UPDATE_OR_ADD_IMAGE" ))?"":" imgSource = ?,")+
                 "price = ?,"+
                 " quantity = ?,"+

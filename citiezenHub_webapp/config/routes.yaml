@@ -2,6 +2,10 @@
 #    path: /
 #    controller: App\Controller\DefaultController::index
 
-index:
-  path: /sse/product
-  controller: App\Controller\ProductSSEController::index
+# config/routes.yaml
+
+
+api_upload_image:
+  path: /api/upload-image
+  controller: App\MyHelpers\ImageSaverForJava::uploadImage
+  methods: [POST]

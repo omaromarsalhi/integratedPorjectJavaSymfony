@@ -307,6 +307,9 @@ public class NewAccountController implements Initializable {
         AdvancedSettingsController advancedSettingsController = fxmlLoader.getController();
         advancedSettingsController.setUsageOfThisForm( usage );
         advancedSettingsController.setData( UserController.getInstance().getCurrentUser() );
+        mainInterface.setVisible( true );
+        mainInterface.getChildren().clear();
+        mainInterface.getChildren().add( form );
         MyTools.getInstance().showAnimation( form );
     }
 
