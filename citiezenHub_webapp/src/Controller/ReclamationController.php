@@ -181,12 +181,16 @@ public function list(ReclamationRepository $reclamationRepository): Response
     $labels = array_keys($dateCounts);
     $counts = array_values($dateCounts);
 
+    // Calculate the prediction for tomorrow
+    $averageDailyReclamations = !empty($counts) ? array_sum($counts) / count($counts) : 0;
+    $prediction = round($averageDailyReclamations); // Round to the nearest integer
+
     return $this->render('reponse/index.html.twig', [
         'reclamations' => $reclamations,
         'labels' => $labels,
-        'counts' => $counts
+        'counts' => $counts,
+        'prediction' => $prediction // Pass the prediction to the Twig template
     ]);
 }
-
 
 }
