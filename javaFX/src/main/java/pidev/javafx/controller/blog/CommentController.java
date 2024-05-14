@@ -57,7 +57,7 @@ public class CommentController {
 
         userName.setText(user.getFirstname() + " " + user.getLastname());
 
-        Image img = new Image( GlobalVariables.IMAGEPATH + user.getPhotos() );
+        Image img = new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() );
         AccImg.setImage(img);
 
     }

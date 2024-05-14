@@ -70,8 +70,7 @@ public class NewAccountController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         loadingPage.setVisible( false );
-        HBox reclamations = null;
-
+//        HBox reclamations = null;
 
 //        for (Reclamation reclamationData: ServiceReclamation.getInstance().getAll()){
 //            FXMLLoader fxmlLoader = new FXMLLoader();

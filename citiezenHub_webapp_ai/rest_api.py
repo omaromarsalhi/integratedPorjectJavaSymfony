@@ -8,7 +8,7 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://7205-35-227-96-216.ngrok-free.app'
+url='https://6b58-35-192-205-61.ngrok-free.app'
 
 
 

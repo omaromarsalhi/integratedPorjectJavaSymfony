@@ -3,7 +3,7 @@ from pathlib import Path
 import requests
 
 def idRcognition(path,fileName):
-    headers = {"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGYxN2RiZmEtY2YyNC00N2U3LWIzYTAtZmQzNTA3ODRlNzI4IiwidHlwZSI6ImFwaV90b2tlbiJ9.CwuUK4YxXSzyCehgbSt1clNsHMC_4Wgu-4sHRKhV2vo"}
+    headers = {"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNWI4ZWIwMmEtMGQ0OC00NjEwLTkxY2YtOTM1Yjk5NTk4YjA2IiwidHlwZSI6ImFwaV90b2tlbiJ9.YUcWSftTzeFrz1p_tJxVa-4kzhNuv47XTL4j5M9bVzU"}
 
     url = "https://api.edenai.run/v2/ocr/ocr"
     data = {
