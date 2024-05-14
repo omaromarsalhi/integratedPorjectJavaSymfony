@@ -16,21 +16,16 @@ class HomeController extends AbstractController
     public function index(ProductRepository $productRepository, MunicipaliteRepository $municipaliteRepository): Response
     {
         //news
-        $newsDataApi = new NewsDataApi();
-        $newsList = $newsDataApi->getNews();
-        $cinqPremier = array_slice($newsList, 0, 5);
-        //test
-
-
-        //products
-        $products = $productRepository->findVerifiedAndInStock();
+        //$newsDataApi = new NewsDataApi();
+        //$newsList = $newsDataApi->getNews();
+        //$cinqPremier = array_slice($newsList, 0, 5);
+        $cinqPremier = [];
 
         //users_municipality
         $top = $municipaliteRepository->findTopMunicipalities();
 
         return $this->render('home/index.html.twig', [
             'newsList' => $cinqPremier,
-            'products' => $products,
             'top' => $top
         ]);
     }
