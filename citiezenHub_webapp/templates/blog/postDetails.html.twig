@@ -39,8 +39,8 @@
                 <div class="col-xl-8 col-lg-8">
                     <div class="rn-blog-listen">
                         <div class="blog-content-top">
-                            <h2 class="title">Omar marrakchi Post</h2>
-                            <span class="date">{{ post.datePost|date('Y-m-d H:i:s') }}</span>
+                            <h2 class="title">{{ prenom }} {{ nom }} Post</h2>
+                            <span class="date">{{ post.datePost|date('Y-m-d H:i') }}</span>
                         </div>
                         <div class="bd-thumbnail">
                             <div class="large-img mb--10" style="position: relative">
@@ -65,7 +65,8 @@
                         <div class="comments-wrapper pt--40">
                             <div class="comments-area">
                                 <div class="trydo-blog-comment">
-                                    <h5 class="comment-title mb--10">{{ nbComments }} replies on Omar marrakchi Post</h5>
+                                    <h5 class="comment-title mb--10">{{ nbComments }} replies on {{ prenom }} {{ nom }}
+                                        Post</h5>
                                     <!-- Start Coment List  -->
                                     <ul class="comment-list">
 
@@ -80,12 +81,12 @@
                                                 <div class="single-comment">
                                                     <div class="comment-author comment-img">
                                                         <img class="comment-avatar"
-                                                             src="{{ asset('images/blog/ddbdd0d4-9b35-48a7-af56-9170ec809c04-1-661abe8155a9f401920793.jpg') }}"
+                                                             src="{{ asset('../usersImg/' ~ comment.userImage) }}"
                                                              alt="Comment Image"
                                                              style="width: 45px; height: 45px;"
                                                         >
                                                         <div class="m-b-20">
-                                                            <div class="commenter">Omar marrakchi</div>
+                                                            <div class="commenter">{{ comment.userSurname }} {{ comment.userName }}</div>
                                                             <div class="time-spent">{{ comment.dateComment }}</div>
                                                         </div>
                                                     </div>
@@ -101,21 +102,23 @@
 
 
                                                 </div>
-                                                <div class="meta"
-                                                     style="position: absolute; right: 15px; top: 32%; transform: translateY(-50%);">
-                                                    <div class="dropdown">
-                                                        <button class="dropbtnComment"><i class="fas fa-cog"></i>
-                                                        </button>
-                                                        <div class="dropdown-content">
-                                                            <button onclick="handleMenuAction(this, {{ comment.id }}, '{{ comment.caption }}',  {{ comment.idPost }}, 'modifier')">
-                                                                Modifier
+                                                {% if comment.userId == currentUser %}
+                                                    <div class="meta"
+                                                         style="position: absolute; right: 15px; top: 32%; transform: translateY(-50%);">
+                                                        <div class="dropdown">
+                                                            <button class="dropbtnComment"><i class="fas fa-cog"></i>
                                                             </button>
-                                                            <button onclick="handleMenuAction(this, {{ comment.id }}, '{{ comment.caption }}',  {{ comment.idPost }}, 'supprimer')">
-                                                                supprimer
-                                                            </button>
+                                                            <div class="dropdown-content">
+                                                                <button onclick="handleMenuAction(this, {{ comment.id }}, '{{ comment.caption }}',  {{ comment.idPost }}, 'modifier')">
+                                                                    Modifier
+                                                                </button>
+                                                                <button onclick="handleMenuAction(this, {{ comment.id }}, '{{ comment.caption }}',  {{ comment.idPost }}, 'supprimer')">
+                                                                    supprimer
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                {% endif %}
                                             </li>
                                         {% endfor %}
                                     </ul>
@@ -154,11 +157,6 @@
                         <!-- End Contact Form Area  -->
 
 
-
-
-
-
-
                         <!-- comment form area End -->
                     </div>
                 </div>
@@ -169,27 +167,40 @@
     <script>
         var images = {{ images|json_encode|raw }};
         var currentIndex = 0;
+        var idUser = 0;
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            $.ajax({
+                url: '/getUserId',
+                type: 'GET',
+                success: function (response) {
+                    idUser = response.userId;
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
 
 
         document.getElementById('prev-button').addEventListener('click', function () {
-
-
             currentIndex--;
             if (currentIndex < 0) {
-                currentIndex = images.length - 1; // Aller à la dernière image
+                currentIndex = images.length - 1;
             }
 
-            document.getElementById('post-image').src = '/images/blog/' + images[currentIndex];
+            document.getElementById('post-image').src = '../usersImg/' + images[currentIndex];
         });
 
         document.getElementById('next-button').addEventListener('click', function () {
 
             currentIndex++;
             if (currentIndex >= images.length) {
-                currentIndex = 0; // Retourner à la première image
+                currentIndex = 0;
             }
 
-            document.getElementById('post-image').src = '/images/blog/' + images[currentIndex];
+            document.getElementById('post-image').src = '../usersImg/' + images[currentIndex];
         });
 
 
@@ -210,13 +221,13 @@
                 url: '/newComment',
                 type: 'POST',
                 data: formData,
-                processData: false,  // Indique à jQuery de ne pas traiter les données
-                contentType: false,  // Indique à jQuery de ne pas définir le type de contenu
+                processData: false,
+                contentType: false,
                 success: function (response) {
                     // Gérer la réponse du serveur
                     if (response.success) {
                         if (response.success) {
-                            var newCommentHTML = createCommentHTML(response.comment);
+                            var newCommentHTML = createCommentHTML(response.comment, response.comment.userId);
                             $('#commentContainer').prepend(newCommentHTML);
                             $('html, body').animate({
                                 scrollTop: 950
@@ -256,43 +267,48 @@
             return updateBtn;
         }
 
-        function createCommentHTML(comment) {
+        function createCommentHTML(comment, idU) {
+
+            var dropDown = '';
+            if (idU === idUser) {
+                console.log('idU : ' + idU + ' idUser : ' + idUser);
+                dropDown = `
+            <div class="meta" style="position: absolute; right: 15px; top: 32%; transform: translateY(-50%);">
+                <div class="dropdown">
+                    <button class="dropbtnComment"><i class="fas fa-cog"></i></button>
+                    <div class="dropdown-content">
+                        <button onclick="handleMenuAction(this, ${comment.id}, '${comment.caption}', '${comment.idPost}', 'modifier')">Modifier</button>
+                        <button onclick="handleMenuAction(this, ${comment.id}, '${comment.caption}', '${comment.idPost}', 'supprimer')">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        `;
+            }
+
             return `
         <li class="comment parent" id="comment-${comment.id}" style="position: relative;">
             <div class="single-comment">
                 <div class="comment-author comment-img">
                     <img class="comment-avatar"
-                        src="{{ asset('images/blog/ddbdd0d4-9b35-48a7-af56-9170ec809c04-1-661abe8155a9f401920793.jpg') }}"
-                        alt="Comment Image"
-                        style="width: 45px; height: 45px;"
+                         src="../usersImg/${comment.userImage}"
+                         alt="Comment Image"
+                         style="width: 45px; height: 45px;"
                     >
-                        <div class="m-b-20">
-                            <div class="commenter">Omar marrakchi</div>
-                                <div class="time-spent">${comment.dateComment}</div>
-                            </div>
-                        </div>
-
-                        <div class="comment-text">
-                            <input id="caption-${comment.id}" type="text"
-                                value="${comment.caption}" disabled>
-                            </div>
-
-                        <div id="updateBtn-${comment.id}">
-
-                         </div>
-                </div>
-                <div class="meta" style="position: absolute; right: 15px; top: 32%; transform: translateY(-50%);">
-                    <div class="dropdown">
-                        <button class="dropbtnComment"><i class="fas fa-cog"></i></button>
-                            <div class="dropdown-content">
-                                <button onclick="handleMenuAction(this, ${comment.id}, '${comment.caption}', '${comment.idPost}', 'modifier')">Modifier</button>
-                                <button onclick="handleMenuAction(this, ${comment.id}, '${comment.caption}', '${comment.idPost}', 'supprimer')">Supprimer</button>
-                            </div>
-                        </div>
+                    <div class="m-b-20">
+                        <div class="commenter">${comment.userSurname} ${comment.userName}</div>
+                        <div class="time-spent">${comment.dateComment}</div>
                     </div>
+                </div>
+                <div class="comment-text">
+                    <input id="caption-${comment.id}" type="text" value="${comment.caption}" disabled>
+                </div>
+                <div id="updateBtn-${comment.id}"></div>
+            </div>
+            ${dropDown}
         </li>
     `;
         }
+
 
         function handleMenuAction(button, id, caption, postId, action) {
             var captionElement = document.getElementById('caption-' + id);
@@ -316,7 +332,7 @@
                         },
                         success: function (response) {
                             document.getElementById('comment-' + id).remove();
-                            var newCommentHTML = createCommentHTML(response.comment);
+                            var newCommentHTML = createCommentHTML(response.comment, response.comment.userId);
                             $('#commentContainer').prepend(newCommentHTML);
                         },
                         error: function (xhr, status, error) {
@@ -331,25 +347,25 @@
 
         function deleteComment(id) {
 
-                    $.ajax({
-                        url: '/deleteComment/' + id,
-                        type: 'DELETE',
-                        success: function (response) {
-                            if (response.success) {
-                                document.getElementById('comment-' + id).remove();
-                                Swal.fire(
-                                    'Supprimé!',
-                                    'Votre commentaire a été supprimé.',
-                                    'success'
-                                )
-                            } else {
-                                console.error('Une erreur est survenue lors de la suppression du commentaire.');
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(error);
-                        }
-                    });
+            $.ajax({
+                url: '/deleteComment/' + id,
+                type: 'DELETE',
+                success: function (response) {
+                    if (response.success) {
+                        document.getElementById('comment-' + id).remove();
+                        Swal.fire(
+                            'Supprimé!',
+                            'Votre commentaire a été supprimé.',
+                            'success'
+                        )
+                    } else {
+                        console.error('Une erreur est survenue lors de la suppression du commentaire.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
         }
 
 
