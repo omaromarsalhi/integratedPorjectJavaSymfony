@@ -16,10 +16,10 @@
                     </div>
                 </div>
                 <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Future Prediction</h4>
-                        <p>Based on current trends, we predict there will be approximately {{ prediction }} reclamations tomorrow.</p>
-                    </div>
+                <div class="card-body">
+            <h4 class="card-title">Future Prediction</h4>
+            <p>Based on current trends, we predict there will be approximately {{ prediction }} reclamations tomorrow.</p>
+        </div>
                 </div>
             </div>
             <div class="col-xl-7 col-xxl-8">
@@ -69,7 +69,7 @@
                                                         </svg>
                                                     </button>
                                                     <div class="dropdown-menu dropdown-menu-end py-2">
-                                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addResponseModal" data-reclamation-id="{{ reclamation.id }}" data-reclamation-subject="{{ reclamation.subject }}" data-reclamation-description="{{ reclamation.description }}">Add Response</a>
+                                                        <a class="dropdown-item" href="#!">add Response</a>
                                                         <a class="dropdown-item" href="#!">Export</a>
                                                         <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item text-danger" href="#!">Remove</a>
@@ -132,30 +132,8 @@
                 </div>
             </div>
         </div>
-
-        <!-- Add Response Modal -->
-        <div class="modal fade" id="addResponseModal" tabindex="-1" aria-labelledby="addResponseModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addResponseModalLabel">Add Response to Reclamation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Subject:</strong> <span id="reclamationSubject"></span></p>
-                        <p><strong>Description:</strong> <span id="reclamationDescription"></span></p>
-                        <form id="responseForm">
-                            <div class="mb-3">
-                                <label for="responseText" class="form-label">Your Response</label>
-                                <textarea class="form-control" id="responseText" rows="3" required></textarea>
-                            </div>
-                            <input type="hidden" id="reclamationId">
-                            <button type="submit" class="btn btn-primary">Submit Response</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
+        <!-- Prediction Section -->
         
         <footer class="footer position-absolute">
             <div class="row g-0 justify-content-between align-items-center h-100">
@@ -195,49 +173,6 @@
                         }
                     }
                 }
-            });
-
-            // Populate modal with reclamation details
-            const responseModal = document.getElementById('addResponseModal');
-            responseModal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
-                const reclamationId = button.getAttribute('data-reclamation-id');
-                const reclamationSubject = button.getAttribute('data-reclamation-subject');
-                const reclamationDescription = button.getAttribute('data-reclamation-description');
-                
-                document.getElementById('reclamationId').value = reclamationId;
-                document.getElementById('reclamationSubject').textContent = reclamationSubject;
-                document.getElementById('reclamationDescription').textContent = reclamationDescription;
-            });
-
-            // Handle form submission
-            document.getElementById('responseForm').addEventListener('submit', function (event) {
-                event.preventDefault();
-
-                const reclamationId = document.getElementById('reclamationId').value;
-                const responseText = document.getElementById('responseText').value;
-
-                fetch(`/reclamation/${reclamationId}/response`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token('add_response') }}'
-                    },
-                    body: JSON.stringify({
-                        responseText: responseText
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload();
-                    } else {
-                        alert('Error adding response');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
             });
         });
     </script>
