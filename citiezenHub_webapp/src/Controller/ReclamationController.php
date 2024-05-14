@@ -229,6 +229,7 @@ public function apiShow1(ReclamationRepository $reclamationRepository, $id): Jso
         'subject' => $reclamation->getSubject(),
         'description' => $reclamation->getDescription(),
         'privateKey' => $reclamation->getPrivateKey(),
+        'user'=> $reclamation->getUser(),
         'image' => $reclamation->getImage(),
         'responses' => $responseArray
     ], Response::HTTP_OK);
