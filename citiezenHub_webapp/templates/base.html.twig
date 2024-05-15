@@ -109,15 +109,15 @@
                                 <a href="#">Transport</a>
                                 <ul class="submenu">
                                     <li>
-                                        <a href="{{ path }}">Transport<i class="fa-solid fa-shop"></i></a>
+                                        <a href="{{ path }}">Transport<i class="fa-solid fa-bus"></i></a>
                                     </li>
                                     {% set path = app.user ? path('stationClient') : path('app_register') %}
                                     <li>
-                                        <a href="{{ path }}">Station<i class="fa-solid fa-shop"></i></a>
+                                        <a href="{{ path }}">Station<i class="fa-solid fa-warehouse"></i></i></a>
                                     </li>
                                     {% set path = app.user ? path('show_abonnement') : path('app_register') %}
                                     <li>
-                                        <a href="{{ path }}">Abonnement<i class="fa-solid fa-plus"></i></a>
+                                        <a href="{{ path }}">Abonnement<i class="fa-regular fa-address-card"></i></i></a>
                                     </li>
                                     {% set path = app.user ? path('app_addAbonnement') : path('app_register') %}
                                     <li>
@@ -155,10 +155,11 @@
                                     </li>
                                 </ul>
                             </li>
-                            {% set path = app.user ? path('app_news') : path('app_register') %}
-                            <li style="min-width: 100px"><a class="live-expo" href="{{ path }}">News</a></li>
                             {% set path = app.user ? path('app_reclamation') : path('app_register') %}
                             <li><a href="{{ path }}">Contact</a></li>
+                            {% set path = app.user ? path('app_news') : path('app_register') %}
+                            <li style="min-width: 100px"><a class="live-expo" href="{{ path }}">News</a></li>
+                            
                         </ul>
                         <!-- End Mainmanu Nav -->
                     </nav>
