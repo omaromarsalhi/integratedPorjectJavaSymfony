@@ -308,7 +308,7 @@ public class StationController implements Initializable {
     @FXML
     private Pane displayTransport;
 
-    final String destinationString = "src/main/resources/stationImg";
+    final String destinationString = "../citiezenHub_webapp/public/usersImg";
 
 
     @FXML
@@ -662,7 +662,7 @@ else
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        image_path = "/stationImg" + "/" + randomFileName;
+        image_path =  randomFileName;
 
         Station S = new Station(NomStationText1.getText(), image_path, AdressText1.getText(), BoxTypeVehicule1.getValue().toString() );
         System.out.println(S);

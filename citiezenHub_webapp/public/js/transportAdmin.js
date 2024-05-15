@@ -14,7 +14,7 @@ function addTransport(event) {
 alert("aaaa");
     formData.append('image', $('#createinputfile').prop('files')[0]);
     formData.append('reference', reference);
-    formData.append('time', Time);
+    formData.append('time', Time+":00");
     formData.append('type_vehicule', TypeVehicule);
     if(prix===''){
     prix=prix;
@@ -95,7 +95,7 @@ function updateTransport(event) {
 
     formData.append('image', $('#createinputfileUpd').prop('files')[0]);
     formData.append('reference', reference);
-    formData.append('time', Time);
+    formData.append('time', Time+":00");
     formData.append('type_vehicule', TypeVehicule);
     formData.append('prix', prix);
     formData.append('depart', depart);

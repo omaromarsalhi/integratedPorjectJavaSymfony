@@ -110,16 +110,22 @@ function validateLastName() {
 
 
 function testImage(filePath) {
+    document.getElementById('loadingLogo').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
     var critere = 0;
     let rep = "";
     let formData = new FormData();
     formData.append('file', filePath);
+
     $.ajax({
+
         url: '/AbonnementScan',
         type: "POST", // Change the request type to POST
         data: formData,
+
         processData: false,
         contentType: false,
+
         success: function (response) {
 
             for (i = 0; i < 10; i++) {
@@ -136,18 +142,18 @@ function testImage(filePath) {
             console.log(response);
             console.log(rep);
 
+            document.getElementById('loadingLogo').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
 
             if (critere == 2) {
                 $('#sucess-message').text(rep);
                 $('#statusSuccessModal').modal('show');
 
-                /*
-                                                $('#add-takeout-messages').html('<div class="alert alert-success">' +
-                                                '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
-                                                '<strong><i class="glyphicon glyphicon-ok-sign"></i></strong> ' + response +
-                                                '</div>');
-                */
+
             } else {
+
+                document.getElementById('loadingLogo').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
                 rep = " ";
                 rep = " Les critere ne sont pas respecté : \n L'image doit etre de type portrait et d'un etre humain   ";
                 console.log(rep);
@@ -158,6 +164,8 @@ function testImage(filePath) {
             }
         },
         error: function (xhr, status, error) {
+            document.getElementById('loadingLogo').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
             $('#statusErrorsModal').modal('show');
         }
     });

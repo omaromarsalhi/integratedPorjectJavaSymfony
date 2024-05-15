@@ -187,13 +187,13 @@
                   <Font name="Souliyo Unicode" size="15.0" />
                </font>
             </Label>
-            <ListView fx:id="abonnementListView" layoutX="45.0" layoutY="203.0" onKeyPressed="#searchAbonnement" onKeyReleased="#searchAbonnement" onMouseClicked="#onListViewClicked" prefHeight="452.0" prefWidth="313.0" style="-fx-background-color: C8transparentC8C8; -fx-border-radius: 10px; -fx-background-radius: 10px;" stylesheets="@../../../style/transport/Station.css" />
+            <ListView fx:id="abonnementListView" layoutX="45.0" layoutY="203.0" onKeyPressed="#searchAbonnement" onKeyReleased="#searchAbonnement" onMouseClicked="#onListViewClicked" prefHeight="452.0" prefWidth="313.0" style="-fx-background-color: transparent; -fx-border-radius: 10px; -fx-background-radius: 10px;" stylesheets="@../../../style/transport/Station.css" />
             <TextField fx:id="SearchText" layoutX="691.0" layoutY="125.0" onKeyPressed="#searchAbonnement" prefHeight="20.0" prefWidth="306.0" promptText="Search...." styleClass="SearchBar">
                <font>
                   <Font name="Souliyo Unicode" size="13.0" />
                </font>
             </TextField>
-            <Pane layoutX="392.0" layoutY="204.0" prefHeight="452.0" prefWidth="634.0" style="-fx-background-color: C8C8C8; -fx-border-color: 000000; -fx-border-radius: 10px; -fx-background-radius: 10px;">
+            <Pane layoutX="392.0" layoutY="204.0" prefHeight="452.0" prefWidth="634.0" style="-fx-background-color: C8C8C8; -fx-border-radius: 10px; -fx-background-radius: 10px;">
                <children>
                   <VBox layoutX="33.0" layoutY="10.0">
                      <children>

@@ -87,6 +87,7 @@ public class AbonnementClientController implements Initializable {
     private ImageView imageAbonne;
     @FXML
     private ImageView imageAbn;
+
     @FXML
     private AnchorPane loadinPage;
     @FXML
@@ -109,7 +110,7 @@ public class AbonnementClientController implements Initializable {
     TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(1), paneToAnnimate);
     String imagePath;
 
-    final String destinationString = "src/main/resources/abonnementImg";
+    final String destinationString = "../citiezenHub_webapp/public/usersImg";
 
 
 
@@ -165,9 +166,17 @@ public class AbonnementClientController implements Initializable {
                 if (!task.getValue().isEmpty() && task.getValue().containsKey("man")) {
                     Platform.runLater(() -> {
                         visiolScan.setVisible( false );
-                        imageAbn.setImage(new Image("file:///"+imagePath));
+                        System.out.println(imagePath);
+                        imageAbonne.setImage(new Image("file:///"+imagePath));
                     });
-                } else System.out.println("image should be of a humain being and in portrait mode");
+                }
+
+                else {
+                    visiolScan.setVisible( false );
+
+                    System.out.println("image should be of a humain being and in portrait mode");
+
+                }
             });
 
 
@@ -215,7 +224,7 @@ public class AbonnementClientController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        imagePath = "/abonnementImg" + "/" + randomFileName;
+        imagePath =  randomFileName;
 
         Abonnement p = new Abonnement(NomText.getText(), PrenomText.getText(), TypeAbonnementBox.getValue().toString(), imagePath);
         sa.addItem(p);
@@ -290,9 +299,13 @@ public class AbonnementClientController implements Initializable {
         PrenomLabel.setText(abonnementList.get(i).getPrenom());
         IdLabel.setText("000" + id);
         imagePath = abonnementList.get(i).getImage();
-        System.out.println(imagePath);
-        Image image = new Image( GlobalVariables.IMAGEPATH + imagePath);
-        imageAbonne.setImage(image);
+        System.out.println(GlobalVariables.IMAGEPATH+"usersImg/"+abonnementList.get(i).getImage() );
+        Image image = new Image( GlobalVariables.IMAGEPATH +"usersImg/"+ abonnementList.get(i).getImage());
+        imageAbn.setImage(image);
+        imageAbn.setStyle("-fx-background-radius: 50%;  ");
+        imageAbn.getStyleClass().add("rounded-image");
+
+
     }
 
     @FXML

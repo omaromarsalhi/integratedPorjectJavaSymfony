@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import pidev.javafx.model.Transport.Transport;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 
@@ -103,10 +104,10 @@ public class transportDetailsContoller implements Initializable {
     }
 
     public void fillDetails(){
-        Image image = new Image("file:///"+data.getVehicule_Image());
+        Image image = new Image( GlobalVariables.IMAGEPATH +"usersImg/"+ data.getVehicule_Image());
         imageLabel.setImage(image);
-        imageLabel.setFitWidth(94);
-        imageLabel.setFitHeight(63);
+        imageLabel.setStyle("-fx-background-radius: 50%;  ");
+        imageLabel.getStyleClass().add("rounded-image");
         ArriveLabel.setText(data.getArivee());
         HeureDepart.setText(data.getHeure().toString().substring(0,5));
         DepartLabel.setText(data.getDepart());
@@ -115,7 +116,6 @@ public class transportDetailsContoller implements Initializable {
         typeLabel.setText(data.getType_vehicule());
         referenceLabel.setText(data.getReference());
         stationLabel.setText("2AAAA");
-
 
     }
 

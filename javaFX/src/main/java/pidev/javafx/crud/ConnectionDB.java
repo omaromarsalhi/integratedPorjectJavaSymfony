@@ -15,7 +15,7 @@ public class ConnectionDB {
 
     private ConnectionDB(){
             try{
-                connect= DriverManager.getConnection("jdbc:mysql://localhost/pi_dev", "root", "");
+                connect= DriverManager.getConnection("jdbc:mysql://localhost/pidev", "root", "");
 //                connect= DriverManager.getConnection("jdbc:mysql://192.168.1.7/pi_dev", "root", "omar");
             }
             catch(Exception e){

@@ -135,8 +135,7 @@ public class TranportController implements Initializable {
     private Pane insertPane;
     @FXML
     private Pane updatePane;
-    final String destinationString = "src/main/resources/transportImg";
-
+    final String destinationString = "../citiezenHub_webapp/public/usersImg";
 
     @FXML
     private ComboBox<Station> Arrive1;
@@ -294,17 +293,16 @@ public class TranportController implements Initializable {
             protected void updateItem(String imagePath, boolean empty) {
                 super.updateItem(imagePath, empty);
 
-                if (empty || imagePath == null) {
-                    setGraphic(null);
-                } else {
+
                     // Set the image for the ImageView
-                    Image image = new Image( GlobalVariables.IMAGEPATH + imagePath);
+                    Image image = new Image( GlobalVariables.IMAGEPATH +"usersImg/"+ imagePath);
+                    System.out.println();
                     imageView.setImage(image);
                     imageView.setStyle("-fx-background-radius: 50%;  ");
                     imageView.getStyleClass().add("rounded-image");
                     setGraphic(imageView);
 
-                }
+
             }
         });
 
@@ -389,7 +387,7 @@ public class TranportController implements Initializable {
                     setGraphic(null);
                 } else {
                     // Set the image for the ImageView
-                    Image image = new Image(GlobalVariables.IMAGEPATH + imagePath);
+                    Image image = new Image(GlobalVariables.IMAGEPATH +"images/transport"+ imagePath);
                     imageView.setImage(image);
                     imageView.setStyle("-fx-background-radius: 50%;  ");
                     imageView.getStyleClass().add("rounded-image");
@@ -568,14 +566,16 @@ public class TranportController implements Initializable {
 
 
     public void insert_Image() {
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose a File");
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Images", "*.jpg", "*.png")
-        );
         var selectedFile = fileChooser.showOpenDialog(primaryStage);
+        if (selectedFile != null) {
+            imagePath = selectedFile.getAbsolutePath();
 
-        imagePath = selectedFile.getAbsolutePath();
+
+        }
+
     }
 
     public void load_insert() {
@@ -646,9 +646,11 @@ public class TranportController implements Initializable {
         String randomFileName = null;
         Path sourcePath = Paths.get(imagePath);
         if (imagePath.endsWith(".png")) {
-            randomFileName = UUID.randomUUID().toString() + ".png";
+            randomFileName ="/" +UUID.randomUUID().toString() + ".png";
+
         } else {
-            randomFileName = UUID.randomUUID().toString() + ".jpg";
+            randomFileName ="/" + UUID.randomUUID().toString() + ".jpg";
+
         }
         Path destinationPath = Paths.get(destinationString, randomFileName);
         System.out.println(sourcePath);
@@ -658,7 +660,7 @@ public class TranportController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        imagePath = "/transportImg" + "/" + randomFileName;
+        imagePath =  randomFileName;
 
         if (ReferenceText.getText().matches("1") || PrixText.getText() == null || imagePath == null) {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/Transport/exceptions/Dialog.fxml"));
