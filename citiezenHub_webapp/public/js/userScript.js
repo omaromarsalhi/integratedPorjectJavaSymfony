@@ -42,10 +42,10 @@ function saveUserLocation() {
         },
         async: true,
         success: function (response) {
-            console.log(response.state);
+            showValidPop("Address updated successfully");
         },
         error: function (response) {
-            console.log("error");
+            showValidPop("Address not updated successfully");
         },
     });
 
@@ -62,11 +62,10 @@ function afficherMessage() {
 }
 
 function parserMessagesErreur(reponseTexte) {
-    // Rechercher la partie JSON contenant les messages d'erreur
     const startIndex = reponseTexte.indexOf('{"success":false,"errors":');
     if (startIndex === -1) {
         console.error("Format de réponse d'erreur invalide.");
-        return {}; // Renvoyer un objet vide si le format est invalide
+        return {};
     }
     const erreurJSON = reponseTexte.substring(startIndex);
     try {
@@ -78,35 +77,18 @@ function parserMessagesErreur(reponseTexte) {
     }
 }
 
-function showLoaderAndBlockUI(event) {
-
-    const loader = document.getElementById('loader');
-    const mainContent = document.getElementById('main-content');
-    loader.style.display = 'flex';
-    mainContent.style.filter = 'blur(5px)';
-    setTimeout(() => {
-        const form = document.getElementById("signup-form");
-        form.submit();
-    }, 1000);
-}
-
 function afficherMessagesErreur(erreurs) {
-
     if (Object.keys(erreurs).length === 0) {
         return;
     }
     removeInputs();
     for (const champ in erreurs) {
-        console.log(champ);
         const conteneurErreurs = document.getElementById(champ);
         const contientTexte = conteneurErreurs.textContent.trim().length > 0;
         const messageErreur = erreurs[champ];
         conteneurErreurs.classList.add('test');
         conteneurErreurs.textContent = messageErreur;
-
     }
-
-
 }
 
 const customAlert = {
@@ -134,7 +116,6 @@ function editProfile(event) {
     let name = $('#firstnamee').val();
     let lastname = $('#lastnamee').val();
     let email = $('#email').val();
-
     let age = $('#agee').val();
     let gender = $('#gender').val();
     let status = $('#status').val();
@@ -167,21 +148,25 @@ function editProfile(event) {
                     removeInputs();
                 }
                 if (response.redirect) {
+                    console.log(response.redirect);
                     window.location.href = response.redirect;
-                    console.log("plplplp");
-                } else {
-                    let errors = response.errors;
-                    showInvalidPop("Data not updated successfully");
                 }
+
+                // else if((response.errors)) {
+                //     let errors = response.errors;
+                //     showInvalidPop("Data not updated successfully");
+                // }
             }, 3000)
         },
         error: function (response) {
             loader_stop(3000)
             setTimeout(function () {
                 const messagesErreur = parserMessagesErreur(response.responseText);
-                console.log(messagesErreur);
-                afficherMessagesErreur(messagesErreur);
-                showInvalidPop("Data not updated successfully");
+                    afficherMessagesErreur(messagesErreur);
+                    showInvalidPop('Data not updated successfully');
+                if (messagesErreur.hasOwnProperty('other')) {
+                    showInvalidPop('Invalid condtienls');
+                }
             }, 3000)
         },
     });
@@ -212,8 +197,6 @@ function editImage() {
             showValidPop("image updated successfully");
         },
         error: function (response) {
-            console.log("error");
-            showInvalidPop()
             showInvalidPop("image not updated successfully");
         },
     });
@@ -299,19 +282,16 @@ function editProfileAdmin(event) {
                 console.log(user)
                 removeInputs();
                 addErrorMessage(" Profile edited with sucess", 'success', 'message');
-                //   alert('Profile edited with sucess.');
             } else {
                 let errors = response.errors;
                 console.log(errors);
                 alert('Il y a des erreurs dans le formulaire. Veuillez corriger et réessayer.');
             }
-
         },
         error: function (response) {
             const messagesErreur = parserMessagesErreur(response.responseText);
             console.log(messagesErreur);
             afficherMessagesErreur(messagesErreur);
-            // addErrorMessage("you should fixed your errors",'error','message');
             alert('Il y a des erreurs dans le formulaire. Veuillez corriger et réessayer.');
 
         },

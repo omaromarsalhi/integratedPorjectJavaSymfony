@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Controller;
-
-
+use Symfony\Component\Translation\Translator;
 use App\Entity\Municipalite;
 use App\MyHelpers\AiVerification;
 use App\MyHelpers\ImageHelperUser;
@@ -45,41 +44,33 @@ class UserController extends AbstractController
             $user = $this->getUser();
             $user->setCinImages($frontIdPath . '_' . $backIdPath);
             $entityManager->flush();
-
             $obj = [
-                'pathFrontCin' => '../citiezenHub_webapp/public/usersImg/' . $frontIdPath,
-                'pathBackCin' => '../citiezenHub_webapp/public/usersImg/' . $backIdPath,
+                'pathFrontCin' => 'C:\\Users\\Latifa\\Desktop\\integratedPorjectJavaSymfony\\citiezenHub_webapp\\public\\usersImg\\' . $frontIdPath,
+                'pathBackCin' => 'C:\\Users\\Latifa\\Desktop\\integratedPorjectJavaSymfony\\citiezenHub_webapp\\public\\usersImg\\' . $backIdPath,
                 'fileNameFront' => md5('user_front' . ($user->getId() * 1000 + 17)),
                 'fileNameBackCin' => md5('user_backCin' . ($user->getId() * 1000 + 17)),
             ];
-
             $aiVerification->runOcr($obj);
-
             return new Response('done', Response::HTTP_OK);
         }
-
         return new Response('error', Response::HTTP_FORBIDDEN);
-
     }
 
 
     #[Route('/updateAddress', name: 'app_user_updateAddress', methods: ['GET', 'POST'])]
     public function updateAddress(Request $request, EntityManagerInterface $entityManager, MunicipaliteRepository $municipalityRepository): Response
     {
+//        $address=$this->userDate();
         if ($request->isXmlHttpRequest()) {
             $municipalityName = $request->get('municipality');
             $mapAddress = $request->get('mapAddress');
             $municipalityAddress = $request->get('municipalityAddressNew');
             $state = $request->get('state');
-
-            var_dump($municipalityAddress);
             if (!$this->getUser()) {
                 return new Response('error', Response::HTTP_FORBIDDEN);
             }
-
             $user = $this->getUser();
             $user->setAddress($mapAddress);
-
             if ($user->getMunicipalite() !== null && $user->getMunicipalite()->getName() === $municipalityName) {
                 $entityManager->flush();
                 return new Response('done', Response::HTTP_OK);
@@ -89,13 +80,9 @@ class UserController extends AbstractController
             $municipality->setName($municipalityName);
             $municipality->setAddress($municipalityAddress);
             $municipality->setGoverment($state);
-
             $user->setMunicipalite($municipality);
-
             $entityManager->persist($municipality);
             $entityManager->flush();
-
-
             return new Response('done', Response::HTTP_OK);
         }
         return new Response('error', Response::HTTP_FORBIDDEN);
@@ -103,23 +90,35 @@ class UserController extends AbstractController
 
 
     #[Route('/editProfile', name: 'editProfile', methods: ['GET', 'POST'])]
-    public function editUser(UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelperUser $imageHelper, SessionInterface $session): Response
+    public function editUser(ImageHelperUser $imageHelperUser, UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelperUser $imageHelper, SessionInterface $session): Response
     {
         $user = $rep->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
-
+//        $filePathFrontCin = md5('user_front' . ($user->getId() * 1000 + 17));
+//        $filePathBackCin = md5('user_backCin' . ($user->getId() * 1000 + 17));
+//        $file = '../../files/usersJsonFiles/' . $filePathFrontCin . $filePathBackCin . '.json';
+//        if (file_exists($file)) {
+//            $jsonStringFrontCin = file_get_contents($file);
+//            $jsonDataFrontCin = json_decode($jsonStringFrontCin, true);
+//            if (isset($jsonDataFrontCin['الولادة'])) {
+//                $dataUser['dob'] = $jsonDataFrontCin['الولادة']['data'];
+//            }
+//            if (isset($jsonDataFrontCin['cart id'])) {
+//                $dataUser['cin'] = $jsonDataFrontCin['cart id']['data'];
+//            }
+//        }
         $routePrecedente = $req->headers->get('referer');
         $parsedUrl = parse_url($routePrecedente);
         $path = $parsedUrl['path'];
         $alertMessage = "Votre profil a été modifié avec succès !";
         $session->set('profile_alert_message', $alertMessage);
-        $currentDate = $user->getDate();
-        $expiryTime = $currentDate->modify('+5 minutes');
+//        $currentDate = $user->getDate();
+        $expiryTime = $user->getDate()->modify('+5 minutes');
         $session->set('profile_alert_expiry', $expiryTime);
         $errorMessages = [];
         $current = new \DateTime('now', new \DateTimeZone('Africa/Tunis'));
         if ($req->isXmlHttpRequest()) {
-            if ($current->getTimestamp() < $expiryTime->getTimestamp() || $user->getState()) {
-//                $emailService->envoyerEmail($mailer);
+             if ($current->format('Y-m-d H:i:s')< $expiryTime->format('Y-m-d H:i:s') || $user->getState()) {
+//              $emailService->envoyerEmail($mailer);
                 $email = $req->get('email');
                 $name = $req->get('name');
                 $lastname = $req->get('lastname');
@@ -137,6 +136,7 @@ class UserController extends AbstractController
                 $user->setCin($cin);
                 $user->setStatus($status);
                 $user->setGender($gender);
+                 $user->setState(1);
                 if ($fichierImage != null)
                     $user->setImage($imageHelper->saveImages($fichierImage));
                 $datee = date_create($date);
@@ -146,11 +146,11 @@ class UserController extends AbstractController
                     $field = $error->getPropertyPath();
                     $errorMessages[$field] = $error->getMessage();
                 }
+// if (count($errors) === 0 && $dataUser['cin']== $user->getCin() && $dataUser['dob'] == $user->getDob()->format('Y-m-d')) {
                 if (count($errors) === 0) {
                     $em = $doc->getManager();
                     $em->persist($user);
                     $em->flush();
-
                     return new JsonResponse([
                         'success' => true,
                         'user' => [
@@ -168,24 +168,25 @@ class UserController extends AbstractController
                         ]
                     ]);
                 }
+//                $errorMessages['other'] = 'llll';
                 return new JsonResponse([
                     'success' => false,
                     'errors' => $errorMessages,
                 ], 422);
 
-            } else
+            }
+             else
                 return new JsonResponse([
                     'redirect' => $this->generateUrl('page404')
                 ]);
+
         }
 
         $map = new Map();
         if ($user->getCinImages() === null) {
-            $cinImages=['none','none'];
+            $cinImages = ['none', 'none'];
         } else
             $cinImages = explode("_", $user->getCinImages());
-
-
         return $this->render('user/edit_profile.html.twig', [
             'name' => $user->getFirstName(),
             'lastname' => $user->getLastName(),
@@ -202,12 +203,11 @@ class UserController extends AbstractController
             'routePrecedente' => $path,
             'expiry_time' => $expiryTime,
             'date' => $user->getDate(),
-            'cinFront' => $cinImages[0] ,
-            'cinBack' => $cinImages[1] ,
+            'cinFront' => $cinImages[0],
+            'cinBack' => $cinImages[1],
             'map' => $map,
         ]);
     }
-
 
     #[Route('/editImage', name: 'editImage', methods: ['GET', 'POST'])]
     public function editUserImage(EntityManagerInterface $entityManager, Request $req, ImageHelperUser $imageHelper): Response
@@ -221,10 +221,7 @@ class UserController extends AbstractController
             return new Response(' supprimé avec succès false ', Response::HTTP_OK);
         }
         return new Response('bad');
-
-
     }
-
     #[Route('/delete', name: 'app_user_delete')]
     public function delete(ManagerRegistry $doctrine, UserRepository $userRepository, Request $req): Response
     {
@@ -233,22 +230,15 @@ class UserController extends AbstractController
         $em->remove($user);
         $em->flush();
         return $this->redirectToRoute('app_login');
-//        return new Response(' supprimé avec succès false ', Response::HTTP_OK);
-
     }
-
-
     #[Route('/profile', name: 'profile', methods: ['GET', 'POST'])]
     public function consulterProfile(Request $req): Response
     {
         $name = $req->get('name');
-        dump($name);
         $lastname = $req->get('lastname');
-        dump($lastname);
         $email = $req->get('email');
-        dump($email);
         $image = $req->get('image');
-        dump($image);
+
         return $this->render('user/profile.html.twig', [
             'name' => $name,
             'lastname' => $lastname,
@@ -262,9 +252,7 @@ class UserController extends AbstractController
     {
         if ($req->isXmlHttpRequest()) {
             $errorMessages = [];
-            $Messages = '';
             $user = $this->getUser();
-
             $newPassword = $req->get('NewPass');
             $confirmPassword = $req->get('rePass');
             $oldPassword = $req->get('oldPass');
@@ -282,7 +270,6 @@ class UserController extends AbstractController
                 }
                 $errorMessages["other"] = 'nnnnnnnnnn';
             }
-
             $user->setPassword($hashedPassword);
             $em = $doc->getManager();
             $em->flush();
@@ -294,19 +281,54 @@ class UserController extends AbstractController
             ], 200);
         }
         return new Response('bad');
-
     }
 
 
     #[Route('/page404', name: 'page404', methods: ['GET', 'POST'])]
     public function loadPage404(): Response
     {
-
         return $this->render('user/404.html.twig', [
 
         ]);
     }
+    function translateText($textToTranslate, $sourceLanguage, $targetLanguage) {
+        $apiKey = "db017c40fad98dc5b9fc";
+        $url = "https://api.mymemory.translated.net/get?q=" . urlencode($textToTranslate) . "&langpair=" . $sourceLanguage . "|" . $targetLanguage . "&key=" . $apiKey;
+
+        $response = file_get_contents($url);
+        if ($response === false) {
+            throw new Exception("Erreur lors de la requête à l'API MyMemory");
+        }
+        $data = json_decode($response, true);
+        if (isset($data['responseData']['translatedText'])) {
+            return $data['responseData']['translatedText'];
+        } else {
+            throw new Exception("Erreur : champ 'translatedText' manquant dans responseData");
+        }
+    }
 
 
+
+//    function userDate()
+//    {
+//        $user=$this->getUser();
+//        $filePathFrontCin = md5('user_front' . ($user->getId() * 1000 + 17));
+//        $filePathBackCin = md5('user_backCin' . ($user->getId() * 1000 + 17));
+//        $file = '../../files/usersJsonFiles/' . $filePathFrontCin . $filePathBackCin . '.json';
+//        if (file_exists($file)) {
+//            $jsonStringFrontCin = file_get_contents($file);
+//            $jsonDataFrontCin = json_decode($jsonStringFrontCin, true);
+//            if (isset($jsonDataFrontCin['الولادة'])) {
+//                $dataUser['dob'] = $jsonDataFrontCin['الولادة']['data'];
+//            }
+//            if (isset($jsonDataFrontCin['cart id'])) {
+//                $dataUser['cin'] = $jsonDataFrontCin['cart id']['data'];
+//            }
+//            if (isset($jsonDataFrontCin['العنوان'])) {
+//                $dataUser['address'] = $jsonDataFrontCin['العنوان']['data'];
+//            }
+//        }
+//        return $dataUser;
+//    }
 }
 
