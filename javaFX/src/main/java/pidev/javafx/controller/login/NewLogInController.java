@@ -201,28 +201,6 @@ public class NewLogInController implements Initializable {
     }
 
 
-//    public void logIn(ActionEvent actionEvent) {
-//
-//        ServiceUser service = new ServiceUser();
-//        User user = service.findParEmail( email.getText() );
-//
-////        User user=service.findParEmail("salhiomar362@gmail.com");
-//
-//        if (user.getPassword() == null) {
-//
-//            System.out.println( "wrong" );
-//        } else if (PasswordHasher.verifyPassword( password.getText(), user.getPassword() )) {
-//            user.setIsConnected( 1 );
-//            UserController.setUser( service.findParEmail( email.getText() ) );
-//            System.out.println( UserController.getInstance().getCurrentUser().getFirstname() );
-//            ((Stage) Stage.getWindows().get( 0 )).close();
-//            if (user.getRole() == Role.Citoyen)
-//                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-//            else
-//                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
-//
-//        }
-//    }
 
     public void setUser(int n) {
         nbr = n;
@@ -498,19 +476,5 @@ public class NewLogInController implements Initializable {
 
     }
 
-//    void resetPassword(MouseEvent event) {
-//
-//
-//        ServiceUser service=new ServiceUser();//bech nverifiw est ce que il e-mail mawjoud w le kbal mnbaath il code
-//        if(service.chercherParEmail(email.getText()))//true
-//        {
-//            User user = new User();
-//        }
-//        else {
-//
-//            System.out.println("email n'exsite pas");
-//        }
-//    }
-//
 }
 

@@ -250,7 +250,7 @@ public class UserFormController implements Initializable {
             phone.setText( String.valueOf( user.getNum() ) );
         if (user.getDob() != null)
             dob.setValue( LocalDate.parse( user.getDob().formatted( DateTimeFormatter.ofPattern( "yyy/MM/DD" ) ) ) );
-        img.setImage( new Image( GlobalVariables.IMAGEPATH + user.getPhotos() ) );
+        img.setImage( new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() ) );
         UserController.setUser( user );
     }
 

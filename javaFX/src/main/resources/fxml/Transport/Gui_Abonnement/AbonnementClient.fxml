@@ -18,7 +18,7 @@
 
 <StackPane style="-fx-background-color: transparent; -fx-background-radius: 20; -fx-border-radius: 20;" stylesheets="@../../../style/transport/Transport.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.abonnement.AbonnementClientController">
    <children>
-      <VBox fx:id="mainContainer" alignment="CENTER" prefHeight="670.0" prefWidth="938.0" style="-fx-background-color: transparent; -fx-background-radius: 20; -fx-border-color: 20;">
+      <VBox fx:id="mainContainer" alignment="CENTER" prefHeight="670.0" prefWidth="938.0" style="-fx-background-color: transparent;">
          <children>
             <HBox alignment="CENTER" prefHeight="77.0" prefWidth="1040.0" spacing="500.0">
                <children>
@@ -89,7 +89,7 @@
                                     <Font name="Souliyo Unicode" size="13.0" />
                                  </font>
                               </Label>
-                              <ImageView fx:id="imageAbonne" fitHeight="154.0" fitWidth="126.0" layoutX="11.0" layoutY="21.0" pickOnBounds="true">
+                              <ImageView fx:id="imageAbn" fitHeight="154.0" fitWidth="126.0" layoutX="11.0" layoutY="21.0" pickOnBounds="true">
                                  <image>
                                     <Image url="@../../../../../../../../javaFX/src/main/resources/img/omar.jpg" />
                                  </image>
@@ -154,7 +154,7 @@
                                  <children>
                                     <Button mnemonicParsing="false" onAction="#insert_Image" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                                        <graphic>
-                                          <ImageView fx:id="imageAbn" fitHeight="127.0" fitWidth="126.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="imageAbonne" fitHeight="127.0" fitWidth="126.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../../../icons/userIcons/image128B.png" />
                                              </image>
@@ -283,7 +283,7 @@
                   </HBox>
                   <AnchorPane fx:id="loadinPage" minWidth="-Infinity" prefHeight="510.0" prefWidth="370.0">
                      <children>
-                        <ImageView fitHeight="75.0" fitWidth="104.0" layoutX="148.0" layoutY="218.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="217.39999999999998" AnchorPane.leftAnchor="148.0" AnchorPane.rightAnchor="147.39999999999998" AnchorPane.topAnchor="218.0">
+                        <ImageView fx:id="imageAbonne" fitHeight="75.0" fitWidth="104.0" layoutX="148.0" layoutY="218.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="217.39999999999998" AnchorPane.leftAnchor="148.0" AnchorPane.rightAnchor="147.39999999999998" AnchorPane.topAnchor="218.0">
                            <image>
                               <Image url="@../../../img/marketPlace/grey-9026_256.gif" />
                            </image>

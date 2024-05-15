@@ -113,7 +113,7 @@ public class PopUpCommentsController implements Initializable {
         });
         ConectedAccount = UserController.getInstance().getCurrentUser().getId();
         BlogService blogService = new BlogService();
-        Image img1 = new Image( GlobalVariables.IMAGEPATH + UserController.getInstance().getCurrentUser().getPhotos());
+        Image img1 = new Image( GlobalVariables.IMAGEPATH4USER + UserController.getInstance().getCurrentUser().getPhotos());
         ProfileImg.setImage(img1);
         comments = new ArrayList<>(getComments());
         for (Comment comment : comments) {
@@ -171,7 +171,7 @@ public class PopUpCommentsController implements Initializable {
         User user = serviceUser.getUserById(post.getIdCompte());
         commentName.setText("Publication de " + user.getFirstname() + " " + user.getLastname());
         Image img;
-        CommentProp.setImage(new Image(GlobalVariables.IMAGEPATH + user.getPhotos() ));
+        CommentProp.setImage(new Image(GlobalVariables.IMAGEPATH4USER + user.getPhotos() ));
         username.setText(user.getFirstname() + " " + user.getLastname());
         imgVerified.setVisible(user.getRole() != Role.Citoyen);
 

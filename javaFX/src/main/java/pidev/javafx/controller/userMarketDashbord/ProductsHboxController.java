@@ -5,6 +5,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,8 +15,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.JSONObject;
 import pidev.javafx.model.MarketPlace.Bien;
 import pidev.javafx.model.MarketPlace.Product;
+import pidev.javafx.tools.marketPlace.AiVerification;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,13 +47,24 @@ public class ProductsHboxController implements Initializable {
     private Label id;
     @FXML
     private ImageView stateImage;
+    @FXML
+    private Button aiResultBtn;
+
+
 
     private Bien bien;
     private Popup popup = new Popup();
     private Timeline fiveSecondsWonder = new Timeline();
 
+
+
+    private JSONObject jsonObject;
+
+    private String verificationState = "unverified";
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        aiResultBtn.setVisible( false );
     }
 
 
@@ -62,7 +76,7 @@ public class ProductsHboxController implements Initializable {
             id.setVisible( false );
 //            image.setImage( new Image( GlobalVariables.IMAGEPATH + bien.getImageSourceByIndex( 0 ),40,40,false,false ) );
 //            image.setImage( new Image( "file:src/main/resources/usersImg/0a82a778-9301-4cd1-a535-63a1df7e18c7.png",40,40,false,false ) );
-            image.setImage( new Image( "http://127.0.0.1:8000/"+bien.getImageSourceByIndex( 0 ), 40, 40, false, false ) );
+            image.setImage( new Image( "http://127.0.0.1:8000/" + bien.getImageSourceByIndex( 0 ), 40, 40, false, false ) );
             name.setText( bien.getName() );
             descreption.setText( bien.getDescreption() );
             price.setText( bien.getPrice().toString() );
@@ -70,8 +84,16 @@ public class ProductsHboxController implements Initializable {
             state.setText( bien.getState().toString() );
             creationDate.setText( bien.getTimestamp().toString() );
             category.setText( bien.getCategorie().toString() );
-            if (product.getState().equals( "verified" ))
+            if (product.getState().equals( "verified" )) {
                 stateImage.setImage( new Image( "file:src/main/resources/icons/marketPlace/approve24C.png", 24, 24, true, true ) );
+                verificationState = "verified";
+            } else if (testStateAiVerification()) {
+                verificationState = "half-verified";
+                stateImage.setImage( new Image( "file:src/main/resources/icons/marketPlace/mark.png" ) );
+                stateImage.setFitWidth( 16 ); // Set desired width
+                stateImage.setFitHeight( 16 );
+                aiResultBtn.setVisible( true );
+            }
         }
     }
 
@@ -116,7 +138,13 @@ public class ProductsHboxController implements Initializable {
 
     @FXML
     private void onStateMouseEntered(MouseEvent event) {
-        Label mainContainer = new Label( "WE ARE VERIFYING THIS PRODUCT SO THAT IF IT IS COMPATIBLE OTHERWISE IT WILL BE DELETED" );
+        Label mainContainer;
+        if (verificationState.equals( "unverified" )) {
+            mainContainer = new Label( "WE ARE VERIFYING THIS PRODUCT SO THAT IF IT IS COMPATIBLE OTHERWISE IT WILL BE DELETED" );
+        } else if (verificationState.equals( "half-verified" )) {
+            mainContainer = new Label( "CLICK ON THIS Ai BUTTON FOR FURTHER DETAILS" );
+        } else
+            mainContainer = new Label( "Verified" );
         mainContainer.setMaxWidth( 200 );
         mainContainer.setWrapText( true );
         mainContainer.setAlignment( Pos.CENTER );
@@ -136,11 +164,19 @@ public class ProductsHboxController implements Initializable {
     }
 
 
-//    @FXML
-//    public void onUpdateClicked(ActionEvent event){
-//        CustomMouseEvent<Bien> customMouseEvent=new CustomMouseEvent<>(bien);
-//        EventBus.getInstance().publish( "updateProd",customMouseEvent);
-//    }
+    private boolean testStateAiVerification() {
+        var ai = new AiVerification();
+        var result = ai.HttpAiResultState( Integer.parseInt( id.getText() ) );
+        System.out.println(result);
+        jsonObject = new JSONObject( result );
+        return (boolean) jsonObject.get( "doesItExist" );
+    }
 
+    public String getVerificationState() {
+        return verificationState;
+    }
+    public JSONObject getJsonObject() {
+        return jsonObject;
+    }
 
 }

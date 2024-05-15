@@ -75,7 +75,11 @@ function displayAllStations(map, addressArray, idArray) {
         const marker = new google.maps.Marker({
             position: { lat: lat, lng: lng },
             map: map,
-            title: idArray[index], // Assigning title with the ID
+            title: idArray[index],
+            icon: {
+                url: "images/transport/sex.png", // Replace with the URL to your image
+                scaledSize: new google.maps.Size(80, 80) // Adjust the size to fit your needs
+            }
         });
 
         // Add click listener to each marker

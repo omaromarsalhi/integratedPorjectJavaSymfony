@@ -28,6 +28,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.json.JSONObject;
 import pidev.javafx.controller.chat.ChatController;
 import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.tools.GlobalVariables;
@@ -115,7 +116,7 @@ public class MainDashbordController implements Initializable {
 
         scroll.setFitToWidth( true );
         secondInterface.setVisible( false );
-        userImage.setImage( new Image( GlobalVariables.IMAGEPATH + UserController.getInstance().getCurrentUser().getPhotos() ) );
+        userImage.setImage( new Image( GlobalVariables.IMAGEPATH4USER + UserController.getInstance().getCurrentUser().getPhotos() ) );
         username.setText( UserController.getInstance().getCurrentUser().getFirstname().toUpperCase() );
         userEmail.setText( UserController.getInstance().getCurrentUser().getEmail() );
 
@@ -338,6 +339,29 @@ public class MainDashbordController implements Initializable {
     }
 
 
+    public void doShowDetails(JSONObject jsonObject) {
+        secondIHbox.getChildren().clear();
+        secondInterface.setVisible( true );
+        firstInterface.setOpacity( 0.4 );
+        setAiResult(jsonObject);
+    }
+
+    public void setAiResult(JSONObject jsonObject) {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation( getClass().getResource( "/fxml/userMarketDashbord/aiReselt.fxml" ) );
+        ScrollPane form = null;
+        try {
+            form = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+        AiResultController aiResultController=fxmlLoader.getController();
+        aiResultController.setData(jsonObject);
+        secondIHbox.getChildren().add( form );
+        MyTools.getInstance().showAnimation( form );
+    }
+
+
     public void loadInfoItem(Product prod) {
         VBox info = null;
         try {
@@ -541,9 +565,10 @@ public class MainDashbordController implements Initializable {
 
 
     public void loadListOfProducts(ObservableList<Bien> biens) {
-        var executer = Executors.newFixedThreadPool( 6 );
-        for (int i = 0; i < biens.size(); i++)
+        var executer = Executors.newFixedThreadPool( 10 );
+        for (int i = 0; i < biens.size(); i++) {
             executer.submit( loadingItemsThread( biens.get( i ) ) );
+        }
         executer.shutdown();
     }
 
@@ -584,6 +609,12 @@ public class MainDashbordController implements Initializable {
                             }
                     );
                 } );
+                if(myTask.getValue().getSecond().getVerificationState().equals( "half-verified" )) {
+                    myTask.getValue().getFirst().lookup( "#aiResultBtn" ).setOnMouseClicked( event -> {
+                        doShowDetails( myTask.getValue().getSecond().getJsonObject() );
+                    } );
+                }
+
                 myTask.getValue().getFirst().setOnMouseClicked( event -> loadInfoItem( prod ) );
                 showAllProdsInfo.getChildren().add( myTask.getValue().getFirst() );
             } );

@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+
 public class MapController implements Initializable {
 
 
@@ -59,9 +60,9 @@ public class MapController implements Initializable {
             String municipality = (String) result.getMember( "municipality" );
             String municpalityGoverment = (String) result.getMember( "government" );
             String municipalityAddress = (String) result.getMember( "municipalityAddress" );
-            System.out.println( STR."Received lat: \{latitude}, lng: \{longitude}" );
-            System.out.println( STR."Received lat: \{municipality}, lng: \{municpalityGoverment}" );
-            System.out.println( STR."Received lat: \{municipalityAddress}" );
+//            System.out.println( STR. "Received lat: \{latitude}, lng: \{longitude}" );
+//            System.out.println( STR."Received lat: \{municipality}, lng: \{municpalityGoverment}" );
+//            System.out.println( STR."Received lat: \{municipalityAddress}" );
         }
     }
 

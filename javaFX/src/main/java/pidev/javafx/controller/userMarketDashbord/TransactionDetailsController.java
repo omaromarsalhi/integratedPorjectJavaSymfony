@@ -67,11 +67,11 @@ public class TransactionDetailsController  implements Initializable {
         User seller=servideUser.getUserById( transaction.getIdSeller());
         User buyer=servideUser.getUserById( transaction.getIdBuyer());
 
-        sellerImage.setImage( new Image( GlobalVariables.IMAGEPATH +seller.getPhotos(),50,50,true,true) );
+        sellerImage.setImage( new Image( GlobalVariables.IMAGEPATH4USER +seller.getPhotos(),50,50,true,true) );
         sellerName.setText( seller.getFirstname() );
         sellerLastName.setText( seller.getLastname() );
 
-        buyerImage.setImage( new Image( GlobalVariables.IMAGEPATH+buyer.getPhotos(),50,50,true,true) );
+        buyerImage.setImage( new Image( GlobalVariables.IMAGEPATH4USER+buyer.getPhotos(),50,50,true,true) );
         buyerName.setText( buyer.getFirstname() );
         buyerLastName.setText( buyer.getLastname() );
 

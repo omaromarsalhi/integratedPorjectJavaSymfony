@@ -65,7 +65,7 @@ public class MainWindowAdminController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        accountImg.setImage(new Image( GlobalVariables.IMAGEPATH+ UserController.getInstance().getCurrentUser().getPhotos(),25,25,true,true)  );
+        accountImg.setImage(new Image( GlobalVariables.IMAGEPATH4USER+ UserController.getInstance().getCurrentUser().getPhotos(),25,25,true,true)  );
         accountBtn.setText( UserController.getInstance().getCurrentUser().getFirstname()+" "+UserController.getInstance().getCurrentUser().getLastname() );
 //        ChatClient.getInstance().establishConnection();
         notifHbox.setVisible( false );

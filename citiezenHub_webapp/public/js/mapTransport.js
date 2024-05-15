@@ -31,6 +31,7 @@ function initMap(departLatitude, departLongitude, arriveLatitude, arriveLongitud
 
         const marker = new google.maps.Marker({
             position: clickedLatLng,
+
         });
 
         marker.setMap(map);
@@ -102,8 +103,13 @@ function initMap(departLatitude, departLongitude, arriveLatitude, arriveLongitud
             });
 
             const carMarker = new google.maps.Marker({
-                position: startPoint,
-                map: map,
+                    position: startPoint,
+                    map: map,
+                icon: {
+                    url: "../sex_bus.png", // Replace with the URL to your image
+                    scaledSize: new google.maps.Size(140, 50) // Adjust the size to fit your needs
+                }
+
             });
 
             let step = 0;

@@ -86,7 +86,7 @@ public class ItemInfoController implements Initializable {
         itemDesc.setText( product.getDescreption() );
         priceLable.setText( Float.toString(product.getPrice()) );
         quantityLable.setText(Float.toString(product.getQuantity())   );
-        userImage.setImage(new Image(GlobalVariables.IMAGEPATH+user.getPhotos()));
+        userImage.setImage(new Image(GlobalVariables.IMAGEPATH4USER+user.getPhotos()));
 //        stateLabel.setText((product.getState())?"In Stock":"Out Of Stock");
         scroollImages();
     }
