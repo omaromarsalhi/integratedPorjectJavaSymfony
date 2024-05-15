@@ -222,7 +222,7 @@
                         </div><!-- parent pages-->
 
                         <p class="navbar-vertical-label"></p>
-                        <div class="nav-item-wrapper"><a class="nav-link label-1" href="apps/chat.html" role="button"
+                        <div class="nav-item-wrapper"><a class="nav-link label-1" href="{{ path('admin_reclamation') }}" role="button"
                                                          data-bs-toggle="" aria-expanded="false">
                                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span
                                                 data-feather="archive"></span></span><span
@@ -7788,6 +7788,10 @@
 <!-- ===============================================-->
 
 
+
+
+
+
 <script src={{ asset('assetsAdmin/vendors/popper/popper.min.js') }}></script>
 <script src={{ asset('assetsAdmin/vendors/bootstrap/bootstrap.min.js') }}></script>
 <script src={{ asset('assetsAdmin/vendors/anchorjs/anchor.min.js') }}></script>
@@ -7807,10 +7811,7 @@
 <script src={{ asset('assetsAdmin/vendors/glightbox/glightbox.min.js') }}></script>
 <script src={{ asset('https://cdn.jsdelivr.net/npm/sweetalert2@11') }}></script>
 
-
-
 {% block js %}
-
 
 {% endblock %}
 
