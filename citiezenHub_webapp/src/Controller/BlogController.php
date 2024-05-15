@@ -61,7 +61,7 @@ class BlogController extends AbstractController
             return [
                 'id' => $post->getId(),
                 'caption' => $post->getCaption(),
-                'datePost' => $post->getDatePost()->format('Y-m-d H:i:s'),
+                'datePost' => $post->getDatePost()->format('D, d M y h:i A'),
                 'nbReactions' => $post->getNbReactions(),
                 'images' => $imagesArray,
                 'url' => $postUrl,
@@ -150,16 +150,26 @@ class BlogController extends AbstractController
 
             $postUrl = $this->generateUrl('app_PostDetail', ['id' => $post->getId()]);
 
+            $user = $post->getUser();
+            $userName = $user->getLastName();
+            $userSurname = $user->getFirstName();
+            $userImage = $user->getImage();
+            $userId = $user->getId();
+
             return new JsonResponse([
                 'success' => true,
                 'post' => [
                     'id' => $post->getId(),
                     'caption' => $post->getCaption(),
-                    'datePost' => $post->getDatePost()->format('Y-m-d H:i:s'),
+                    'datePost' => $post->getDatePost()->format('D, d M y h:i A'),
                     'nbReactions' => $post->getNbReactions(),
                     'images' => $imagesArray,
                     'url' => $postUrl,
                     'nbComments' => $nbComments,
+                    'userName' => $userName,
+                    'userSurname' => $userSurname,
+                    'userImage' => $userImage,
+                    'userId' => $userId,
                 ]
             ]);
         }
@@ -222,6 +232,12 @@ class BlogController extends AbstractController
 
         $postUrl = $this->generateUrl('app_PostDetail', ['id' => $post->getId()]);
 
+        $user = $post->getUser();
+        $userName = $user->getLastName();
+        $userSurname = $user->getFirstName();
+        $userImage = $user->getImage();
+        $userId = $user->getId();
+
         $this->addFlash('success', 'Le post a bien été modifié.');
 
         return new JsonResponse([
@@ -229,11 +245,15 @@ class BlogController extends AbstractController
             'post' => [
                 'id' => $post->getId(),
                 'caption' => $post->getCaption(),
-                'datePost' => $post->getDatePost()->format('Y-m-d H:i:s'),
+                'datePost' => $post->getDatePost()->format('D, d M y h:i A'),
                 'nbReactions' => $post->getNbReactions(),
                 'images' => $imagesArray,
                 'url' => $postUrl,
                 'nbComments' => $nbComments,
+                'userName' => $userName,
+                'userSurname' => $userSurname,
+                'userImage' => $userImage,
+                'userId' => $userId,
             ]
         ]);
     }
@@ -253,14 +273,24 @@ class BlogController extends AbstractController
 
             $nbComments = count($post->getComments());
 
+            $user = $post->getUser();
+            $userName = $user->getLastName();
+            $userSurname = $user->getFirstName();
+            $userImage = $user->getImage();
+            $userId = $user->getId();
+
             return [
                 'id' => $post->getId(),
                 'caption' => $post->getCaption(),
-                'datePost' => $post->getDatePost()->format('Y-m-d H:i:s'),
+                'datePost' => $post->getDatePost()->format('D, d M y h:i A'),
                 'nbReactions' => $post->getNbReactions(),
                 'images' => $imagesArray,
                 'url' => $postUrl,
                 'nbComments' => $nbComments,
+                'userName' => $userName,
+                'userSurname' => $userSurname,
+                'userImage' => $userImage,
+                'userId' => $userId,
             ];
         }, $posts);
 
@@ -300,23 +330,39 @@ class BlogController extends AbstractController
                 ];
             }, $images);
 
+            $user = $post->getUser();
+            $userName = $user->getLastName();
+            $userSurname = $user->getFirstName();
+            $userImage = $user->getImage();
+            $userId = $user->getId();
+
+
+
             $comments = $post->getComments()->toArray();
             $commentsArray = array_map(function ($comment) {
                 return [
                     'id' => $comment->getIdComment(),
                     'caption' => $comment->getCaption(),
-                    'dateComment' => $comment->getDateComment()->format('Y-m-d H:i:s'),
+                    'dateComment' => $comment->getDateComment()->format('D, d M y h:i A'),
+                    'userName' => $comment->getUser()->getLastName(),
+                    'userSurname' => $comment->getUser()->getFirstName(),
+                    'userImage' => $comment->getUser()->getImage(),
+                    'userId' => $comment->getUser()->getId(),
                 ];
             }, $comments);
 
             return [
                 'id' => $post->getId(),
                 'caption' => $post->getCaption(),
-                'datePost' => $post->getDatePost()->format('Y-m-d H:i:s'),
+                'datePost' => $post->getDatePost()->format('D, d M y h:i A'),
                 'nbReactions' => $post->getNbReactions(),
                 'images' => $imagesArray,
                 'comments' => $commentsArray,
                 'nbComments' => count($comments),
+                'userName' => $userName,
+                'userSurname' => $userSurname,
+                'userImage' => $userImage,
+                'userId' => $userId,
             ];
         }, $posts);
 
@@ -326,7 +372,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/PostDetail/{id}', name: 'app_PostDetail')]
-    public function indexPostDetail($id, PostRepository $postRepository, CommentPostRepository $commentPostRepository): Response
+    public function indexPostDetail($id, PostRepository $postRepository, CommentPostRepository $commentPostRepository, UserRepository $userRepository): Response
     {
         $post = $postRepository->find($id);
 
@@ -341,20 +387,36 @@ class BlogController extends AbstractController
 
         $comments = $commentPostRepository->findBy(['post' => $post->getId()], ['dateComment' => 'DESC']);
 
+
+        $userEmail = $this->getUser()->getUserIdentifier();
+        $user = $userRepository->findOneBy(['email' => $userEmail]);
+        $currentUser = $user->getId();
+
+
         $commentsArray = array_map(function ($comment) {
             return [
                 'id' => $comment->getIdComment(),
                 'idPost' => $comment->getPost()->getId(),
                 'caption' => $comment->getCaption(),
-                'dateComment' => $comment->getDateComment()->format('Y-m-d H:i:s'),
+                'dateComment' => $comment->getDateComment()->format('Y-m-d H:i A'),
+                'userName' => $comment->getUser()->getLastName(),
+                'userSurname' => $comment->getUser()->getFirstName(),
+                'userImage' => $comment->getUser()->getImage(),
+                'userId' => $comment->getUser()->getId(),
+
             ];
         }, $comments);
+
+
 
         return $this->render('blog/postDetails.html.twig', [
             'post' => $post,
             'images' => $imagesArray,
             'comments' => $commentsArray,
             'nbComments' => count($comments),
+            'nom' => $post->getUser()->getLastName(),
+            'prenom' => $post->getUser()->getFirstName(),
+            'currentUser' => $currentUser,
         ]);
     }
 
@@ -367,7 +429,6 @@ class BlogController extends AbstractController
         $caption = $request->request->get('caption');
         $postId = $request->request->get('post_id');
 
-        // Trouver le post correspondant
         $post = $entityManager->getRepository(Post::class)->find($postId);
 
         if (!$post) {
@@ -387,13 +448,23 @@ class BlogController extends AbstractController
         $entityManager->persist($comment);
         $entityManager->flush();
 
+        $user = $comment->getUser();
+        $userName = $user->getLastName();
+        $userSurname = $user->getFirstName();
+        $userImage = $user->getImage();
+        $userId = $user->getId();
+
         return new JsonResponse([
             'success' => true,
             'comment' => [
                 'id' => $comment->getIdComment(),
                 'idPost' => $comment->getPost()->getId(),
                 'caption' => $comment->getCaption(),
-                'dateComment' => $comment->getDateComment()->format('Y-m-d H:i:s'),
+                'dateComment' => $comment->getDateComment()->format('D, d M y h:i A'),
+                'userName' => $userName,
+                'userSurname' => $userSurname,
+                'userImage' => $userImage,
+                'userId' => $userId,
             ]
         ]);
     }
@@ -443,13 +514,23 @@ class BlogController extends AbstractController
         $entityManager->persist($comment);
         $entityManager->flush();
 
+        $user = $comment->getUser();
+        $userName = $user->getLastName();
+        $userSurname = $user->getFirstName();
+        $userImage = $user->getImage();
+        $userId = $user->getId();
+
         return new JsonResponse([
             'success' => true,
             'comment' => [
                 'id' => $comment->getIdComment(),
                 'idPost' => $comment->getPost()->getId(),
                 'caption' => $comment->getCaption(),
-                'dateComment' => $comment->getDateComment()->format('Y-m-d H:i:s'),
+                'dateComment' => $comment->getDateComment()->format('D, d M y h:i A'),
+                'userName' => $userName,
+                'userSurname' => $userSurname,
+                'userImage' => $userImage,
+                'userId' => $userId,
             ]
         ]);
     }

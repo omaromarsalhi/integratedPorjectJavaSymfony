@@ -111,7 +111,7 @@ public class BlogController implements Initializable {
         leftArrow.setVisible(false);
         leftArrow.setManaged(false);
         BlogService blogService = new BlogService();
-        Image img = new Image( GlobalVariables.IMAGEPATH + UserController.getInstance().getCurrentUser().getPhotos() );
+        Image img = new Image( GlobalVariables.IMAGEPATH4USER + UserController.getInstance().getCurrentUser().getPhotos() );
         ProfileImg.setImage(img);
         EventBus.getInstance().subscribe( "loadPosts",this::setPathPosts );
     }

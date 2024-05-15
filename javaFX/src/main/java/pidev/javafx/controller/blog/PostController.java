@@ -319,7 +319,7 @@ public class PostController extends VBox implements Initializable {
 
         //path mtaa latifa lezm tetbadel
 
-        imgProfile.setImage(new Image( GlobalVariables.IMAGEPATH + user.getPhotos() ));
+        imgProfile.setImage(new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() ));
 
         username.setText(user.getFirstname() + " " + user.getLastname());
         imgVerified.setVisible(user.getRole() != Role.Citoyen);

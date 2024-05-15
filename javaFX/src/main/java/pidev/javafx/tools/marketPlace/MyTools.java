@@ -136,10 +136,10 @@ public class MyTools {
 
     public String getPathAndSaveIMG(String chosenFilePath) {
 
-        String path = "/usersImg/" + UUID.randomUUID() + ".png";
+        String path = "usersImg/" + UUID.randomUUID() + ".png";
 
         Path src = Paths.get( chosenFilePath );
-        Path dest = Paths.get( "src/main/resources" + path );
+        Path dest = Paths.get( "C:/Users/omar salhi/Desktop/integratedPorjectJavaSymfony/citiezenHub_webapp/public/" + path );
 
         try {
             Files.copy( src, dest );
@@ -151,10 +151,10 @@ public class MyTools {
     }
     public String getPathAndSaveIMGUser(String chosenFilePath) {
 
-        String path = "/image/" + UUID.randomUUID() + ".png";
+        String path = "usersImg/" + UUID.randomUUID() + ".png";
 
         Path src = Paths.get( chosenFilePath );
-        Path dest = Paths.get( "src/main/resources" + path );
+        Path dest = Paths.get( "C:\\Users\\omar salhi\\Desktop\\integratedPorjectJavaSymfony\\citiezenHub_webapp\\public\\" + path );
 
         try {
             Files.copy( src, dest );

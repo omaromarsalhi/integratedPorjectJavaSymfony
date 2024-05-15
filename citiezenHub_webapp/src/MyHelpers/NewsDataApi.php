@@ -22,7 +22,7 @@ class NewsDataApi {
             foreach ($data['results'] as $article) {
                 $news = array(
                     "sourceId" => $article["source_id"],
-                    "date" => $article["pubDate"],
+                    "date" => date('D, d M y h:i A', strtotime($article["pubDate"])),
                     "title" => $article["title"],
                     "description" => $article["description"],
                     "imageUrl" => isset($article["image_url"]) ? $article["image_url"] : null,

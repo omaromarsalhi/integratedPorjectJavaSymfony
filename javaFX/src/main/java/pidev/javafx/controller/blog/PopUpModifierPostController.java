@@ -178,7 +178,7 @@ public class PopUpModifierPostController implements Initializable {
         User user = serviceUser.getUserById(post.getIdCompte());
 
 
-        AccountImg.setImage(new Image( GlobalVariables.IMAGEPATH + user.getPhotos() ));
+        AccountImg.setImage(new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() ));
 
         Image img;
         idPostUpadte = post.getId();
