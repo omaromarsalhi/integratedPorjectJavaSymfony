@@ -28,7 +28,7 @@ class Abonnement
 
     #[ORM\Column(length: 255)]
     private ?string $datefin = null;
-    
+
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
@@ -88,6 +88,7 @@ class Abonnement
     {
         return $this->datefin;
     }
+
 /*
     public function setdatefin(?\DateTimeInterface $datefin): static
     {

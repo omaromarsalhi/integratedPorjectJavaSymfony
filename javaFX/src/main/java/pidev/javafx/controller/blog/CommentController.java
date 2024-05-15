@@ -12,6 +12,7 @@ import pidev.javafx.model.blog.Comment;
 import pidev.javafx.crud.blog.BlogService;
 import pidev.javafx.crud.blog.CommentService;
 import pidev.javafx.model.user.User;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 
 import java.sql.Timestamp;
@@ -56,7 +57,7 @@ public class CommentController {
 
         userName.setText(user.getFirstname() + " " + user.getLastname());
 
-        Image img = new Image("file:src/main/resources/" + user.getPhotos() );
+        Image img = new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() );
         AccImg.setImage(img);
 
     }

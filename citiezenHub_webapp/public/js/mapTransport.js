@@ -3,7 +3,7 @@
 function initMap(departLatitude, departLongitude, arriveLatitude, arriveLongitude) {
     const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: (departLatitude + arriveLatitude) / 2, lng: (departLongitude + arriveLongitude) / 2 },
-        zoom: 7,
+        zoom: 14.5, // Adjust this value (e.g., 10, 15, etc.) for desired zoom level
         mapTypeControl: true,
     });
 
@@ -31,6 +31,7 @@ function initMap(departLatitude, departLongitude, arriveLatitude, arriveLongitud
 
         const marker = new google.maps.Marker({
             position: clickedLatLng,
+
         });
 
         marker.setMap(map);
@@ -102,8 +103,13 @@ function initMap(departLatitude, departLongitude, arriveLatitude, arriveLongitud
             });
 
             const carMarker = new google.maps.Marker({
-                position: startPoint,
-                map: map,
+                    position: startPoint,
+                    map: map,
+                icon: {
+                    url: "../sex_bus.png", // Replace with the URL to your image
+                    scaledSize: new google.maps.Size(140, 50) // Adjust the size to fit your needs
+                }
+
             });
 
             let step = 0;
@@ -172,8 +178,6 @@ function getStationCoordinates(departId, arriveId) {
         },
         dataType: 'json',
         success: function(response) {
-            console.log("aziz zabour")
-            // Process the response (no need to split addresses)
                         const departStation = response.data.depart;
                         const arriveStation = response.data.arrive;
 
@@ -186,8 +190,8 @@ function getStationCoordinates(departId, arriveId) {
 
                         // Call initMap with the coordinates
                         initMap(departLatitude, departLongitude, arriveLatitude, arriveLongitude);
+                        openModalMap();
 
-            // You can further manipulate the response data here based on your needs
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("Error getting station coordinates:", textStatus, errorThrown);
@@ -195,9 +199,6 @@ function getStationCoordinates(departId, arriveId) {
         }
     });
 }
-
-
-
 
 
 

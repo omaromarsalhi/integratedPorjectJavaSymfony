@@ -30,10 +30,13 @@
     </div>
     </div>
 
+
     <!--
     <script>
         initMap();
     </script>-->
+
+
 {% endblock %}
 
 {% block scripts %}
@@ -42,6 +45,15 @@
         {% for station in stationlist %}
         nomstationArray.push("{{ station.AddressStation }}");
         {% endfor %}
+
+
+        var stationArray = [];
+        {% for station in stationlist %}
+
+        stationArray.push("{{ station.id }}");
+
+        {% endfor %}
+
     </script>
     <script
             src="https://maps.googleapis.com/maps/api/js?key={{ app.request.server.get('MAP_VARIABLE') }}&callback=initMap&libraries=places&v=weekly&solution_channel=GMP_CCS_autocomplete_v1"

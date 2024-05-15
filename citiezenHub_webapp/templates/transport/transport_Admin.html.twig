@@ -245,7 +245,7 @@
                                     <td class="align-middle text-end transactions" style="width:17%">
                                         <h6 class="mb-0"><span>
            <div class="avatar avatar-l"><img class="rounded-circle"
-                                             src="/images/transports/{{ transport.VehiculeImage }}" alt=""/></div>
+                                             src="/usersImg/{{ transport.VehiculeImage }}" alt=""/></div>
                       </span></h6>
                                     </td>
                                     <td class="align-middle rating white-space-nowrap fs-10">
@@ -275,7 +275,7 @@
                                         <div class="position-relative">
                                             <div class="hover-actions">
                                                 <button class="btn btn-sm btn-phoenix-secondary me-1 fs-10"
-                                                        onclick=""></span></button>
+                                                        onclick=""></button>
                                                 <button class="btn btn-sm btn-phoenix-secondary fs-10" onclick=""><span
                                                             class="fas fa-trash"></span>
                                                 </button>
@@ -324,7 +324,7 @@
             <div class="col-12 col-xl-6">
                 <div class="mx-n4 mx-lg-n6 ms-xl-0 h-100">
                     <div class="h-100 w-100">
-                        <div class="h-100 bg-body-emphasis" id="map" style="min-height: 300px;"></div>
+                        <div class="h-100 bg-body-emphasis" id="map" style="min-height: 600px;"></div>
                     </div>
                 </div>
             </div>
@@ -593,11 +593,42 @@
             </div>
         </form>
     </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+        const customIconUrl = "235-2350691_map-marker-google-map-marker-yellow.png";
+
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        // Add a tile layer (here we use OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Example data - you should replace this with your actual data
+        var markersData = [
+            { coordinates: [51.5, -0.09], popupText: "Marker 1" },
+            { coordinates: [51.51, -0.1], popupText: "Marker 2" },
+            // Add more markers as needed
+        ];
+
+        // Define the size of the icon
+        var iconSize = [32, 32]; // Adjust the size as needed
+
+        // Add markers to the map
+        markersData.forEach(function(markerData) {
+            var marker = L.marker(markerData.coordinates, {
+            }).addTo(map);
+            marker.bindPopup(markerData.popupText).openPopup();
+        });
+    </script>
+
 
 
 {% endblock %}
 
 {% block js %}
+
     <script src="{{ asset('js/transportAdmin.js') }}"></script>
 
 

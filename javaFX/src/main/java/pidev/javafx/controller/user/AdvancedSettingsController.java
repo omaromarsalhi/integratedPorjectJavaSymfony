@@ -69,7 +69,6 @@ public class AdvancedSettingsController implements Initializable {
         if(UserController.getInstance().getCurrentUser().getPassReseted())
             layoutUpadatePassword.getChildren().remove( 1 );
 
-
     }
 
 

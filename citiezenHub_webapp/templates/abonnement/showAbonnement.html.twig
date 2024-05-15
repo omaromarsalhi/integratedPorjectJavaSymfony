@@ -64,52 +64,70 @@
                         </div>
                         <div class="col-xl-6 col-lg-12 col-12 order-2 order-xl-2 order-sm-2">
                             <div class="item-description">
-                                <p>
-                                    Cet abonnement est personnel et ne permet qu'à celui qui l'achète de l'utiliser.
-                                </p>
+
                                 <div class="product-share-wrapper">
-                                    <div class="profile-share">
-                                        <a href="author.html" class="avatar"
-                                           data-tooltip={{ abonnement.nom }} {{ abonnement.Prenom }}>
-                                            <img src="{{ asset('/images/abonnements/'~ abonnement.image ) }}"
-                                                 alt="Nft_Profile">
-                                        </a>
-                                        <a class="more-author-text" href="#">2+ </a>
-                                    </div>
+
                                     <!-- Start Countdown area -->
-                                    <div class="countdown" data-date="{{ abonnement.dateFin }}">
-                                        <div class="countdown-container days">
-                                            <span class="countdown-value days-bottom">285</span>
-                                            <span class="countdown-heading days-top">Day</span>
-                                        </div>
-                                        <div class="countdown-container hours">
-                                            <span class="countdown-value hours-bottom">09</span>
-                                            <span class="countdown-heading hours-top">Hr's</span>
-                                        </div>
-                                        <div class="countdown-container minutes">
-                                            <span class="countdown-value minutes-bottom">30</span>
-                                            <span class="countdown-heading minutes-top">Min's</span>
-                                        </div>
-                                        <div class="countdown-container seconds">
-                                            <span class="countdown-value seconds-bottom">15</span>
-                                            <span class="countdown-heading seconds-top">Sec</span>
-                                        </div>
-                                    </div>
                                     <!-- End Countdown area -->
                                 </div>
-                                <button type="button" class="btn btn-primary-alta btn-large mt--35"
-                                        data-bs-toggle="modal" data-bs-target="#placebidModal" tabindex="0">Voir détails
-                                </button>
-                                {#   <button type="button" class="btn btn-primary-alta btn-large mt--35" data-bs-toggle="modal" data-bs-target="#placebidModal" tabindex="0" onclick="deletePost({{abonnement.id}})">Supprimer l'abonnement</button> #}
-                            </div>
-                        </div>
-                        <div class="col-xl-2 col-lg-12 col-12 order-1 order-xl-3 order-sm-3">
-                            <div class="img-thumb-award d-flex justify-content-center">
-                                <img src="{{ asset('/images/abonnements/'~ abonnement.image ) }}" alt="Nuron-Logo">
+                                <div class="row d-flex justify-content-center">
+                                    <div class="col col-md-9 col-lg-7 col-xl-7">
+                                        <div class="card" style="border-radius: 15px;">
+                                            <div class="card-body p-4">
+                                                <div class="d-flex">
+                                                    <div class="flex-shrink-0">
+                                                        <img src="{{ asset('/usersImg/'~ abonnement.image ) }}"
+                                                             alt="Generic placeholder image" class="img-fluid" style="width: 180px; height:     220px; border-radius: 10px;">
+                                                    </div>
+                                                    <div class="flex-grow-1 ms-3">
+                                                        <h5 class="mb-1">{{ abonnement.nom }} {{ abonnement.Prenom }}></h5>
+                                                        <div class="countdown" data-date="{{ abonnement.dateFin }}">
+                                                            <div class="countdown-container days">
+                                                                <span class="countdown-value days-bottom">285</span>
+                                                                <span class="countdown-heading days-top">Day</span>
+                                                            </div>
+                                                            <div class="countdown-container hours">
+                                                                <span class="countdown-value hours-bottom">09</span>
+                                                                <span class="countdown-heading hours-top">Hr's</span>
+                                                            </div>
+                                                            <div class="countdown-container minutes">
+                                                                <span class="countdown-value minutes-bottom">30</span>
+                                                                <span class="countdown-heading minutes-top">Min's</span>
+                                                            </div>
+                                                            <div class="countdown-container seconds">
+                                                                <span class="countdown-value seconds-bottom">15</span>
+                                                                <span class="countdown-heading seconds-top">Sec</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
+                                                            <div>
+                                                                <p class="mb-1">Date Debut</p>
+                                                                <p class="small text-muted mb-1">{{ abonnement.dateFin }}</p>
+
+                                                            </div>
+                                                            <div class="px-3">
+                                                                <p class="mb-1">Date Fin</p>
+                                                                <p class="small text-muted mb-1">16-05-2024</p>
+                                                            </div>
+                                                            <div>
+                                                                <p class="mb-0">Type Abonnement</p>
+                                                                <p class="small text-muted mb-1">{{ abonnement.TypeAbonnement }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
+
+
             {% endfor %}
             {#            </div> #}
         </div>
@@ -120,6 +138,11 @@
             background-size: cover;
             background-position: center;
         }
+
+
+
+
+
 
     </style>
 {% endblock %}

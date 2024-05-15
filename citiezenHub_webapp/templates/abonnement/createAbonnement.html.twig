@@ -100,14 +100,10 @@
                              </div>
 
 
-                             <div class="col-md-12 col-xl-4">
-                                 <div class="input-box">
-                                     <button type="button" class="btn btn-primary-alta btn-large w-100" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="openPopup()">Preview</button>
-                                 </div>
-                             </div>
 
-                             <div class="col-md-12 col-xl-8 mt_lg--15 mt_md--15 mt_sm--15">
-                                 <div class="input-box">
+
+                             <div class="col-md-12 col-xl-8 mt_lg--15 mt_md--15 mt_sm--15" >
+                                 <div class="input-box" style="align-content: center">
                                      <button class="btn btn-primary btn-large w-100" onclick="addPost(event)">Submit Item</button>
  
                                  </div>
@@ -159,7 +155,10 @@
 	</div>
 </div>
 
-  
+    <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; height: 100%; width: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9998;"></div>
+    <div id="loadingLogo" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999; width: 700px; height: 700px;">
+        <img src="{{ asset('images/transport/aziz.gif') }}" alt="Loading...">
+    </div>
  
    
 {% endblock %}

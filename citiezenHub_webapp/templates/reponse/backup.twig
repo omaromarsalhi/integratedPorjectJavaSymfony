@@ -1,0 +1,185 @@
+{% extends 'index.html.twig' %}
+
+{% block title %}Hello ReponseController!{% endblock %}
+
+{% block body %}
+<div class="content">
+        <div class="pb-9">
+          <h2 class="mb-4">Purchasers and sellers</h2>
+          <div class="row g-3 justify-content-between mb-4">
+            <div class="col-auto">
+              <div class="d-flex flex-wrap gap-2"><button class="btn btn-primary"><svg class="svg-inline--fa fa-envelope me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="envelope" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M464 64C490.5 64 512 85.49 512 112C512 127.1 504.9 141.3 492.8 150.4L275.2 313.6C263.8 322.1 248.2 322.1 236.8 313.6L19.2 150.4C7.113 141.3 0 127.1 0 112C0 85.49 21.49 64 48 64H464zM217.6 339.2C240.4 356.3 271.6 356.3 294.4 339.2L512 176V384C512 419.3 483.3 448 448 448H64C28.65 448 0 419.3 0 384V176L217.6 339.2z"></path></svg><!-- <span class="fas fa-envelope me-2"></span> Font Awesome fontawesome.com -->Send mail</button><button class="btn btn-phoenix-primary"><svg class="svg-inline--fa fa-pencil me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pencil" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M421.7 220.3L188.5 453.4L154.6 419.5L158.1 416H112C103.2 416 96 408.8 96 400V353.9L92.51 357.4C87.78 362.2 84.31 368 82.42 374.4L59.44 452.6L137.6 429.6C143.1 427.7 149.8 424.2 154.6 419.5L188.5 453.4C178.1 463.8 165.2 471.5 151.1 475.6L30.77 511C22.35 513.5 13.24 511.2 7.03 504.1C.8198 498.8-1.502 489.7 .976 481.2L36.37 360.9C40.53 346.8 48.16 333.9 58.57 323.5L291.7 90.34L421.7 220.3zM492.7 58.75C517.7 83.74 517.7 124.3 492.7 149.3L444.3 197.7L314.3 67.72L362.7 19.32C387.7-5.678 428.3-5.678 453.3 19.32L492.7 58.75z"></path></svg><!-- <span class="fas fa-pencil me-2"></span> Font Awesome fontawesome.com -->Edit</button><button class="btn btn-phoenix-secondary text-body"><svg class="svg-inline--fa fa-file-export fs-9 me-2" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-export" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" data-fa-i2svg=""><path fill="currentColor" d="M192 312C192 298.8 202.8 288 216 288H384V160H256c-17.67 0-32-14.33-32-32L224 0H48C21.49 0 0 21.49 0 48v416C0 490.5 21.49 512 48 512h288c26.51 0 48-21.49 48-48v-128H216C202.8 336 192 325.3 192 312zM256 0v128h128L256 0zM568.1 295l-80-80c-9.375-9.375-24.56-9.375-33.94 0s-9.375 24.56 0 33.94L494.1 288H384v48h110.1l-39.03 39.03C450.3 379.7 448 385.8 448 392s2.344 12.28 7.031 16.97c9.375 9.375 24.56 9.375 33.94 0l80-80C578.3 319.6 578.3 304.4 568.1 295z"></path></svg><!-- <span class="fa-solid fa-file-export fs-9 me-2"></span> Font Awesome fontawesome.com -->Export</button></div>
+            </div>
+            <div class="col-auto">
+              <div class="d-flex">
+                <div class="search-box me-2 d-none d-xl-block">
+                  <form class="position-relative" data-bs-toggle="search" data-bs-display="static"><input class="form-control search-input search" type="search" placeholder="Search by name" aria-label="Search">
+                    <svg class="svg-inline--fa fa-magnifying-glass search-box-icon" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M500.3 443.7l-119.7-119.7c27.22-40.41 40.65-90.9 33.46-144.7C401.8 87.79 326.8 13.32 235.2 1.723C99.01-15.51-15.51 99.01 1.724 235.2c11.6 91.64 86.08 166.7 177.6 178.9c53.8 7.189 104.3-6.236 144.7-33.46l119.7 119.7c15.62 15.62 40.95 15.62 56.57 0C515.9 484.7 515.9 459.3 500.3 443.7zM79.1 208c0-70.58 57.42-128 128-128s128 57.42 128 128c0 70.58-57.42 128-128 128S79.1 278.6 79.1 208z"></path></svg><!-- <span class="fas fa-search search-box-icon"></span> Font Awesome fontawesome.com -->
+                  </form>
+                </div><button class="btn px-3 btn-phoenix-secondary me-2 d-xl-none"><svg class="svg-inline--fa fa-magnifying-glass" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="magnifying-glass" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M500.3 443.7l-119.7-119.7c27.22-40.41 40.65-90.9 33.46-144.7C401.8 87.79 326.8 13.32 235.2 1.723C99.01-15.51-15.51 99.01 1.724 235.2c11.6 91.64 86.08 166.7 177.6 178.9c53.8 7.189 104.3-6.236 144.7-33.46l119.7 119.7c15.62 15.62 40.95 15.62 56.57 0C515.9 484.7 515.9 459.3 500.3 443.7zM79.1 208c0-70.58 57.42-128 128-128s128 57.42 128 128c0 70.58-57.42 128-128 128S79.1 278.6 79.1 208z"></path></svg><!-- <span class="fa-solid fa-search"></span> Font Awesome fontawesome.com --></button><button class="btn px-3 btn-phoenix-primary" type="button" data-bs-toggle="modal" data-bs-target="#filterModal" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><svg class="svg-inline--fa fa-filter" data-fa-transform="down-3" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="filter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="" style="transform-origin: 0.5em 0.6875em;"><g transform="translate(256 256)"><g transform="translate(0, 96)  scale(1, 1)  rotate(0 0 0)"><path fill="currentColor" d="M3.853 54.87C10.47 40.9 24.54 32 40 32H472C487.5 32 501.5 40.9 508.1 54.87C514.8 68.84 512.7 85.37 502.1 97.33L320 320.9V448C320 460.1 313.2 471.2 302.3 476.6C291.5 482 278.5 480.9 268.8 473.6L204.8 425.6C196.7 419.6 192 410.1 192 400V320.9L9.042 97.33C-.745 85.37-2.765 68.84 3.854 54.87L3.853 54.87z" transform="translate(-256 -256)"></path></g></g></svg><!-- <span class="fa-solid fa-filter" data-fa-transform="down-3"></span> Font Awesome fontawesome.com --></button>
+                <div class="modal fade" id="filterModal" tabindex="-1">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border border-translucent">
+                      <form id="addEventForm" autocomplete="off">
+                        <div class="modal-header border-translucent p-4">
+                          <h5 class="modal-title text-body-highlight fs-6 lh-sm">Filter</h5><button class="btn p-1 text-body" type="button" data-bs-dismiss="modal" aria-label="Close"><svg class="svg-inline--fa fa-xmark fs-9" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="xmark" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M310.6 361.4c12.5 12.5 12.5 32.75 0 45.25C304.4 412.9 296.2 416 288 416s-16.38-3.125-22.62-9.375L160 301.3L54.63 406.6C48.38 412.9 40.19 416 32 416S15.63 412.9 9.375 406.6c-12.5-12.5-12.5-32.75 0-45.25l105.4-105.4L9.375 150.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 210.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25l-105.4 105.4L310.6 361.4z"></path></svg><!-- <span class="fas fa-times fs-9"></span> Font Awesome fontawesome.com --></button>
+                        </div>
+                        <div class="modal-body pt-4 pb-2 px-4">
+                          <div class="mb-3"><label class="fw-bold mb-2 text-body-highlight" for="leadStatus">Lead Status</label><select class="form-select" id="leadStatus">
+                              <option value="newLead" selected="selected">New Lead</option>
+                              <option value="coldLead">Cold Lead</option>
+                              <option value="wonLead">Won Lead</option>
+                              <option value="canceled">Canceled</option>
+                            </select></div>
+                          <div class="mb-3"><label class="fw-bold mb-2 text-body-highlight" for="createDate">Create Date</label><select class="form-select" id="createDate">
+                              <option value="today" selected="selected">Today</option>
+                              <option value="last7Days">Last 7 Days</option>
+                              <option value="last30Days">Last 30 Days</option>
+                              <option value="chooseATimePeriod">Choose a time period</option>
+                            </select></div>
+                          <div class="mb-3"><label class="fw-bold mb-2 text-body-highlight" for="designation">Designation</label><select class="form-select" id="designation">
+                              <option value="VPAccounting" selected="selected">VP Accounting</option>
+                              <option value="ceo">CEO</option>
+                              <option value="creativeDirector">Creative Director</option>
+                              <option value="accountant">Accountant</option>
+                              <option value="executiveManager">Executive Manager</option>
+                            </select></div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-end align-items-center px-4 pb-4 border-0 pt-3"><button class="btn btn-sm btn-phoenix-primary px-4 fs-10 my-0" type="submit"> <svg class="svg-inline--fa fa-arrows-rotate me-2 fs-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrows-rotate" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M464 16c-17.67 0-32 14.31-32 32v74.09C392.1 66.52 327.4 32 256 32C161.5 32 78.59 92.34 49.58 182.2c-5.438 16.81 3.797 34.88 20.61 40.28c16.89 5.5 34.88-3.812 40.3-20.59C130.9 138.5 189.4 96 256 96c50.5 0 96.26 24.55 124.4 64H336c-17.67 0-32 14.31-32 32s14.33 32 32 32h128c17.67 0 32-14.31 32-32V48C496 30.31 481.7 16 464 16zM441.8 289.6c-16.92-5.438-34.88 3.812-40.3 20.59C381.1 373.5 322.6 416 256 416c-50.5 0-96.25-24.55-124.4-64H176c17.67 0 32-14.31 32-32s-14.33-32-32-32h-128c-17.67 0-32 14.31-32 32v144c0 17.69 14.33 32 32 32s32-14.31 32-32v-74.09C119.9 445.5 184.6 480 255.1 480c94.45 0 177.4-60.34 206.4-150.2C467.9 313 458.6 294.1 441.8 289.6z"></path></svg><!-- <span class="fas fa-arrows-rotate me-2 fs-10"></span> Font Awesome fontawesome.com -->Reset</button><button class="btn btn-sm btn-primary px-9 fs-10 my-0" type="submit">Done</button></div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row gy-5">
+            <div class="col-xl-5 col-xxl-4">
+              <div class="card">
+                <div class="card-body">
+                  <div class="echart-reports-details mb-5" style="height: 358px; width: 100%; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); position: relative;" _echarts_instance_="ec_1715637430475"><div style="position: relative; width: 290px; height: 358px; padding: 0px; margin: 0px; border-width: 0px; cursor: default;"><canvas data-zr-dom-id="zr_0" width="290" height="358" style="position: absolute; left: 0px; top: 0px; width: 290px; height: 358px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div><div class="" style="position: absolute; display: block; border-style: solid; white-space: nowrap; z-index: 9999999; box-shadow: rgba(0, 0, 0, 0.2) 1px 2px 10px; background-color: rgb(34, 40, 52); border-width: 1px; border-radius: 4px; color: rgb(239, 242, 246); font: 14px / 21px &quot;Microsoft YaHei&quot;; padding: 7px 10px; top: 0px; left: 0px; transform: translate3d(85px, 135px, 0px); border-color: rgb(55, 62, 83); pointer-events: none; visibility: hidden; opacity: 0;"><div>
+              <p class="mb-2 text-body-tertiary">
+                Analysis
+              </p>
+              <div class="ms-1">
+          <h6 class="text-body-tertiary"><svg class="svg-inline--fa fa-circle me-1 fs-10" style="color: #85A9FF;" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256z"></path></svg><!-- <span class="fas fa-circle me-1 fs-10" style="color:#85A9FF"></span> Font Awesome fontawesome.com -->
+            Revenue : 64
+          </h6>
+        </div>
+            </div></div></div>
+                  <div class="table-responsive scrollbar">
+                    <table class="reports-details-chart-table table table-sm fs-9 mb-0">
+                      <thead>
+                        <tr>
+                          <th class="align-middle pe- text-body-tertiary fw-bold fs-10 text-uppercase text-nowrap" scope="col" style="width:35%;">Report stage</th>
+                          <th class="align-middle text-end ps-4 text-body-tertiary fw-bold fs-10 text-uppercase text-nowrap" scope="col" style="width:35%;">total count</th>
+                          <th class="align-middle text-end ps-4 text-body-tertiary fw-bold fs-10 text-uppercase" scope="col" style="width:30%;">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="report-data-body">
+                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                          <td class="align-middle white-space-nowrap fw-semibold text-body-highlight py-2">Analysis</td>
+                          <td class="align-middle text-end white-space-nowrap fw-semibold text-body-highlight ps-4 py-2">03</td>
+                          <td class="align-middle text-end white-space-nowrap ps-4 fw-semibold text-body-highlight"><span class="badge badge-phoenix badge-phoenix-info">+15.21%</span></td>
+                        </tr>
+                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                          <td class="align-middle white-space-nowrap fw-semibold text-body-highlight py-2">Statement</td>
+                          <td class="align-middle text-end white-space-nowrap fw-semibold text-body-highlight ps-4 py-2">01</td>
+                          <td class="align-middle text-end white-space-nowrap ps-4 fw-semibold text-body-highlight"><span class="badge badge-phoenix badge-phoenix-warning">+05.21%</span></td>
+                        </tr>
+                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                          <td class="align-middle white-space-nowrap fw-semibold text-body-highlight py-2">Action</td>
+                          <td class="align-middle text-end white-space-nowrap fw-semibold text-body-highlight ps-4 py-2">02</td>
+                          <td class="align-middle text-end white-space-nowrap ps-4 fw-semibold text-body-highlight"><span class="badge badge-phoenix badge-phoenix-primary">+22.12%</span></td>
+                        </tr>
+                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                          <td class="align-middle white-space-nowrap fw-semibold text-body-highlight py-2">Offering</td>
+                          <td class="align-middle text-end white-space-nowrap fw-semibold text-body-highlight ps-4 py-2">02</td>
+                          <td class="align-middle text-end white-space-nowrap ps-4 fw-semibold text-body-highlight"><span class="badge badge-phoenix badge-phoenix-danger">-14.21%</span></td>
+                        </tr>
+                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                          <td class="align-middle white-space-nowrap fw-semibold text-body-highlight py-2">Interlocution</td>
+                          <td class="align-middle text-end white-space-nowrap fw-semibold text-body-highlight ps-4 py-2">02</td>
+                          <td class="align-middle text-end white-space-nowrap ps-4 fw-semibold text-body-highlight"><span class="badge badge-phoenix badge-phoenix-danger">-14.21%</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-xl-7 col-xxl-8">
+              <div class="border-top border-translucent">
+                <div id="purchasersSellersTable" data-list="{&quot;valueNames&quot;:[&quot;deals_name&quot;,&quot;deal_owner&quot;,&quot;account_name&quot;,&quot;stage&quot;,&quot;amount&quot;],&quot;page&quot;:10,&quot;pagination&quot;:true}">
+                  <div class="table-responsive scrollbar mx-n1 px-1">
+                    <table class="table table-sm fs-9 leads-table">
+                      <thead>
+                        <tr>
+                          <th class="white-space-nowrap fs-9 align-middle ps-0" style="max-width:20px; width:18px;">
+                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox" data-bulk-select="{&quot;body&quot;:&quot;purchasers-sellers-body&quot;}"></div>
+                          </th>
+                          <th class="sort align-middle ps-0 pe-5 text-uppercase text-nowrap" scope="col" data-sort="deals_name" style="min-width:120px;">Deal name</th>
+                          <th class="sort align-middle ps-4 pe-5 text-uppercase text-nowrap" scope="col" data-sort="deal_owner" style="min-width:50px;">Deal owner</th>
+                          <th class="sort align-middle ps-4 pe-5 text-uppercase text-nowrap" scope="col" data-sort="account_name" style="min-width:250px;">Account name</th>
+                          <th class="sort align-middle ps-4 pe-5 text-uppercase text-nowrap" scope="col" data-sort="stage" style="min-width:160px;">Stage</th>
+                          <th class="sort align-middle ps-4 pe-5 text-uppercase text-nowrap" scope="col" data-sort="amount" style="min-width:50px;">Amount</th>
+                          <th class="sort text-end align-middle pe-0 ps-4" scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody class="list" id="purchasers-sellers-body"><tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                          <td class="fs-9 align-middle py-0">
+                            <div class="form-check mb-0 fs-8"><input class="form-check-input" type="checkbox" data-bulk-select-row="{&quot;dealsName&quot;:&quot;Jo_Td01&quot;,&quot;dealOwner&quot;:{&quot;avatar&quot;:&quot;team/avatar.webp&quot;,&quot;name&quot;:&quot;Ally Aagaard&quot;,&quot;placeholder&quot;:true},&quot;accountName&quot;:&quot;Themewagon&quot;,&quot;stage&quot;:{&quot;label&quot;:&quot;Analysis&quot;,&quot;color&quot;:&quot;#3874FF&quot;,&quot;data&quot;:20},&quot;amount&quot;:{&quot;totalAmount&quot;:&quot;$140&quot;,&quot;icon&quot;:&quot;trending-down&quot;,&quot;color&quot;:&quot;text-danger&quot;}}"></div>
+                          </td>
+                          <td class="deals_name align-middle white-space-nowrap fw-semibold text-body-highlight ps-0 py-0"><a class="fw-bold text-primary" href="#!">Jo_Td01</a></td>
+                          <td class="deal_owner align-middle white-space-nowrap fw-semibold text-body-emphasis ps-4 py-0">
+                            <div class="d-flex align-items-center position-relative">
+                              <div class="avatar avatar-m me-3"><img class="rounded-circle avatar-placeholder" src="../../assets/img/team/avatar.webp" alt=""></div><a class="text-body-highlight fw-bold stretched-link" href="#!">Ally Aagaard</a>
+                            </div>
+                          </td>
+                          <td class="account_name align-middle white-space-nowrap ps-4 fw-semibold text-body py-0">Themewagon</td>
+                          <td class="stage align-middle white-space-nowrap fw-bold text-body py-0">
+                            <div class="d-flex align-items-center gap-3">
+                              <div style="--phoenix-circle-progress-bar:20"><svg class="circle-progress-svg" width="54" height="54" viewBox="0 0 170 170">
+                                  <circle class="progress-bar-rail" cx="60" cy="60" r="54" fill="none" stroke-linecap="round" stroke-width="12"></circle>
+                                  <circle class="progress-bar-top" cx="60" cy="60" r="54" fill="none" stroke-linecap="round" stroke="#3874FF" stroke-width="12"></circle>
+                                </svg></div>
+                              <h6 class="mb-0 text-body">Analysis</h6>
+                            </div>
+                          </td>
+                          <td class="amount align-middle white-space-nowrap fw-bold ps-4 text-body py-0">$140<svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-down ms-2 text-danger" style="min-height:8px; width:14px;"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg></td>
+                          <td class="align-middle white-space-nowrap text-end pe-0 ps-4">
+                            <div class="btn-reveal-trigger position-static"><button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><svg class="svg-inline--fa fa-ellipsis fs-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ellipsis" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M120 256C120 286.9 94.93 312 64 312C33.07 312 8 286.9 8 256C8 225.1 33.07 200 64 200C94.93 200 120 225.1 120 256zM280 256C280 286.9 254.9 312 224 312C193.1 312 168 286.9 168 256C168 225.1 193.1 200 224 200C254.9 200 280 225.1 280 256zM328 256C328 225.1 353.1 200 384 200C414.9 200 440 225.1 440 256C440 286.9 414.9 312 384 312C353.1 312 328 286.9 328 256z"></path></svg><!-- <span class="fas fa-ellipsis-h fs-10"></span> Font Awesome fontawesome.com --></button>
+                              <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
+                                <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="#!">Remove</a>
+                              </div>
+                            </div>
+                          </td>
+                        </tr><tr class="hover-actions-trigger btn-reveal-trigger position-static">
+</tbody>
+                    </table>
+                  </div>
+                  <div class="row align-items-center justify-content-between pe-0 fs-9">
+                    <div class="col-auto d-flex">
+                      <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info">1 to 10 <span class="text-body-tertiary"> Items of </span>15</p><a class="fw-semibold" href="#!" data-list-view="*">View all<svg class="svg-inline--fa fa-angle-right ms-1" data-fa-transform="down-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="angle-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" data-fa-i2svg="" style="transform-origin: 0.25em 0.5625em;"><g transform="translate(128 256)"><g transform="translate(0, 32)  scale(1, 1)  rotate(0 0 0)"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z" transform="translate(-128 -256)"></path></g></g></svg><!-- <span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span> Font Awesome fontawesome.com --></a><a class="fw-semibold d-none" href="#!" data-list-view="less">View Less<svg class="svg-inline--fa fa-angle-right ms-1" data-fa-transform="down-1" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="angle-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512" data-fa-i2svg="" style="transform-origin: 0.25em 0.5625em;"><g transform="translate(128 256)"><g transform="translate(0, 32)  scale(1, 1)  rotate(0 0 0)"><path fill="currentColor" d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z" transform="translate(-128 -256)"></path></g></g></svg><!-- <span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span> Font Awesome fontawesome.com --></a>
+                    </div>
+                    <div class="col-auto d-flex"><button class="page-link disabled" data-list-pagination="prev" disabled=""><svg class="svg-inline--fa fa-chevron-left" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M224 480c-8.188 0-16.38-3.125-22.62-9.375l-192-192c-12.5-12.5-12.5-32.75 0-45.25l192-192c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l169.4 169.4c12.5 12.5 12.5 32.75 0 45.25C240.4 476.9 232.2 480 224 480z"></path></svg><!-- <span class="fas fa-chevron-left"></span> Font Awesome fontawesome.com --></button>
+                      <ul class="mb-0 pagination"><li class="active"><button class="page" type="button" data-i="1" data-page="10">1</button></li><li><button class="page" type="button" data-i="2" data-page="10">2</button></li></ul><button class="page-link pe-0" data-list-pagination="next"><svg class="svg-inline--fa fa-chevron-right" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-right" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M96 480c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L242.8 256L73.38 86.63c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l192 192c12.5 12.5 12.5 32.75 0 45.25l-192 192C112.4 476.9 104.2 480 96 480z"></path></svg><!-- <span class="fas fa-chevron-right"></span> Font Awesome fontawesome.com --></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer position-absolute">
+          <div class="row g-0 justify-content-between align-items-center h-100">
+            <div class="col-12 col-sm-auto text-center">
+              <p class="mb-0 mt-2 mt-sm-0 text-body">Thank you for creating with Phoenix<span class="d-none d-sm-inline-block"></span><span class="d-none d-sm-inline-block mx-1">|</span><br class="d-sm-none">2023 ©<a class="mx-1" href="https://themewagon.com/">Themewagon</a></p>
+            </div>
+            <div class="col-12 col-sm-auto text-center">
+              <p class="mb-0 text-body-tertiary text-opacity-85">v1.14.0</p>
+            </div>
+          </div>
+        </footer>
+      </div>
+{% endblock %}

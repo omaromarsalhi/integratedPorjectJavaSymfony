@@ -15,15 +15,17 @@ class WtfDudeController extends AbstractController
     #[Route('/wtf/dude', name: 'app_wtf_dude')]
     public function index(ProductRepository $productRepository): Response
     {
+//
+//        $filter = [
+//        'datetime'=>['today'=> 'false', 'lastWeek'=> 'false', 'lastMonth'=> 'false'],
+//        'category'=>['food'=> 'true', 'sports'=> 'false', 'entertainment'=> 'false', 'realEstate'=> 'false', 'vehicle'=> 'false'],
+//        'price'=>['allPrices'=> 'true', 'asc'=> 'false', 'desc'=> 'false']
+//        ];
+//
+//        dump($productRepository->findByPriceTest($filter));
 
-        $filter = [
-        'datetime'=>['today'=> 'false', 'lastWeek'=> 'false', 'lastMonth'=> 'false'],
-        'category'=>['food'=> 'true', 'sports'=> 'false', 'entertainment'=> 'false', 'realEstate'=> 'false', 'vehicle'=> 'false'],
-        'price'=>['allPrices'=> 'true', 'asc'=> 'false', 'desc'=> 'false']
-        ];
-        
-        dump($productRepository->findByPriceTest($filter));
-
+        $aiVerification = new AiVerification();
+        $aiVerification->formatJsonFilesOfCin(md5('user_front' . ($this->getUser()->getId() * 1000 + 17)), md5('user_backCin' . ($this->getUser()->getId() * 1000 + 17)));
         die();
         return new Response("done");
     }

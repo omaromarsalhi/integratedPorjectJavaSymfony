@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import pidev.javafx.crud.marketplace.CrudBien;
 import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.user.User;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.model.MarketPlace.Bien;
@@ -81,11 +82,11 @@ public class ItemInfoController implements Initializable {
         User user=service.getUserById( customMouseEvent.getEventData().getIdUser() );
         userName.setText(user.getFirstname()+" "+user.getLastname());
         prodName.setText( product.getName().toUpperCase() );
-        itemImage.setImage(new Image("file:src/main/resources"+product.getImgSource()));
+        itemImage.setImage(new Image( GlobalVariables.IMAGEPATH+product.getImgSource()));
         itemDesc.setText( product.getDescreption() );
         priceLable.setText( Float.toString(product.getPrice()) );
         quantityLable.setText(Float.toString(product.getQuantity())   );
-        userImage.setImage(new Image("file:src/main/resources"+user.getPhotos()));
+        userImage.setImage(new Image(GlobalVariables.IMAGEPATH4USER+user.getPhotos()));
 //        stateLabel.setText((product.getState())?"In Stock":"Out Of Stock");
         scroollImages();
     }
@@ -93,18 +94,18 @@ public class ItemInfoController implements Initializable {
 
     public void scroollImages(){
         AtomicInteger imageIndex= new AtomicInteger(0);
-        itemImage.setImage(new Image("file:src/main/resources"+ product.getImageSourceByIndex( imageIndex.get() ) ) );
+        itemImage.setImage(new Image(GlobalVariables.IMAGEPATH+ product.getImageSourceByIndex( imageIndex.get() ) ) );
         rightArrow.setOnAction( event -> {
             imageIndex.getAndIncrement();
             if(imageIndex.get() >=product.getAllImagesSources().size())
                 imageIndex.set( 0 );
-            itemImage.setImage( new Image( "file:src/main/resources"+product.getImageSourceByIndex( imageIndex.get() ) ) );
+            itemImage.setImage( new Image( GlobalVariables.IMAGEPATH+product.getImageSourceByIndex( imageIndex.get() ) ) );
         } );
         leftArrow.setOnAction( event -> {
             imageIndex.getAndDecrement();
             if(imageIndex.get() <=0)
                 imageIndex.set( product.getAllImagesSources().size() - 1 );
-            itemImage.setImage( new Image("file:src/main/resources"+ product.getImageSourceByIndex( imageIndex.get() ) ) );
+            itemImage.setImage( new Image(GlobalVariables.IMAGEPATH+ product.getImageSourceByIndex( imageIndex.get() ) ) );
         } );
 
         exitImageBtn.setOnMouseClicked( event -> EventBus.getInstance().publish( "exitItemInfo",event));
@@ -116,7 +117,7 @@ public class ItemInfoController implements Initializable {
         this.product=customMouseEvent.getEventData();
         userName.setText("Omar Salhi");
         prodName.setText( product.getName().toUpperCase() );
-        itemImage.setImage(new Image("file:src/main/resources"+product.getImgSource()));
+        itemImage.setImage(new Image(GlobalVariables.IMAGEPATH+product.getImgSource()));
         itemDesc.setText( product.getDescreption() );
         priceLable.setText( Float.toString(product.getPrice()) );
         quantityLable.setText(Float.toString(product.getQuantity())   );

@@ -9,6 +9,7 @@ var posts = [];
 var currentImageIndexUpload = 0;
 var isSearching = false;
 var idUser = 0;
+var firstLoad = false;
 
 
 //blog de creation de post
@@ -20,75 +21,66 @@ function createPostHTML(post, postUrl, idU) {
             <button class="image-nav" style="position: absolute; background: none; border: none; top: 50%; right: 22px; transform: translateY(-50%); font-size: 30px; width: 10px"" onclick="changeImage(${post.id}, 1)">&#8594;</button>
         `;
     }
+
     var imageHTML = '';
     if (post.images.length > 0) {
         imageHTML = `
             <div class="thumbnail" style="position: relative;">
-                <img id="post-image-${post.id}" src="../usersImg/${post.images[0]}"
-                     alt="Personal Portfolio Images" style="width: 1300px; height: 500px; object-fit: contain;">
+                <img id="post-image-${post.id}" src="../usersImg/${post.images[0]}" alt="Personal Portfolio Images" style="width: 1100px; height: 300px; object-fit: contain;">
                 ${bouttonImg}
             </div>
         `;
     }
+
     var captiontext = '';
     if (post.caption !== '') {
         captiontext = `
-            <h4 class="title"><a href="${postUrl}">${post.caption} <i
-                class="feather-arrow-up-right"></i></a></h4>
-            <a class="translateBtn" data-post-id="${post.id}" data-original-caption="${post.caption}" onclick="translateText('${post.id}', '${post.caption}', 'fr', 'ar')">Translate</a>
+            <h4 class="title"><a href="${postUrl}">${post.caption} <i class="feather-arrow-up-right"></i></a></h4>
+            <a class="translateBtn" style="font-size: 12px;" data-post-id="${post.id}" data-original-caption="${post.caption}" onclick="translateText('${post.id}', '${post.caption}', 'fr', 'ar')">Translate</a>
         `;
     }
 
     var dropDown = '';
     if (idU === idUser) {
         dropDown = `
-        <div class="meta">
-            <div class="dropdown">
-                                    <button class="dropbtn"><i class="fas fa-cog"></i></button>
-                                    <div class="dropdown-content">
-                                        <button onclick="handleMenuAction(this, ${post.id}, '${post.caption}', '${post.images}', 'modifier')">Modifier</button>
-                                        <button onclick="handleMenuAction(this, ${post.id}, '${post.caption}', '${post.images}', 'supprimer')">Supprimer</button>
-                                    </div>
-                                </div>
-                            </div>
-        `
+            <div class="meta">
+                <div class="dropdown">
+                    <button class="dropbtn"><i class="fas fa-cog"></i></button>
+                    <div class="dropdown-content">
+                        <button onclick="handleMenuAction(this, ${post.id}, '${post.caption}', '${post.images}', 'modifier')">Modifier</button>
+                        <button onclick="handleMenuAction(this, ${post.id}, '${post.caption}', '${post.images}', 'supprimer')">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 
-
     return `
-        <div class="col-xl-12 col-lg-8" data-post-id="${post.id}">
+        <div class="col-xl-10 col-lg-8" data-post-id="${post.id}">
             <div class="rn-blog single-column mb--30" data-toggle="modal" data-target="#exampleModalCenters">
                 <div class="inner">
                     <div class="content mb-4">
                         <div class="category-info">                                                                                                                                  
                             <div class="category-list">
-                                <img src=../usersImg/${post.userImage} height="50"
-                                     width="50" style="margin-right: 10px">
-                                <a href="blog-details.html">${post.userName} ${post.userSurname}</a>
+                                <img src="../usersImg/${post.userImage}" height="40" width="40" style="margin-right: 10px">
+                                <span style="font-size: 16px;"><strong>${post.userSurname} ${post.userName}</strong><br><p style="font-size: 10px;">${post.datePost}</p></span>
                             </div>
                             ${dropDown}
                         </div>
-                        <span>${post.datePost}</span>
                         ${captiontext}
                     </div>
                     ${imageHTML}
-                    
-                    
                     <div class="meta" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px">
-        <div>${post.nbReactions} Reactions</div>
-        <div>${post.nbComments} Comments</div>
-    </div>
-                    
-            
+                        <div><span style="font-size: 12px;">${post.nbReactions} Reactions</span></div>
+                        <div><span style="font-size: 12px;">${post.nbComments} Comments</span></div>
+                    </div>
                 </div>
             </div>
-            
-            
-            
-            
         </div>
     `;
 }
+
+
 
 
 function loadPostsPage(page) {
@@ -113,6 +105,7 @@ function loadPostsPage(page) {
             }
             isLoading = false;
             document.getElementById('loadingIcon').style.display = 'none';
+            firstLoad=true
         },
         error: function (xhr, status, error) {
             console.error(response.message);
@@ -156,12 +149,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 window.onscroll = function () {
-    var scrollPosition = window.pageYOffset;
-    var windowSize = window.innerHeight;
-    var bodyHeight = document.body.offsetHeight;
+    if(firstLoad) {
+        var scrollPosition = window.pageYOffset;
+        var windowSize = window.innerHeight;
+        var bodyHeight = document.body.offsetHeight;
 
-    if (!isSearching && Math.max(bodyHeight - (scrollPosition + windowSize), 0) < 500) {
-        loadPostsPage(currentPage);
+        if (!isSearching && Math.max(bodyHeight - (scrollPosition + windowSize), 0) < 500) {
+            loadPostsPage(currentPage);
+        }
     }
 };
 
@@ -182,6 +177,9 @@ function changeImage(postId, direction) {
 function addPost(event) {
     event.preventDefault();
 
+    document.getElementById('loadingLogo').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+
     let imageFile = document.querySelector('#nipa').files[0];
     let formData = new FormData();
     formData.append('image', imageFile);
@@ -195,10 +193,6 @@ function addPost(event) {
             processData: false,
             contentType: false,
             success: function (data) {
-                console.log(data.microsoft.items[0].label);
-                console.log(data.microsoft.items[0].likelihood_score);
-                console.log(data.microsoft.items[0].category);
-
                 var isPublic = true;
                 var max = 0;
                 var categorie = "";
@@ -229,7 +223,7 @@ function addPost(event) {
                         contentType: false,
                         success: function (response) {
                             if (response.success) {
-                                var newPostHTML = createPostHTML(response.post, response.post.url);
+                                var newPostHTML = createPostHTML(response.post, response.post.url, response.post.userId);
                                 $('#postsContainer').prepend(newPostHTML);
                                 posts.unshift(response.post);
                                 $('html, body').animate({
@@ -239,7 +233,7 @@ function addPost(event) {
                                 $('#nipa').val('');
                                 document.getElementById("previousImage").style.display = "none";
                                 document.getElementById("nextImage").style.display = "none";
-                                $('#rbtinput2').attr('src', 'aucuneImg.png');
+                                $('#rbtinput2').attr('src', 'images/blog/aucuneImg.png');
 
                                 document.getElementById("delImage").style.display = "none";
 
@@ -252,9 +246,15 @@ function addPost(event) {
                             } else {
                                 console.error('Failed to create post: ' + response.message);
                             }
+
+                            document.getElementById('loadingLogo').style.display = 'none';
+                            document.getElementById('overlay').style.display = 'none';
                         },
                         error: function (response) {
                             console.error("error");
+
+                            document.getElementById('loadingLogo').style.display = 'none';
+                            document.getElementById('overlay').style.display = 'none';
                         },
                     });
                 } else {
@@ -268,11 +268,18 @@ function addPost(event) {
                     $('#nipa').val('');
                     document.getElementById("previousImage").style.display = "none";
                     document.getElementById("nextImage").style.display = "none";
-                    $('#rbtinput2').attr('src', 'aucuneImg.png');
+                    $('#rbtinput2').attr('src', 'images/blog/aucuneImg.png');
+                    document.getElementById("delImage").style.display = "none";
+
+                    document.getElementById('loadingLogo').style.display = 'none';
+                    document.getElementById('overlay').style.display = 'none';
                 }
             },
             error: function () {
                 console.log('Une erreur est survenue');
+
+                document.getElementById('loadingLogo').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
             }
         });
     } else {
@@ -292,7 +299,8 @@ function addPost(event) {
             contentType: false,
             success: function (response) {
                 if (response.success) {
-                    var newPostHTML = createPostHTML(response.post, response.post.url);
+                    console.log(response.post);
+                    var newPostHTML = createPostHTML(response.post, response.post.url, response.post.userId);
                     $('#postsContainer').prepend(newPostHTML);
                     posts.unshift(response.post);
                     $('html, body').animate({
@@ -302,7 +310,7 @@ function addPost(event) {
                     $('#nipa').val('');
                     document.getElementById("previousImage").style.display = "none";
                     document.getElementById("nextImage").style.display = "none";
-                    $('#rbtinput2').attr('src', 'aucuneImg.png');
+                    $('#rbtinput2').attr('src', 'images/blog/aucuneImg.png');
 
                     document.getElementById("delImage").style.display = "none";
 
@@ -315,9 +323,15 @@ function addPost(event) {
                 } else {
                     console.error('Failed to create post: ' + response.message);
                 }
+
+                document.getElementById('loadingLogo').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
             },
             error: function (response) {
                 console.error("error");
+
+                document.getElementById('loadingLogo').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
             },
         });
     }
@@ -382,7 +396,7 @@ function showModifierPopup(caption, images) {
 
         document.getElementById("delImageUpdate").style.display = "block";
     } else {
-        imageModifier.src = "aucuneImg.png";
+        imageModifier.src = "images/blog/aucuneImg.png";
         nextButton.style.display = "none";
         prevButton.style.display = "none";
         document.getElementById("delImageUpdate").style.display = "none";
@@ -415,7 +429,7 @@ function submitModifierForm(event) {
         success: function (response) {
 
             $("div[data-post-id='" + postIdToModify + "']").remove();
-            var newPostHTML = createPostHTML(response.post, response.post.url);
+            var newPostHTML = createPostHTML(response.post, response.post.url, response.post.userId);
             $('#postsContainer').prepend(newPostHTML);
             closeModifierPopup();
 
@@ -492,6 +506,16 @@ function changeImageUpload(direction) {
     }
 }
 
+document.getElementById("delImage").addEventListener("click", function () {
+    console.log("delete image");
+    var nipaInput = document.getElementById("nipa");
+    nipaInput.value = "";
+    var rbtinput2 = document.getElementById("rbtinput2");
+    rbtinput2.src = "images/blog/aucuneImg.png";
+    this.style.display = "none";
+    document.getElementById("previousImage").style.display = "none";
+    document.getElementById("nextImage").style.display = "none";
+});
 
 document.getElementById("delImageUpdate").addEventListener("click", function () {
     Swal.fire({
@@ -507,7 +531,7 @@ document.getElementById("delImageUpdate").addEventListener("click", function () 
             var nipaInput = document.getElementById("nipaUpload");
             nipaInput.value = "";
             var rbtinput2 = document.getElementById("imageModifer");
-            rbtinput2.src = "aucuneImg.png";
+            rbtinput2.src = "images/blog/aucuneImg.png";
             this.style.display = "none";
 
             $.ajax({
@@ -540,7 +564,7 @@ searchInput.addEventListener('input', function () {
                 $('#postsContainer').empty();
 
                 response.posts.forEach(function (post) {
-                    var newPostHTML = createPostHTML(post, post.url);
+                    var newPostHTML = createPostHTML(post, post.url, post.userId);
                     $('#postsContainer').append(newPostHTML);
                 });
             },
@@ -580,3 +604,4 @@ function translateText(postId, textToTranslate, sourceLanguage, targetLanguage) 
         })
         .catch(error => console.error("Erreur lors de l'analyse de la réponse JSON : ", error));
 }
+

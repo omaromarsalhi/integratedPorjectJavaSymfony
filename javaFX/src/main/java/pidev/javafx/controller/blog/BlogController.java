@@ -43,6 +43,7 @@ import java.util.*;
 
 import org.json.JSONObject;
 import pidev.javafx.model.user.Role;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
@@ -110,7 +111,7 @@ public class BlogController implements Initializable {
         leftArrow.setVisible(false);
         leftArrow.setManaged(false);
         BlogService blogService = new BlogService();
-        Image img = new Image("file:src/main/resources/" + UserController.getInstance().getCurrentUser().getPhotos() );
+        Image img = new Image( GlobalVariables.IMAGEPATH4USER + UserController.getInstance().getCurrentUser().getPhotos() );
         ProfileImg.setImage(img);
         EventBus.getInstance().subscribe( "loadPosts",this::setPathPosts );
     }

@@ -64,22 +64,26 @@ function addReclamation() {
 }
 
 
-function deleteReclamation(idReclamation){
+function deletee(reclamationId, event) {
+    event.preventDefault(); // Stop the link behavior
 
+    $.ajax({
+        url: "/reclamation/delete/" + reclamationId,
+        type: "POST",
+        success: function(response) {
+            if (response.success) {
+                // Remove the item from the DOM by ID
+                $('#reclamationItem' + reclamationId).remove();
+            } else {
+                alert('Failed to delete reclamation. Server returned an error.');
+            }
+        },
+        error: function() {
+            alert('Failed to delete reclamation. Check your network and try again.');
+        }
+    });
 }
-
-function deletee(index) {
-    let value = "../../marketPlaceImages/basketAnimation.gif"
-    $('#deleteReclamation' + index).removeClass('pdfBtn');
-    $('#deleteReclamation' + index).addClass('pdfBtn_disabled');
-    $('#deleteReclamation' + index).html('<img class="loaderPdf" src="' + value + '" />')
-
-    setTimeout(function () {
-        $('#deleteReclamation' + index).addClass('pdfBtn');
-        $('#deleteReclamation' + index).removeClass('pdfBtn_disabled');
-        $('#deleteReclamation' + index).html('<span class="text_pdf">Delete</span> <i class="fa-solid fa-download"></i>')
-    }, 2000)
-}
+//spech to text
 document.addEventListener('DOMContentLoaded', function() {
     function startRecording() {
         const recognition = new window.webkitSpeechRecognition();
@@ -95,3 +99,110 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('startRecording').addEventListener('click', startRecording);
 });
+
+
+
+function updateModalContent(data) {
+    const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
+    modalBody.setAttribute('data-reclamation-id', data.id);
+
+    const imagePath = data.image ? `/usersImg/${data.image}` : '';
+    let detailsHtml = `
+    ${imagePath ? `<div><img src="${imagePath}" alt="Reclamation Image" style="max-width:400px;"></div>` : ''}
+        <div><label>Private Key:</label> ${data.privateKey}</div>
+        <div><label>Subject:</label><input type="text" id="modalSubject" value="${data.subject || ''}"></div>
+        <div><label>Description:</label><textarea id="modalDescription">${data.description || ''}</textarea></div>
+       
+    `;
+    modalBody.innerHTML = detailsHtml;
+}
+
+
+
+function updateReclamationDetails() {
+    const modal = document.getElementById('reclamationDetailModal');
+    const reclamationId = modal.querySelector('.modal-body').getAttribute('data-reclamation-id');
+    const subject = document.getElementById('modalSubject').value;
+    const description = document.getElementById('modalDescription').value;
+
+    console.log(`Updating reclamation with ID: ${reclamationId}, subject: ${subject}, description: ${description}`);
+
+    fetch(`/api/reclamations/update/${reclamationId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subject, description })
+    })
+    .then(response => response.json())
+    .then((updatedReclamation) => {
+        console.log('Reclamation updated successfully:', updatedReclamation);
+
+        // Ensure the reclamation item is updated in the DOM
+        const reclamationItem = document.getElementById(`reclamationItem${reclamationId}`);
+        if (reclamationItem) {
+            const titleElement = reclamationItem.querySelector('.title');
+            const descriptionElement = reclamationItem.querySelector('.latest-bid');
+
+            if (titleElement) {
+                console.log('Updating title:', titleElement, 'with', updatedReclamation.subject);
+                titleElement.textContent = updatedReclamation.subject;
+            } else {
+                console.error('Title element not found');
+            }
+
+            if (descriptionElement) {
+                console.log('Updating description:', descriptionElement, 'with', updatedReclamation.description);
+                descriptionElement.textContent = updatedReclamation.description;
+            } else {
+                console.error('Description element not found');
+            }
+        } else {
+            console.error(`Reclamation item with ID: ${reclamationId} not found`);
+        }
+
+        // Close the modal
+        const modalInstance = bootstrap.Modal.getInstance(document.getElementById('reclamationDetailModal'));
+        modalInstance.hide();
+    })
+    .catch(error => {
+        console.error('Error updating reclamation:', error);
+        alert('Failed to update reclamation.');
+    });
+}
+
+
+
+
+
+function showReclamationDetails(reclamationId, event) {
+    event.preventDefault();
+    fetch(`/api/reclamations/${reclamationId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Reclamation details fetched:', data);
+            updateModalContent(data);
+            new bootstrap.Modal(document.getElementById('reclamationDetailModal')).show();
+        })
+        .catch(error => console.error('Error fetching reclamation details:', error));
+}
+
+function updateModalContent(data) {
+    const modalBody = document.querySelector('#reclamationDetailModal .modal-body');
+    modalBody.setAttribute('data-reclamation-id', data.id);
+
+    const imagePath = data.image ? `/usersImg/${data.image}` : '';
+    let detailsHtml = `
+        ${imagePath ? `<div><img src="${imagePath}" alt="Reclamation Image" style="max-width:400px;"></div>` : ''}
+        <div><label>Private Key:</label> ${data.privateKey}</div>
+        <div><label>Subject:</label><input type="text" id="modalSubject" value="${data.subject || ''}"></div>
+        <div><label>Description:</label><textarea id="modalDescription">${data.description || ''}</textarea></div>
+    `;
+    modalBody.innerHTML = detailsHtml;
+}
+
+
+const timestamp = new Date().getTime(); // Current timestamp to avoid caching issues
+fetch(`/api/reclamations/update/${reclamationId}?t=${timestamp}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subject, description })
+})

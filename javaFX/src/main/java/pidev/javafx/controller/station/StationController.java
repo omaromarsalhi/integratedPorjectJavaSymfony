@@ -259,6 +259,7 @@ import org.json.JSONObject;
 import pidev.javafx.crud.transport.ServicesStation;
 import pidev.javafx.model.Transport.Station;
 import pidev.javafx.model.Transport.Type_Vehicule;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.transport.allStat;
 
 import java.io.IOException;
@@ -307,7 +308,7 @@ public class StationController implements Initializable {
     @FXML
     private Pane displayTransport;
 
-    final String destinationString = "src/main/resources/stationImg";
+    final String destinationString = "../citiezenHub_webapp/public/usersImg";
 
 
     @FXML
@@ -568,7 +569,7 @@ else
         BoxTypeVehicule.setValue(selectedItem.getType_Vehicule());
         image_path = selectedItem.getImage_station();
         if (image_path != null) {
-            Image1.setImage(new Image("file:src/main/resources"+image_path));
+            Image1.setImage(new Image( GlobalVariables.IMAGEPATH+image_path));
         }
     }
 
@@ -661,7 +662,7 @@ else
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        image_path = "/stationImg" + "/" + randomFileName;
+        image_path =  randomFileName;
 
         Station S = new Station(NomStationText1.getText(), image_path, AdressText1.getText(), BoxTypeVehicule1.getValue().toString() );
         System.out.println(S);

@@ -12,18 +12,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane alignment="TOP_LEFT" prefHeight="511.0" prefWidth="592.0" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.user.UserFormController">
+<StackPane alignment="TOP_LEFT" prefHeight="558.0" prefWidth="673.0" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.user.UserFormController">
    <children>
-      <AnchorPane fx:id="loadinPage" prefHeight="511.0" prefWidth="613.0">
-         <children>
-            <ImageView fitHeight="85.0" fitWidth="90.0" layoutX="343.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="212.60000000000002" AnchorPane.leftAnchor="343.0" AnchorPane.rightAnchor="243.0" AnchorPane.topAnchor="212.0">
-               <image>
-                  <Image url="@../../img/marketPlace/grey-9026_256.gif" />
-               </image>
-            </ImageView>
-         </children>
-      </AnchorPane>
-      <HBox fx:id="formBox" alignment="CENTER" fillHeight="false" prefHeight="511.0" prefWidth="642.0" style="-fx-background-radius: 10; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-color: white; -fx-border-color: black;" stylesheets="@../../style/marketPlace/formLayout.css">
+      <HBox fx:id="formBox" alignment="CENTER" fillHeight="false" prefHeight="538.0" prefWidth="673.0" spacing="10.0" style="-fx-background-radius: 10; -fx-border-width: 0; -fx-border-radius: 10; -fx-background-color: white; -fx-border-color: black;" stylesheets="@../../style/marketPlace/formLayout.css">
          <children>
             <VBox alignment="BOTTOM_CENTER" prefHeight="506.0" prefWidth="280.0" spacing="10.0">
                <children>
@@ -285,8 +276,20 @@
                   <Insets bottom="15.0" left="15.0" right="15.0" top="24.0" />
                </padding>
             </VBox>
-            <VBox fx:id="itemInfo" alignment="CENTER_RIGHT" prefHeight="506.0" prefWidth="87.0" />
+            <VBox fx:id="itemInfo" alignment="BOTTOM_RIGHT" prefHeight="506.0" prefWidth="74.0">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin></VBox>
          </children>
       </HBox>
+      <AnchorPane fx:id="loadinPage" prefHeight="570.0" prefWidth="673.0" style="-fx-background-color: transparent;">
+         <children>
+            <ImageView fitHeight="85.0" fitWidth="90.0" layoutX="293.0" layoutY="206.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="220.2" AnchorPane.leftAnchor="293.0" AnchorPane.rightAnchor="294.0" AnchorPane.topAnchor="206.0">
+               <image>
+                  <Image url="@../../img/marketPlace/grey-9026_256.gif" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
    </children>
 </StackPane>

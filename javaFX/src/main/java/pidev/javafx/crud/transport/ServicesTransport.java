@@ -10,6 +10,8 @@ import pidev.javafx.model.Transport.Transport;
 
 //import javax.swing.*;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.sql.SQLIntegrityConstraintViolationException;
@@ -131,9 +133,10 @@ public class ServicesTransport   {
                 data.setDepart(resultSet.getString("NomStation1"));
                 data.setArivee(resultSet.getString("NomStation2"));
                 data.setPrix((resultSet.getFloat("Prix")));
-                data.setHeure(resultSet.getTime("Heure"));
+                String timeString = resultSet.getString("Heure");
+                Time time = Time.valueOf(timeString);
+                data.setHeure(time);
                 data.setVehicule_Image((resultSet.getString("Vehicule_Image")));
-
                 dataList.add(data);
                 System.out.println(dataList);
 
@@ -170,14 +173,15 @@ public class ServicesTransport   {
                 data.setDepart(resultSet.getString("NomStation1"));
                 data.setArivee(resultSet.getString("NomStation2"));
                 data.setPrix((resultSet.getFloat("Prix")));
-                data.setHeure(resultSet.getTime("Heure"));
+                String timeString = resultSet.getString("Heure");
+                Time time = Time.valueOf(timeString);
+                data.setHeure(time);
                 data.setVehicule_Image((resultSet.getString("Vehicule_Image")));
-
                 dataList.add(data);
-                System.out.println(dataList);
+
 
             }
-
+            System.out.println(dataList);
             return dataList;
         } catch (SQLException e) {
             throw new RuntimeException(e);
