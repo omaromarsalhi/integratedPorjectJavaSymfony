@@ -10,6 +10,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
+import pidev.javafx.crud.user.ServiceUser;
+import pidev.javafx.model.user.User;
+import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyTools;
@@ -60,9 +63,13 @@ public class MapController implements Initializable {
             String municipality = (String) result.getMember( "municipality" );
             String municpalityGoverment = (String) result.getMember( "government" );
             String municipalityAddress = (String) result.getMember( "municipalityAddress" );
-//            System.out.println( STR. "Received lat: \{latitude}, lng: \{longitude}" );
-//            System.out.println( STR."Received lat: \{municipality}, lng: \{municpalityGoverment}" );
-//            System.out.println( STR."Received lat: \{municipalityAddress}" );
+            String address = (String) result.getMember( "address" );
+            User user = UserController.getInstance().getCurrentUser();
+            user.setAdresse(address);
+            System.out.println(user);
+            ServiceUser service = new ServiceUser();
+            service.modifier( user );
+            UserController.setUser( user );
         }
     }
 

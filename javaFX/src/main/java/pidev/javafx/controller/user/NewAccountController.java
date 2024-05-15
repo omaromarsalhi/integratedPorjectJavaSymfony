@@ -235,8 +235,9 @@ public class NewAccountController implements Initializable {
 
     public void onExitFormBtnClicked(MouseEvent event) {
         firstinterface.setOpacity( 1 );
-        secondInterface.setVisible( false );
-        secondInterface.getChildren().clear();
+        loadingPage.setVisible( false );
+        loadingPage.getChildren().clear();
+        showFormUser("show");
     }
 
     public void showFormUser(String usage) {

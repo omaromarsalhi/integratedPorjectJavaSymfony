@@ -124,20 +124,20 @@ public class ServiceUser implements IserviceUser<User> {
     @Override
     public void modifier(User user) {
         Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "UPDATE `user` SET `lastname` = ?, `age` = ?, `cin` = ?, `dob` = ?, `phoneNumber` = ?, `status` = ?, `photos` = ?, `gender` = ?  WHERE `email` = ?";
+        String req = "UPDATE `user` SET `firstname` = ?,`lastname` = ?, `age` = ?, `cin` = ?, `dob` = ?, `phoneNumber` = ?, `status` = ?, `image` = ?, `gender` = ? ,`address`=? WHERE `email` = ?";
         try {
             PreparedStatement ps = cnx.prepareStatement( req );
-
-            ps.setString( 1, user.getLastname() );
-            ps.setInt( 2, user.getAge() );
-            ps.setString( 3, user.getCin() );
-            ps.setString( 4, user.getDob() );
-            ps.setInt( 5, user.getNum() );
-            ps.setString( 6, user.getStatus() );
-            ps.setString( 7, user.getPhotos() );
-            ps.setString( 8, user.getGender() );
-            ps.setString( 9, user.getEmail() );
-            System.out.println( user.getGender() );
+            ps.setString( 1, user.getFirstname() );
+            ps.setString( 2, user.getLastname() );
+            ps.setInt( 3, user.getAge() );
+            ps.setString( 4, user.getCin() );
+            ps.setString( 5, user.getDob() );
+            ps.setInt( 6, user.getNum() );
+            ps.setString( 7, user.getStatus() );
+            ps.setString( 8, user.getPhotos() );
+            ps.setString( 9, user.getGender() );
+            ps.setString(10,user.getAdresse());
+            ps.setString( 11, user.getEmail() );
             ps.executeUpdate();
             System.out.println( "User updated !" );
         } catch (SQLException e) {

@@ -157,66 +157,36 @@
         </div>
 
         <div class="row gx-6">
-            <div class="col-12 col-xl-6">
+            <div class="col-12 col-xl-12">
                 <div data-list='{"valueNames":["country","users","transactions","revenue","conv-rate"],"page":5}'>
                     <div class="mb-5 mt-7">
                         <h3>Our Transports </h3>
                         <p class="text-body-tertiary">Tous les Transports sont affiche ici</p>
                     </div>
                     <div class="table-responsive scrollbar">
-                        <table class="table fs-10 mb-0">
+                        <table class="table fs-9 mb-0 border-top border-translucent">
                             <thead>
                             <tr>
-                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col"
-                                    data-sort="country"
-                                    style="width:32%">DEPART
-                                </th>
-                                <th class="sort border-top border-translucent align-middle" scope="col"
-                                    data-sort="users" style="width:17%">
-                                    ARRIVE
-                                </th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="transactions"
-                                    style="width:16%">IMAGE
-                                </th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="transactions"
-                                    style="width:16%">RATING
-                                </th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="revenue"
-                                    style="width:20%">PRIX
-                                </th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="transactions"
-                                    style="width:16%">TYPE
-                                </th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="revenue"
-                                    style="width:20%">HEURE
-                                </th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    data-sort="transactions"
-                                    style="width:16%">REFERENCE
-                                </th>
-                                <th class="sort border-top border-translucent text-end align-middle" scope="col"
-                                    style="width:16%">
-                                </th>
-
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="country" style="width:16%">DEPART</th>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="users" style="width:17%">ARRIVE</th>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="transactions" style="width:16%">IMAGE</th>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="transactions" style="width:16%">RATING</th>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="revenue" style="width:20%">PRIX</th>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="transactions" style="width:16%">TYPE</th>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="revenue" style="width:20%">HEURE</th>
+                                <th class="sort border-top border-translucent ps-0 align-middle" scope="col" data-sort="transactions" style="width:16%">REFERENCE</th>
+                                <th class="border-top border-translucent ps-0 align-middle" scope="col" style="width:16%"></th>
                             </tr>
                             </thead>
 
                             <tbody class="list" id="table-regions-by-revenue">
-
                             {% for transport in transports %}
-
-                                <tr>
-                                    <td class="white-space-nowrap ps-0 country" style="width:32%">
+                                <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                    <td class="fs-9 align-middle ps-0">
                                         <div class="d-flex align-items-center">
                                             <a href="{{ path('app_station') }}">
-                                                <div class="d-flex align-items-center"><img
-                                                            src="assetsAdmin/assets/img/country/india.png" alt=""
-                                                            width="24"/>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="images/transport/tunisie.png" alt="" width="24"/>
                                                     {% for station_dep in stations %}
                                                         {% if station_dep.id == transport.Stationdepart %}
                                                             <p class="mb-0 ps-3 text-primary fw-bold fs-9">{{ station_dep.NomStation }}</p>
@@ -226,13 +196,11 @@
                                             </a>
                                         </div>
                                     </td>
-                                    <td class="white-space-nowrap ps-0 country" style="width:32%">
+                                    <td class="fs-9 align-middle ps-0 white-space-nowrap country">
                                         <div class="d-flex align-items-center">
                                             <a href="{{ path('app_station') }}">
-                                                <div class="d-flex align-items-center"><img
-                                                            src="assetsAdmin/assets/img/country/india.png" alt=""
-                                                            width="24"/>
-
+                                                <div class="d-flex align-items-center">
+                                                    <img src="images/transport/tunisie.png" alt="" width="24"/>
                                                     {% for station_ari in stations %}
                                                         {% if station_ari.id == transport.Stationarrive %}
                                                             <p class="mb-0 ps-3 text-primary fw-bold fs-9">{{ station_ari.NomStation }}</p>
@@ -242,66 +210,46 @@
                                             </a>
                                         </div>
                                     </td>
-                                    <td class="align-middle text-end transactions" style="width:17%">
-                                        <h6 class="mb-0"><span>
-           <div class="avatar avatar-l"><img class="rounded-circle"
-                                             src="/usersImg/{{ transport.VehiculeImage }}" alt=""/></div>
-                      </span></h6>
-                                    </td>
-                                    <td class="align-middle rating white-space-nowrap fs-10">
-                                        <span class="fa fa-star text-warning"></span><span
-                                                class="fa fa-star text-warning"></span><span
-                                                class="fa fa-star text-warning"></span><span
-                                                class="fa fa-star text-warning"></span><span
-                                                class="fa fa-star star-icon text-warning"></span>
-                                        <h7 class="mb-0">{{ transport.averageRating }}</span></h7>
-
-                                    </td>
-
-                                    <td class="align-middle text-end transactions" style="width:17%">
-                                        <h6 class="mb-0">{{ transport.Prix }}</span></h6>
-                                    </td>
-                                    <td class="align-middle text-end transactions" style="width:17%">
-                                        <h6 class="mb-0">{{ transport.TypeVehicule }}</span></h6>
-                                    </td>
-                                    <td class="align-middle text-end transactions" style="width:17%">
-                                        <h6 class="mb-0">{{ transport.Heure }}</span></h6>
-                                    </td>
-                                    <td class="align-middle text-end transactions" style="width:17%">
-                                        <h6 class="mb-0">{{ transport.Reference }}</span></h6>
-                                    </td>
-
-                                    <td class="align-middle white-space-nowrap text-end pe-0">
-                                        <div class="position-relative">
-                                            <div class="hover-actions">
-                                                <button class="btn btn-sm btn-phoenix-secondary me-1 fs-10"
-                                                        onclick=""></button>
-                                                <button class="btn btn-sm btn-phoenix-secondary fs-10" onclick=""><span
-                                                            class="fas fa-trash"></span>
-                                                </button>
-                                            </div>
+                                    <td class="fs-9 align-middle rating white-space-nowrap">
+                                        <div class="avatar avatar-l">
+                                            <img class="rounded-circle" src="/usersImg/{{ transport.VehiculeImage }}" alt=""/>
                                         </div>
+                                    </td>
+                                    <td class="fs-9 align-middle rating white-space-nowrap">
+                                        <span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star text-warning"></span><span class="fa fa-star star-icon text-warning"></span>
+                                        <h6 class="mb-0">{{ transport.averageRating }}</h6>
+                                    </td>
+                                    <td class="fs-9 align-middle rating white-space-nowrap">
+                                        <h6 class="mb-0">{{ transport.Prix }}</h6>
+                                    </td>
+                                    <td class="fs-9 align-middle rating white-space-nowrap">
+                                        <h6 class="mb-0">{{ transport.TypeVehicule }}</h6>
+                                    </td>
+                                    <td class="fs-9 align-middle rating white-space-nowrap">
+                                        <h6 class="mb-0">{{ transport.Heure }}</h6>
+                                    </td>
+                                    <td class="fs-9 align-middle rating white-space-nowrap">
+                                        <h6 class="mb-0">{{ transport.Reference }}</h6>
+                                    </td>
+                                    <td class="fs-9 align-middle white-space-nowrap text-end pe-0">
+
                                         <div class="btn-reveal-trigger position-static">
-                                            <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                                    type="button"
-                                                    data-bs-toggle="dropdown" data-boundary="window"
-                                                    aria-haspopup="true" aria-expanded="false"
-                                                    data-bs-reference="parent"><span
-                                                        class="fas fa-ellipsis-h fs-10"></span></button>
-                                            <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item"
-                                                                                                 onclick="showModifierPopup('{{ transport.idTransport }}','{{ transport.prix }}','{{ transport.reference }}','{{ transport.heure }}')">Update</a>
+                                            <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent">
+                                                <span class="fas fa-ellipsis-h fs-10"></span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-end py-2">
+                                                <a class="dropdown-item" onclick="showModifierPopup('{{ transport.idTransport }}','{{ transport.prix }}','{{ transport.reference }}','{{ transport.heure }}')">Update</a>
                                                 <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item text-danger"
-                                                   onclick="deleteTransport({{ transport.idTransport }})">Remove</a>
+                                                <a class="dropdown-item text-danger" onclick="deleteTransport({{ transport.idTransport }})">Remove</a>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                             {% endfor %}
-
-
                             </tbody>
                         </table>
+
+
                     </div>
                     <div class="row align-items-center py-1">
                         <div class="pagination d-none"></div>
@@ -318,13 +266,6 @@
                                     data-list-pagination="next">Next<span
                                         class="fas fa-chevron-right ms-2"></span></button>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-xl-6">
-                <div class="mx-n4 mx-lg-n6 ms-xl-0 h-100">
-                    <div class="h-100 w-100">
-                        <div class="h-100 bg-body-emphasis" id="map" style="min-height: 600px;"></div>
                     </div>
                 </div>
             </div>

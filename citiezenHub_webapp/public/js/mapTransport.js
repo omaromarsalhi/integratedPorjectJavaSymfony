@@ -3,7 +3,7 @@
 function initMap(departLatitude, departLongitude, arriveLatitude, arriveLongitude) {
     const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: (departLatitude + arriveLatitude) / 2, lng: (departLongitude + arriveLongitude) / 2 },
-        zoom: 14.5, // Adjust this value (e.g., 10, 15, etc.) for desired zoom level
+        zoom: calculateZoomLevel(departLatitude, departLongitude, arriveLatitude, arriveLongitude),
         mapTypeControl: true,
     });
 
@@ -202,3 +202,20 @@ function getStationCoordinates(departId, arriveId) {
 
 
 
+function calculateZoomLevel(lat1, lng1, lat2, lng2) {
+    const R = 6371; // Earth radius in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLng = (lng2 - lng1) * (Math.PI / 180);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in kilometers
+
+    // Adjust this factor to control zoom level sensitivity
+    const zoomFactor = 0.1;
+
+    // Calculate zoom level based on distance
+    const zoomLevel = Math.max(1, Math.floor(15 - Math.log2(distance) * zoomFactor));
+    return zoomLevel;
+}

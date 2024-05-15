@@ -156,6 +156,7 @@ public class UserFormController implements Initializable {
 
 
         if (usageOfThisForm.equals( "editDetails" )) {
+
             updateUser.setPrefWidth( 50 );
             clearProd.setPrefWidth( 50 );
             updateUser.setPrefHeight( 32 );
@@ -180,7 +181,9 @@ public class UserFormController implements Initializable {
 
 
             updateUser.setOnMouseClicked( event -> {
+                System.out.println("I m here");
                 if (modifierData()) {
+
                     Task<Void> task = new Task() {
                         @Override
                         protected Object call() throws Exception {
@@ -195,6 +198,7 @@ public class UserFormController implements Initializable {
                     };
                     task.setOnSucceeded( workerStateEvent -> {
                         Platform.runLater( () -> {
+                    loadinPage.setOpacity(0);
                             EventBus.getInstance().publish( "exitFormUser", event );
                             MyTools.getInstance().getTextNotif().setText( "User Has Been Modified Successfully" );
                             MyTools.getInstance().showNotif();
@@ -255,19 +259,11 @@ public class UserFormController implements Initializable {
     }
 
     public boolean modifierData() {
-        testChampsBeforRegex();
-//        System.out.println("lastname"+isAllInpulValid[1]);
-//        System.out.println("name"+isAllInpulValid[0]);
-//        System.out.println("age"+isAllInpulValid[2]);
-//        System.out.println("cin"+isAllInpulValid[3]);
-//        System.out.println("phone"+isAllInpulValid[4]);
-//        System.out.println("status"+isAllInpulValid[5]);
-//        System.out.println("gender"+isAllInpulValid[6]);
+       // testChampsBeforRegex();
 
-        if (isAllInpulValid[0] && isAllInpulValid[1] && isAllInpulValid[2] && isAllInpulValid[3] && isAllInpulValid[4] && isAllInpulValid[5] && isAllInpulValid[6]) {
+
+       // if (isAllInpulValid[0] && isAllInpulValid[1] && isAllInpulValid[2] && isAllInpulValid[3] && isAllInpulValid[4] && isAllInpulValid[5] && isAllInpulValid[6]) {
             User user = new User();
-            System.out.println( "wa" );
-            System.out.println( user );
             user.setFirstname( name.getText() );
             user.setEmail( email.getText() );
             user.setLastname( lastName.getText() );
@@ -279,12 +275,14 @@ public class UserFormController implements Initializable {
             user.setStatus( status.getText() );
             user.setPhotos( UserController.getInstance().getCurrentUser().getPhotos() );
             user.setGender( gender.getText() );
+            user.setAdresse(adresse.getText());
+            System.out.println(user);
             ServiceUser service = new ServiceUser();
             service.modifier( user );
             UserController.setUser( user );
             return true;
-        }
-        return false;
+      //  }
+      //  return false;
     }
 
     public void setRegEx() {
