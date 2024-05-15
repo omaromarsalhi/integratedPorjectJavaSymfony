@@ -45,4 +45,17 @@ class ReclamationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+// src/Repository/ReclamationRepository.php
+
+// src/Repository/ReclamationRepository.php
+
+public function getStatistics(): array
+{
+    $qb = $this->createQueryBuilder('r')
+        ->select('r.subject, COUNT(r.id) as count')
+        ->groupBy('r.subject');
+
+    return $qb->getQuery()->getArrayResult();
+}
+
 }

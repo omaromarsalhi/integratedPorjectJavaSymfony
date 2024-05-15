@@ -9,7 +9,7 @@ use App\Repository\UserRepository;
 use App\Security\UserAuthanticatorAuthenticator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
-
+use App\MyHelpers\ImageHelperUser;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -159,7 +159,7 @@ class user_adminController extends AbstractController
     }
 
     #[Route('/editProfileAdmin', name: 'editProfileAdmin', methods: ['GET', 'POST'])]
-    public function editUser(UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelper $imageHelper, SessionInterface $session): Response
+    public function editUser(UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelperUser $imageHelper, SessionInterface $session): Response
     {
         $user = $rep->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $errorMessages = [];
