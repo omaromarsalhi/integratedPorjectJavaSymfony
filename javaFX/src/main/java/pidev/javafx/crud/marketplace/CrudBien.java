@@ -41,7 +41,7 @@ public class CrudBien implements CrudInterface<Bien> {
     public ObservableList<Bien> searchItems(String culumn,String value) {
 
         Bien bien = null;
-        String sql = "SELECT * FROM product where "+culumn+" like ? and isDeleted=false ";
+        String sql = "SELECT * FROM product where "+culumn+" like ? ";
 
         connect = ConnectionDB.getInstance().getCnx();
         ObservableList<Bien> BienList = FXCollections.observableArrayList();
@@ -122,13 +122,13 @@ public class CrudBien implements CrudInterface<Bien> {
 
     public void deleteItem(int id) {
 
-        String sql = "UPDATE product SET isDeleted = true WHERE idProduct = ?";
+        String sql = "DELETE from product WHERE idProduct = ?";
         connect = ConnectionDB.getInstance().getCnx();
 
         try {
             prepare = connect.prepareStatement(sql);
             prepare.setInt( 1,id );
-            prepare.executeUpdate();
+            prepare.executeQuery();
         } catch (SQLException e) {
             System.out.println("Error deleting item: " + e.getMessage());
         }
@@ -158,7 +158,7 @@ public class CrudBien implements CrudInterface<Bien> {
                 " quantity = ?,"+
                 " state = ?,"+
                 " category = ?"+
-                " WHERE idProd = ?";
+                " WHERE idProduct = ?";
 
         connect = ConnectionDB.getInstance().getCnx();
 
@@ -221,7 +221,7 @@ public class CrudBien implements CrudInterface<Bien> {
     @Override
     public ObservableList<Bien> selectItems() {
         Bien bien = null;
-        String sql = "SELECT * FROM product  where isDeleted=false order by idProduct desc"; // Retrieve all items
+        String sql = "SELECT * FROM product  order by idProduct desc"; // Retrieve all items
 
         connect = ConnectionDB.getInstance().getCnx();
         ObservableList<Bien> BienList = FXCollections.observableArrayList();
@@ -393,7 +393,7 @@ public class CrudBien implements CrudInterface<Bien> {
 
 
     public Bien selectItemById(int id) {
-        String Sql = "SELECT * FROM product where idProd= ?";
+        String Sql = "SELECT * FROM product where idProduct= ?";
         connect = ConnectionDB.getInstance().getCnx();
         try {
             prepare = connect.prepareStatement(Sql);

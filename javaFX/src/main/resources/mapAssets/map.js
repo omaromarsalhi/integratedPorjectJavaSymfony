@@ -1,6 +1,7 @@
 let municipality = ''
 let government='';
 let municipalityAddress='';
+let address='';
 let lat=null;
 let lng=null;
 
@@ -69,7 +70,7 @@ function initMap() {
                     infoWindow.setPosition(clickedLatLng);
                     infoWindow.setContent(content);
                     infoWindow.open(map);
-
+                    address=placeName
                     getCityFromGeocodeResponse(results)
 
                 }
@@ -209,7 +210,8 @@ function getLatLng() {
         lng: lng,
         government : government,
         municipalityAddress: municipalityAddress,
-        municipality:municipality
+        municipality:municipality,
+        address:address
     };
 }
 

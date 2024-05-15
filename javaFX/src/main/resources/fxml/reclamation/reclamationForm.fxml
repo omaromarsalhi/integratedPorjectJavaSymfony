@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane alignment="TOP_LEFT" prefHeight="510.0" prefWidth="399.0" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.reclamation.ReclamationFormController">
+<StackPane alignment="TOP_LEFT" prefHeight="559.0" prefWidth="683.0" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.reclamation.ReclamationFormController">
     <children>
-        <HBox fx:id="formBox" prefHeight="510.0" prefWidth="566.0" style="-fx-background-radius: 10; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-color: white; -fx-border-color: black;" stylesheets="@../../style/marketPlace/formLayout.css">
+        <HBox fx:id="formBox" alignment="CENTER" prefHeight="510.0" prefWidth="566.0" style="-fx-background-radius: 10; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-color: white;" stylesheets="@../../style/marketPlace/formLayout.css">
             <children>
-                <VBox fx:id="Box1" alignment="BOTTOM_CENTER" prefHeight="503.0" prefWidth="384.0" spacing="10.0">
+                <VBox fx:id="Box1" alignment="BOTTOM_CENTER" prefHeight="510.0" prefWidth="613.0" spacing="10.0">
                     <children>
                         <VBox minHeight="68.0" minWidth="300.0" prefHeight="48.0" prefWidth="266.0" style="-fx-background-radius: 20; -fx-border-radius: 20;">
                             <children>
@@ -26,9 +26,9 @@
                                         <Font name="System Italic" size="18.0" />
                                     </font>
                                 </Label>
-                                <HBox fx:id="formBox1" maxWidth="332.0" prefHeight="38.0" prefWidth="361.0">
+                                <HBox fx:id="formBox1" maxWidth="589.0" prefHeight="38.0" prefWidth="589.0">
                                     <children>
-                                        <TextField fx:id="Pname" minWidth="239.0" prefHeight="38.0" prefWidth="322.0" promptText="Your Name here !!!" styleClass="text-field">
+                                        <TextField fx:id="Pname" minWidth="239.0" prefHeight="58.0" prefWidth="552.0" promptText="Your Name here !!!" styleClass="text-field">
                                             <font>
                                                 <Font size="16.0" />
                                             </font>
@@ -96,7 +96,7 @@
         </HBox>
       <AnchorPane fx:id="loadingPage" prefHeight="200.0" prefWidth="200.0">
          <children>
-            <ImageView fitHeight="86.0" fitWidth="127.0" layoutX="157.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="74.0" fitWidth="60.0" layoutX="312.0" layoutY="250.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../img/marketPlace/grey-9026_256.gif" />
                </image>

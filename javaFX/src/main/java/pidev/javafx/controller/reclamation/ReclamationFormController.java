@@ -183,7 +183,6 @@ public class ReclamationFormController implements Initializable {
             EmailController.sendEmail("khalil.rmila@esprit.tn", "HTML Email Test", htmlEmailBody);
 //            Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
 
-
             Thread thread = sleepThread(event);
             loadingPage.setVisible(true);
             thread.start();
@@ -211,8 +210,8 @@ public class ReclamationFormController implements Initializable {
 
         myTask.setOnSucceeded(e -> {
             loadingPage.setVisible(false);
-            EventBus.getInstance().publish( "refresh",new CustomMouseEvent<>(reclamation ) );
-            EventBus.getInstance().publish("exitFormUser", event);
+            Pname.setText( "" );
+            Pdescretion.setText( "" );
         });
         return new Thread(myTask);
     }
@@ -251,7 +250,7 @@ public class ReclamationFormController implements Initializable {
 
         buttonsBox.getChildren().addAll(addProd, clearProd, cancel);
         buttonsBox.setSpacing(20);
-        buttonsBox.setAlignment(Pos.CENTER);
+        buttonsBox.setAlignment(Pos.CENTER_RIGHT);
         buttonsBox.setId("itemInfo");
         buttonsBox.getStylesheets().add(String.valueOf(getClass().getResource("/style/marketPlace/Buttons.css")));
         buttonsBox.setPadding(new Insets(0, 0, 10, 0));
