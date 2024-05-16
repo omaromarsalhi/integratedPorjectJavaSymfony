@@ -31,11 +31,9 @@ import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.MyTools;
 import pidev.javafx.tools.user.EmailController;
 import pidev.javafx.tools.user.GoogleApi;
-import pidev.javafx.tools.user.PasswordHasher;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -248,21 +246,19 @@ public class NewLogInController implements Initializable {
 
         ServiceUser service = new ServiceUser();
         BCrypt.gensalt( 15 );
-        User user=service.findParEmail(email.getText());
+        User user = service.findParEmail( email.getText() );
 
         if (user.getPassword() == null) {
             Alert alert = showAlert( "utlisateur n'existe pas ", "il faut s'inscrire" );
             alert.show();
             firstname.clear();
             password.clear();
-        }
-        else if(BCrypt.checkpw( password.getText(), user.getPassword().replace( "$2y$", "$2a$" ) )){
+        } else if (BCrypt.checkpw( password.getText(), user.getPassword().replace( "$2y$", "$2a$" ) )) {
 //        else if (BCrypt.checkpw( "Latifa123@l", user.getPassword().replace( "$2y$", "$2a$" ) )) {
             user.setIsConnected( 1 );
             UserController.setUser( user );
             ((Stage) Stage.getWindows().get( 0 )).close();
-            
-                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
+
 
         }
     }
@@ -292,7 +288,7 @@ public class NewLogInController implements Initializable {
                                 ServiceUser serviceUser = new ServiceUser();
                                 setDataUser( user );
                                 serviceUser.ajouter( user );
-                                UserController.setUser( serviceUser.findParEmail(user.getEmail()) );
+                                UserController.setUser( serviceUser.findParEmail( user.getEmail() ) );
                                 loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
                                 layoutCode.setVisible( false );
                                 clean();
@@ -459,8 +455,8 @@ public class NewLogInController implements Initializable {
         user.setAdresse( "" );
         user.setAge( 0 );
         user.setCin( "0" );
-        user.setStatus("0");
-        user.setGender("");
+        user.setStatus( "0" );
+        user.setGender( "" );
     }
 
 
