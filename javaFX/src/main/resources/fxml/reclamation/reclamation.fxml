@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="92.0" prefWidth="305.0" spacing="15.0" style="-fx-background-color: #889696;" styleClass="hbox" stylesheets="@../../style/reclamation/styleReclamation.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.reclamation.ReclamationBoxController">
+<HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="92.0" prefWidth="496.0" spacing="15.0" style="-fx-background-color: #889696;" styleClass="hbox" stylesheets="@../../style/reclamation/styleReclamation.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.reclamation.ReclamationBoxController">
    <children>
       <ImageView fx:id="img" fitHeight="64.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -19,7 +19,7 @@
             <Insets left="15.0" />
          </HBox.margin>
       </ImageView>
-      <VBox prefHeight="116.0" prefWidth="166.0">
+      <VBox alignment="CENTER" prefHeight="92.0" prefWidth="280.0">
          <children>
             <Label fx:id="subject" alignment="CENTER" prefHeight="48.0" prefWidth="142.0" text="How to grow you" textFill="#d1d1d1" wrapText="true">
                <font>
@@ -56,7 +56,7 @@
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../icons/marketPlace/morermila.png" />
+                        <Image url="@../../icons/marketPlace/info.png" />
                      </image>
                   </ImageView>
                </graphic>

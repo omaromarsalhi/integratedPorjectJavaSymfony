@@ -207,7 +207,7 @@ class ProductController extends AbstractController
         $product = $productRepository->findOneBy(['idProduct' => $idProduct]);
         $product->setState('verified');
         $entityManager->flush();
-        $aiResult = $aiResultRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
+//        $aiResult = $aiResultRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
 //        if ($aiResult != null)
 //            AiResultController::delete($aiResult, $entityManager);
         return new Response('done', Response::HTTP_OK);

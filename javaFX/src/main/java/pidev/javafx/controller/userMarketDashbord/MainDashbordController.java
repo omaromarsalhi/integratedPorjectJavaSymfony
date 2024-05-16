@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,19 +29,19 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.json.JSONObject;
 import pidev.javafx.controller.chat.ChatController;
-import pidev.javafx.crud.user.ServiceUser;
-import pidev.javafx.tools.GlobalVariables;
-import pidev.javafx.tools.UserController;
+import pidev.javafx.controller.marketPlace.ItemController;
+import pidev.javafx.controller.marketPlace.ItemInfoController;
 import pidev.javafx.crud.marketplace.CrudBien;
 import pidev.javafx.crud.marketplace.CrudFavorite;
 import pidev.javafx.crud.marketplace.CrudLocalWrapper;
-import pidev.javafx.controller.marketPlace.*;
-import pidev.javafx.model.MarketPlace.Favorite;
-import pidev.javafx.model.user.User;
-import pidev.javafx.model.user.Role;
+import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.MarketPlace.Bien;
+import pidev.javafx.model.MarketPlace.Favorite;
 import pidev.javafx.model.MarketPlace.Product;
 import pidev.javafx.model.Wrapper.LocalWrapper;
+import pidev.javafx.model.user.User;
+import pidev.javafx.tools.GlobalVariables;
+import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.*;
 
 import java.io.IOException;
@@ -339,24 +338,44 @@ public class MainDashbordController implements Initializable {
     }
 
 
-    public void doShowDetails(JSONObject jsonObject) {
-        secondIHbox.getChildren().clear();
-        secondInterface.setVisible( true );
-        firstInterface.setOpacity( 0.4 );
-        setAiResult(jsonObject);
-    }
-
-    public void setAiResult(JSONObject jsonObject) {
+    public void setFormForAddOrUpdate(String termOfUse) {
         FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation( getClass().getResource( "/fxml/userMarketDashbord/aiReselt.fxml" ) );
-        ScrollPane form = null;
+        fxmlLoader.setLocation( getClass().getResource( "/fxml/userMarketDashbord/secondForm.fxml" ) );
+        StackPane form = null;
         try {
             form = fxmlLoader.load();
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
-        AiResultController aiResultController=fxmlLoader.getController();
-        aiResultController.setData(jsonObject);
+        FormController formController = fxmlLoader.getController();
+        if (termOfUse.equals( "update_prod" ))
+            formController.setInformaton( prod2Update );
+        secondIHbox.getChildren().add( form );
+        MyTools.getInstance().showAnimation( form );
+    }
+
+    public void doShowDetails(JSONObject jsonObject, int idProduct) {
+        secondIHbox.getChildren().clear();
+        secondInterface.setVisible( true );
+        firstInterface.setOpacity( 0.4 );
+        setAiResult( jsonObject, idProduct );
+    }
+
+    public void setAiResult(JSONObject jsonObject, int idProduct) {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation( getClass().getResource( "/fxml/userMarketDashbord/aiReselt.fxml" ) );
+        VBox form = null;
+        try {
+            form = fxmlLoader.load();
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+        AiResultController aiResultController = fxmlLoader.getController();
+        aiResultController.setData( jsonObject );
+        aiResultController.getRestartAiVerifBtn().setOnMouseClicked( event -> {
+            var aiVerification = new AiVerification();
+            aiVerification.run( idProduct, "edit" );
+        } );
         secondIHbox.getChildren().add( form );
         MyTools.getInstance().showAnimation( form );
     }
@@ -469,21 +488,7 @@ public class MainDashbordController implements Initializable {
     }
 
 
-    public void setFormForAddOrUpdate(String termOfUse) {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation( getClass().getResource( "/fxml/userMarketDashbord/secondForm.fxml" ) );
-        StackPane form = null;
-        try {
-            form = fxmlLoader.load();
-        } catch (IOException e) {
-            throw new RuntimeException( e );
-        }
-        FormController formController = fxmlLoader.getController();
-        if (termOfUse.equals( "update_prod" ))
-            formController.setInformaton( prod2Update );
-        secondIHbox.getChildren().add( form );
-        MyTools.getInstance().showAnimation( form );
-    }
+
 
 
     public void loadInfoTemplate() {
@@ -593,12 +598,15 @@ public class MainDashbordController implements Initializable {
         myTask.setOnSucceeded( e -> {
             Platform.runLater( () -> {
                 myTask.getValue().getSecond().setData( (Bien) prod );
+
                 myTask.getValue().getFirst().lookup( "#deleteBtn" ).setOnMouseClicked( event -> {
+                    System.out.println( "ali" );
                     MyTools.getInstance().deleteAnimation( myTask.getValue().getFirst(), showAllProdsInfo );
                     CrudBien.getInstance().deleteItem( prod.getId() );
                     MyTools.getInstance().getTextNotif().setText( "Prod Has Been Deleted Successfully" );
                     MyTools.getInstance().showNotif();
                 } );
+
 
                 myTask.getValue().getFirst().lookup( "#updateBtn" ).setOnMouseClicked( event -> {
                     doUpdate( prod );
@@ -609,9 +617,11 @@ public class MainDashbordController implements Initializable {
                             }
                     );
                 } );
-                if(myTask.getValue().getSecond().getVerificationState().equals( "half-verified" )) {
+
+
+                if (myTask.getValue().getSecond().getVerificationState().equals( "half-verified" )) {
                     myTask.getValue().getFirst().lookup( "#aiResultBtn" ).setOnMouseClicked( event -> {
-                        doShowDetails( myTask.getValue().getSecond().getJsonObject() );
+                        doShowDetails( myTask.getValue().getSecond().getJsonObject(), prod.getId() );
                     } );
                 }
 
@@ -621,6 +631,7 @@ public class MainDashbordController implements Initializable {
         } );
         return myTask;
     }
+
 
     public void doUpdateTabprodAfterAIverif(CustomMouseEvent<Bien> bienCustomMouseEvent) {
         for (Node node : showAllProdsInfo.getChildren()) {

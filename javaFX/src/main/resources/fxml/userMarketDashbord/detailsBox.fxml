@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<HBox fx:id="detailsBox" alignment="CENTER" prefHeight="247.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="imageNumber" prefHeight="60.0" prefWidth="160.0">
+         <font>
+            <Font name="Candara Bold" size="24.0" />
+         </font>
+         <HBox.margin>
+            <Insets left="10.0" />
+         </HBox.margin>
+      </Label>
+      <HBox prefHeight="180.0" prefWidth="306.0">
+         <children>
+            <VBox fx:id="titleCat" alignment="CENTER" prefHeight="186.0" prefWidth="306.0">
+               <children>
+                  <VBox fx:id="titleSection" alignment="BOTTOM_LEFT">
+                     <children>
+                        <Label fx:id="title" prefHeight="27.0" prefWidth="82.0" text="Title :" textFill="#fdc847">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextArea fx:id="titleDesc" editable="false" prefHeight="94.0" prefWidth="306.0" text="vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" wrapText="true" />
+                     </children>
+                  </VBox>
+                  <VBox fx:id="categorySection" alignment="CENTER_LEFT">
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="85.0" text="Category :" textFill="#fdc847">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextArea fx:id="categoryDesc" editable="false" prefHeight="89.0" prefWidth="306.0" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</HBox>

@@ -102,7 +102,6 @@ class ProductRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('p');
 
-
         $qb->andWhere('p.state = :value')
             ->setParameter('value', 'verified');
 
@@ -169,22 +168,21 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('date', $lastMonth);
         }
 
-
         return $qb->getQuery()->getResult();
     }
 
     public function findVerifiedAndInStock(): array
-{
-    $queryBuilder = $this->createQueryBuilder('p');
-    $queryBuilder->where('p.state = :state')
-        ->andWhere('p.quantity > :quantity')
-        ->setParameter('state', 'verified')
-        ->setParameter('quantity', 0)
-        ->orderBy('p.timestamp', 'DESC')
-        ->setMaxResults(5);
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+        $queryBuilder->where('p.state = :state')
+            ->andWhere('p.quantity > :quantity')
+            ->setParameter('state', 'verified')
+            ->setParameter('quantity', 0)
+            ->orderBy('p.timestamp', 'DESC')
+            ->setMaxResults(5);
 
-    return $queryBuilder->getQuery()->getResult();
-}
+        return $queryBuilder->getQuery()->getResult();
+    }
 
     public function findByProductsField(): array
     {
