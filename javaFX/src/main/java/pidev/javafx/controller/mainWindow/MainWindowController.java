@@ -62,6 +62,7 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println(UserController.getInstance().getCurrentUser());
 //        EventBus.getInstance().subscribe( "laodCheckOut",this::laodCheckOut );
 //        EventBus.getInstance().subscribe( "laodMarketPlace",this::onMarketPlaceBtnClicked );
 //        mainBorderPane.getCenter())

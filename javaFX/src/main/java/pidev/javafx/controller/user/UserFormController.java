@@ -87,7 +87,6 @@ public class UserFormController implements Initializable {
     private TextField status;
 
 
-
     private static String usageOfThisForm;
     private boolean isImageUpdated;
     private Product product;
@@ -181,7 +180,7 @@ public class UserFormController implements Initializable {
 
 
             updateUser.setOnMouseClicked( event -> {
-                System.out.println("I m here");
+                System.out.println( "I m here" );
                 if (modifierData()) {
 
                     Task<Void> task = new Task() {
@@ -198,7 +197,7 @@ public class UserFormController implements Initializable {
                     };
                     task.setOnSucceeded( workerStateEvent -> {
                         Platform.runLater( () -> {
-                    loadinPage.setOpacity(0);
+                            loadinPage.setOpacity( 0 );
                             EventBus.getInstance().publish( "exitFormUser", event );
                             MyTools.getInstance().getTextNotif().setText( "User Has Been Modified Successfully" );
                             MyTools.getInstance().showNotif();
@@ -227,7 +226,7 @@ public class UserFormController implements Initializable {
 //        else
 //            itemInfo.getChildren().addAll( cancel );
 
-        itemInfo.setSpacing(15);
+        itemInfo.setSpacing( 15 );
         itemInfo.setAlignment( Pos.BOTTOM_RIGHT );
         itemInfo.getStylesheets().add( String.valueOf( getClass().getResource( "/style/marketPlace/Buttons.css" ) ) );
         itemInfo.setPadding( new Insets( 0, 10, 17, 0 ) );
@@ -241,47 +240,46 @@ public class UserFormController implements Initializable {
             lastName.setText( user.getLastname() );
         if (user.getAge() != 0)
             age.setText( String.valueOf( user.getAge() ) );
-        if (!user.getCin().isEmpty())
+        if (user.getCin()!= null)
             cin.setText( user.getCin() );
         email.setText( user.getEmail() );
-        if (!user.getGender().isEmpty())
+        if (user.getGender() != null)
             gender.setText( user.getGender() );
-        System.out.println( user.getAdresse() );
-        adresse.setText( user.getAdresse() );
-        if (!user.getStatus().isEmpty())
+        if (user.getAdresse() != null)
+            adresse.setText( user.getAdresse() );
+        if (user.getStatus() != null)
             status.setText( user.getStatus() );
         if (user.getNum() != 0)
             phone.setText( String.valueOf( user.getNum() ) );
         if (user.getDob() != null)
             dob.setValue( LocalDate.parse( user.getDob().formatted( DateTimeFormatter.ofPattern( "yyy/MM/DD" ) ) ) );
         img.setImage( new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() ) );
-        UserController.setUser( user );
     }
 
     public boolean modifierData() {
-       // testChampsBeforRegex();
+        // testChampsBeforRegex();
 
 
-       // if (isAllInpulValid[0] && isAllInpulValid[1] && isAllInpulValid[2] && isAllInpulValid[3] && isAllInpulValid[4] && isAllInpulValid[5] && isAllInpulValid[6]) {
-            User user = new User();
-            user.setFirstname( name.getText() );
-            user.setEmail( email.getText() );
-            user.setLastname( lastName.getText() );
-            user.setAge( Integer.parseInt( age.getText() ) );
-            user.setCin( cin.getText() );
-            if (dob != null)
-                user.setDob( String.valueOf( dob.getValue() ) );
-            user.setNum( Integer.parseInt( phone.getText() ) );
-            user.setStatus( status.getText() );
-            user.setPhotos( UserController.getInstance().getCurrentUser().getPhotos() );
-            user.setGender( gender.getText() );
-            user.setAdresse(adresse.getText());
-            ServiceUser service = new ServiceUser();
-            service.modifier( user );
-            UserController.setUser( user );
-            return true;
-      //  }
-      //  return false;
+        // if (isAllInpulValid[0] && isAllInpulValid[1] && isAllInpulValid[2] && isAllInpulValid[3] && isAllInpulValid[4] && isAllInpulValid[5] && isAllInpulValid[6]) {
+        User user = new User();
+        user.setFirstname( name.getText() );
+        user.setEmail( email.getText() );
+        user.setLastname( lastName.getText() );
+        user.setAge( Integer.parseInt( age.getText() ) );
+        user.setCin( cin.getText() );
+        if (dob != null)
+            user.setDob( String.valueOf( dob.getValue() ) );
+        user.setNum( Integer.parseInt( phone.getText() ) );
+        user.setStatus( status.getText() );
+        user.setPhotos( UserController.getInstance().getCurrentUser().getPhotos() );
+        user.setGender( gender.getText() );
+        user.setAdresse( adresse.getText() );
+        ServiceUser service = new ServiceUser();
+        service.modifier( user );
+        UserController.setUser( user );
+        return true;
+        //  }
+        //  return false;
     }
 
     public void setRegEx() {

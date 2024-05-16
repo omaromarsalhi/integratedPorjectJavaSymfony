@@ -16,63 +16,6 @@
 
 
 
-    <div class="rn-top-top-seller-area nice-selector-transparent rn-section-gapTop">
-        <div class="container">
-            <div class="row  mb--30">
-                <div class="col-12 justify-sm-center d-flex">
-                    <h3 class="title" data-sal-delay="150" data-sal="slide-up" data-sal-duration="800">Top Rated Transports</h3>
-                    <select>
-                        <option data-display="1 day"> 1 day</option>
-                        <option value="1">7 Day's</option>
-                        <option value="2">15 Day's</option>
-                        <option value="4">30 Day's</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row justify-sm-center g-5 top-seller-list-wrapper">
-                <!-- start single top-seller -->
-
-
-                {% for transport in transports|slice(0, 5)  %}
-                    <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800" class="col-5 col-lg-3 col-md-4 col-sm-6 top-seller-list">
-                        <div class="top-seller-inner-one">
-                            <div class="top-seller-wrapper">
-                                <div class="thumbnail varified">
-                                    <a href="author.html"><img src="/usersImg/{{ transport.VehiculeImage }}" alt="Transport_Image"></a>
-                                </div>
-                                <div class="top-seller-content">
-                                    <a href="author.html">
-                                        {% for station_dep in stations %}
-                                            {% if station_dep.id == transport.Stationdepart %}
-                                                <h6 class="name">{{station_dep.NomStation}}</h6>
-                                            {% endif %}
-                                        {% endfor %}
-
-
-                                        {% for station_ari in stations %}
-                                            {% if station_ari.id == transport.Stationarrive %}
-
-                                                <h6 class="name">{{station_ari.NomStation}}</h6>
-
-                                            {% endif %}
-
-                                        {% endfor %}
-                                    </a>
-                                    <span class="count-number">
-                        {{ transport.averageRating }}
-                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-
-
-
-
-            </div>
-        </div>
-    </div>
 
 
 

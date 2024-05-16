@@ -640,7 +640,6 @@ else
 
     public void update_action() {
         Station updated_s = new Station(NomStationText.getText(), image_path, AdressText.getText(), BoxTypeVehicule.getValue().toString(), selectedItem.getIdStation());
-        System.out.println(updated_s);
         ss.updateItem(updated_s);
         afficher();
         close_update();
@@ -681,7 +680,7 @@ else
                 selectedItem_1 = StationListView.getSelectionModel().getSelectedItem();
                 if (!selectedItem_1.equals(selectedItem)) {
                     selectedItem = selectedItem_1;
-                    System.out.println(selectedItem);
+
                     stats();
                 }
             }

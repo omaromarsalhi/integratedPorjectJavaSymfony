@@ -78,7 +78,6 @@ public class StationInfosController implements Initializable {
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println(response.toString());
                 response.append(line);
             }
 
