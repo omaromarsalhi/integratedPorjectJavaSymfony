@@ -93,6 +93,7 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('max', $max)
             ->getQuery()
             ->getResult();
+
     }
 
     /**
@@ -182,6 +183,30 @@ class ProductRepository extends ServiceEntityRepository
             ->setMaxResults(5);
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+
+    /**
+     * @return Product[] Returns an array of Product objects
+     */
+
+    public function findByExampleField(): array
+    {
+        $data = $this->createQueryBuilder('p')
+            ->select('p.category category, p.state state , COUNT(p) as count')
+            ->groupBy('p.category , p.state ')
+            ->getQuery()
+            ->getResult();
+
+        $formattedData = [];
+        foreach ($data as $value) {
+            $formattedData[$value['category']] = ['verified' =>  0, 'unverified' =>  0];
+        }
+        foreach ($data as $value) {
+            $formattedData[$value['category']][$value['state']] = $value['count'];
+        }
+
+        return $formattedData;
     }
 
 

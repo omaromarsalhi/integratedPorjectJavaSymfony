@@ -294,7 +294,6 @@ public class NewAccountController implements Initializable {
 
         for (Reclamation reclamation : reclamations) {
             vBox.getChildren().add( refresh( reclamation ) );
-            System.out.println("1");
         }
 
         scrollPane.setContent( vBox );

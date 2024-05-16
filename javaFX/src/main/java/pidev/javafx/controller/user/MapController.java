@@ -58,12 +58,9 @@ public class MapController implements Initializable {
             double latitude = (double) result.getMember( "lat" );
             double longitude = (double) result.getMember( "lng" );
             String municipality = (String) result.getMember( "municipality" );
-            String municpalityGoverment = (String) result.getMember( "government" );
+            String municipalityGovernment = (String) result.getMember( "government" );
             String municipalityAddress = (String) result.getMember( "municipalityAddress" );
             String address = (String) result.getMember( "address" );
-//            System.out.println( STR. "Received lat: \{latitude}, lng: \{longitude}" );
-//            System.out.println( STR."Received lat: \{municipality}, lng: \{municpalityGoverment}" );
-//            System.out.println( STR."Received lat: \{municipalityAddress}" );
         }
     }
 
