@@ -158,6 +158,8 @@ public class TranportController implements Initializable {
 
     @FXML
     private Spinner<Integer> timeSpinner1;
+    @FXML
+    private ImageView labelImageAdd;
 
 
     @FXML
@@ -237,6 +239,25 @@ public class TranportController implements Initializable {
         int minutes = totalMinutes % 60;
         LocalTime localTime = LocalTime.of(hours, minutes);
         Time time = Time.valueOf(localTime);
+        String randomFileName = null;
+        Path sourcePath = Paths.get(imagePath);
+        if (imagePath.endsWith(".png")) {
+            randomFileName ="/" +UUID.randomUUID().toString() + ".png";
+
+        } else {
+            randomFileName ="/" + UUID.randomUUID().toString() + ".jpg";
+
+        }
+        Path destinationPath = Paths.get(destinationString, randomFileName);
+        System.out.println(sourcePath);
+        System.out.println(destinationPath);
+        try {
+            Files.copy(sourcePath, destinationPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        imagePath =  randomFileName;
+
         if (ReferenceText1.getText().matches("1") || PrixText1.getText() == null) {
 
 
@@ -572,7 +593,7 @@ public class TranportController implements Initializable {
         var selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
             imagePath = selectedFile.getAbsolutePath();
-
+            labelImageAdd.setImage(new Image("file:"+imagePath));
 
         }
 

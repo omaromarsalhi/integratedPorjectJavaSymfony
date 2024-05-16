@@ -246,4 +246,28 @@ class ProductController extends AbstractController
     }
 
 
+
+    #[Route('/deleteproductAdmin/{id}', name: 'app_product_admin',  methods: ['DELETE'])]
+    public function deleteProduit($id, ProductRepository $prodRepository, Request $request,EntityManagerInterface $entityManager): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $prod = $prodRepository->find($id);
+            $entityManager->remove($prod);
+            $entityManager->flush();
+
+            $products = $prodRepository->findAll();
+            return new JsonResponse(['list' => $products]);
+        }
+        
+            $responses = [
+
+                'message' => 'Product Deleted successfully.'
+            ];
+
+            return new JsonResponse($responses);
+
+        }
+
+
+
 }

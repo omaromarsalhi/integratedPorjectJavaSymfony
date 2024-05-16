@@ -153,10 +153,11 @@
                                     </li>
                                 </ul>
                             </li>
-                            {% set path = app.user ? path('app_news') : path('app_register') %}
-                            <li style="min-width: 100px"><a class="live-expo" href="{{ path }}">News</a></li>
                             {% set path = app.user ? path('app_reclamation') : path('app_register') %}
                             <li><a href="{{ path }}">Contact</a></li>
+                            {% set path = app.user ? path('app_news') : path('app_register') %}
+                            <li style="min-width: 100px"><a class="live-expo" href="{{ path }}">News</a></li>
+
                         </ul>
                         <!-- End Mainmanu Nav -->
                     </nav>
