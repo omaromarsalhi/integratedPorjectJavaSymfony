@@ -370,13 +370,6 @@
     }
 
     $(document).ready(function () {
-        //date par defaut (latifa)
-        var date = new Date();
-        date.setDate(date.getDate() - 6);
-        var day = ("0" + date.getDate()).slice(-2);
-        var month = ("0" + (date.getMonth() + 1)).slice(-2);
-        var formattedDate = day + '/' + month + '/' + date.getFullYear();
-        $('#datepicker').val(formattedDate);
 
         getUsers();
 
