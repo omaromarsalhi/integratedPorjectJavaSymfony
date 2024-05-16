@@ -276,7 +276,6 @@ public class UserFormController implements Initializable {
             user.setPhotos( UserController.getInstance().getCurrentUser().getPhotos() );
             user.setGender( gender.getText() );
             user.setAdresse(adresse.getText());
-            System.out.println(user);
             ServiceUser service = new ServiceUser();
             service.modifier( user );
             UserController.setUser( user );
