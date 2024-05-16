@@ -77,10 +77,12 @@
                                                 <div class="d-flex">
                                                     <div class="flex-shrink-0">
                                                         <img src="{{ asset('/usersImg/'~ abonnement.image ) }}"
-                                                             alt="Generic placeholder image" class="img-fluid" style="width: 180px; height:     220px; border-radius: 10px;">
+                                                             alt="Generic placeholder image" class="img-fluid"
+                                                             style="width: 180px; height:     220px; border-radius: 10px;">
                                                     </div>
                                                     <div class="flex-grow-1 ms-3">
-                                                        <h5 class="mb-1">{{ abonnement.nom }} {{ abonnement.Prenom }}></h5>
+                                                        <h5 class="mb-1">{{ abonnement.nom }} {{ abonnement.Prenom }}
+                                                            ></h5>
                                                         <div class="countdown" data-date="{{ abonnement.dateFin }}">
                                                             <div class="countdown-container days">
                                                                 <span class="countdown-value days-bottom">285</span>
@@ -138,10 +140,6 @@
             background-size: cover;
             background-position: center;
         }
-
-
-
-
 
 
     </style>

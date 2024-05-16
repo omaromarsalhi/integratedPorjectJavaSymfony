@@ -184,6 +184,7 @@ function deleteProduct(id, index, type) {
 }
 
 
+
 function createProduct(e) {
     if (check_all_inputs()) {
         loader_start()
@@ -405,6 +406,111 @@ function DisplayListProducts4Owner(movement_direction, page) {
         error: function (response) {
             console.log(response);
         },
+    });
+}
+
+
+
+
+
+
+function deleteProductAdmin(id) {
+    console.log(id)
+    $.ajax({
+        url: '/product/deleteproductAdmin/'+id,
+        type: "DELETE",
+        success: function (response) {
+            console.log(response.list[0])
+            updateTransportList(response.list);
+
+            $('#alert').html('        ' +
+                ' <div class="alert alert-subtle-success" role="alert">Transport deleted succefully !!!</div>\n');
+            setTimeout(function() {
+                $('#alert').empty();
+            }, 4000);
+        },
+        error: function(xhr, status, error) {
+            $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while Deleting the Transport!</div>\n');
+            setTimeout(function() {
+                $('#alert').empty();
+            }, 4000);        }
+    });
+}
+
+
+
+
+function updateTransportList(listProd) {
+    // Clear the existing station list
+    $('#products-table-body').empty();
+
+    // Append the new station list
+    listProd.forEach(function(product) {
+        let productHTML = `   
+    
+                      <tr class="position-static">
+                                    <td class="fs-9 align-middle">
+
+
+
+
+
+
+
+                                        <div class="form-check mb-0 fs-8">
+                                            <input class="form-check-input" type="checkbox" data-bulk-select-row='{"product":"Fitbit Sense Advanced Smartwatch with Tools for Heart Health, Stress Management & Skin Temperature Trends, Carbon/Graphite, One Size (S & L Bands...","productImage":"/products/1.png","price":"$39","category":"Plants","tags":["Health","Exercise","Discipline","Lifestyle","Fitness"],"star":false,"vendor":"Blue Olive Plant sellers. Inc","publishedOn":"Nov 12, 10:45 PM"}' /></div>
+                                    </td>
+                                    {#                      ${ asset(product.image) }#}
+                                    <td class="align-middle white-space-nowrap py-0">
+
+
+                                        <div class="avatar-group avatar-group-dense" style="font-size: 20px;">
+                                            {% set image_count = 0 %}
+                                            {% for images in product.images %}
+                                                {% if image_count < 3 %}
+                                                    <a class="dropdown-toggle dropdown-caret-none d-inline-block" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                                                        <div class="avatar avatar-m rounded-circle"> <!-- Adjusted size to avatar-m -->
+                                                            <img class="rounded-circle" src="${ asset(images.path) }" alt="" />
+                                                        </div>
+                                                    </a>
+                                                    <div class="dropdown-menu avatar-dropdown-menu p-0 overflow-hidden" style="width: 420px;"> <!-- Adjusted width -->
+                                                        <!-- Dropdown menu content -->
+                                                        <!-- This part remains the same as in your original code -->
+                                                    </div>
+                                                    {% set image_count = image_count + 1 %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if product.images|length > 3 %}
+                                                <div class="avatar avatar-m rounded-circle"> <!-- Adjusted size to avatar-m -->
+                                                    <div class="avatar-name rounded-circle"><span>+${ product.images|length - 3 }</span></div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+-->
+
+
+
+                                    </td>
+                                    <td class="product align-middle ps-4"><a class="fw-semibold line-clamp-3 mb-0" href="../landing/product-details.html">${ product.name }</a></td>
+                                    <td class="price align-middle white-space-nowrap text-end fw-bold text-body-tertiary ps-4">${ product.price }</td>
+                                    <td class="category align-middle white-space-nowrap text-body-quaternary fs-9 ps-4 fw-semibold">${ product.category }</td>
+                                    <td class="tags align-middle review pb-2 ps-3" style="min-width:225px;"><a class="text-decoration-none" href="#!"><span class="badge badge-tag me-2 mb-2">${ product.state }</span>
+                                        </a>
+
+                                    </td>
+                                    <td class="vendor align-middle text-start fw-semibold ps-4"><a href="#!">${ product.quantity }$</a></td>
+                                    <td class="time align-middle white-space-nowrap text-body-tertiary text-opacity-85 ps-4">${ product.timestamp | date('Y-m-d H:i:s') }</td>
+                                    <td class="align-middle white-space-nowrap text-end pe-0 ps-4 btn-reveal-trigger">
+                                        <div class="btn-reveal-trigger position-static"><button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
+                                            <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
+                                                <div class="dropdown-divider"></div><a class="dropdown-item text-danger" onclick="deleteProductAdmin(${ product.idProduct })" href="#!">Remove</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+        `;
+        $('#products-table-body').append(productHTML);
     });
 }
 

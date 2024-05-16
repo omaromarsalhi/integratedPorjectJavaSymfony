@@ -61,7 +61,7 @@
          <children>
             <Button fx:id="aiResultBtn" mnemonicParsing="false">
                <graphic>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../icons/marketPlace/creative.png" />
                      </image>

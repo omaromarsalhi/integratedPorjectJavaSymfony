@@ -1,4 +1,6 @@
 from flask import Flask,request,jsonify
+from langchain_helper import generate_produxt_description
+import ollama_vesion as ov
 import OCRID
 
 
@@ -6,7 +8,10 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://2b3e-34-29-90-192.ngrok-free.app/'
+url='https://082b-34-72-197-96.ngrok-free.app'
+
+
+
 
 @app.route('/get-descreption',methods=['POST'])
 def generate():
@@ -16,6 +21,7 @@ def generate():
 @app.route('/get-product_image_descreption',methods=['POST'])
 def generate_desc_image():
     image_url=request.args.get('image_url')
+    print("image url : "+image_url)
     commands=f"set OLLAMA_HOST={url}&ollama run llava describe the image content only {image_url}"
     text=ov.execute_cmd(commands)
     tuned_response=ov.finetune_text(text)
@@ -38,12 +44,14 @@ def generate_category_validation():
     tuned_response=ov.finetune_resp(text)
     return jsonify(tuned_response),200
 
+
 @app.route('/get-OCR_result',methods=['POST'])
 def generate_OCR_result():
-    path=request.args.get('path')
+    path=str(request.args.get('path'))
     fileName=request.args.get('fileName')
     OCRID.idRcognition(path,fileName)
     return jsonify('done'),200
+
 
 if __name__== '__main__':
     app.run()

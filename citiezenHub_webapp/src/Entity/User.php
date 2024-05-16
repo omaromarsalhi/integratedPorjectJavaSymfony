@@ -162,6 +162,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\ManyToOne(targetEntity: Municipalite::class, inversedBy: "users")]
     #[ORM\JoinColumn(name: "idMunicipalite ", referencedColumnName: "idMunicipalite", nullable: false)]
     private $municipalite;
+
+
     private ?\DateTimeInterface $informationCompletionDate;
 
     #[ORM\Column(name:'cin_images',length: 1000, nullable: true)]

@@ -6,6 +6,7 @@ use App\MyHelpers\AiDataHolder;
 use App\MyHelpers\AiVerificationMessage;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,9 +28,12 @@ class JavaRequestController extends AbstractController
     }
 
     #[Route('/java/request/verifyProduct', name: 'app_java_request_verifyProduct')]
-    public function verifyProduct(Request $request, ProductRepository $productRepository, MessageBusInterface $messageBus,): Response
+    public function verifyProduct(Request $request, ProductRepository $productRepository, MessageBusInterface $messageBus): Response
     {
         $product = $productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
+        $mode=$request->get('mode');
+
+
         $newImagesPath = [];
         foreach ($product->getImages() as $image) {
             $newImagesPath[] = str_replace("usersImg/", '', $image->getPath());
@@ -39,7 +43,7 @@ class JavaRequestController extends AbstractController
             'category' => $product->getCategory(),
             'id' => $product->getIdProduct(),
             'images' => $newImagesPath,
-            'mode' => 'add'
+            'mode' => $mode
         ];
 
         $messageBus->dispatch(new AiVerificationMessage($obj));

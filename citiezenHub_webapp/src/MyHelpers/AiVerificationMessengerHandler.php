@@ -39,10 +39,11 @@ class AiVerificationMessengerHandler
         $serializedData = $serializer->serialize($aiDataHolder, 'json');
         $aiResult = new AiResult();
 
+        var_dump($obj);
+
         if ($obj['mode'] === 'edit') {
             $aiResultController->edit($serializedData,$obj['id'],$this->entityManager,$this->aiResultRepository);
         } else {
-            var_dump($obj);
             $aiResult->setBody($serializedData);
             $aiResult->setIdProduct($obj['id']);
             $aiResult->setTerminationDate();

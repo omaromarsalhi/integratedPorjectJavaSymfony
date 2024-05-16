@@ -13,6 +13,7 @@ use App\MyHelpers\AiVerificationMessage;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpClient\HttpClient;
@@ -27,7 +28,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/product', name: 'app_product')]
 class ProductController extends AbstractController
 {
-
 
     private $eventDispatcher;
 
@@ -207,7 +207,7 @@ class ProductController extends AbstractController
         $product = $productRepository->findOneBy(['idProduct' => $idProduct]);
         $product->setState('verified');
         $entityManager->flush();
-        $aiResult = $aiResultRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
+//        $aiResult = $aiResultRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
 //        if ($aiResult != null)
 //            AiResultController::delete($aiResult, $entityManager);
         return new Response('done', Response::HTTP_OK);
@@ -244,6 +244,38 @@ class ProductController extends AbstractController
         }
         return new Response('something went wrong', Response::HTTP_BAD_REQUEST);
     }
+
+    #[Route('/statProd', name: 'statProd', methods: ['GET'])]
+    public function statProd(ProductRepository $productRepository): Response
+    {
+        $prod = $productRepository->findByProductsField();
+
+        return new jsonResponse($prod);
+    }
+
+
+
+    #[Route('/deleteproductAdmin/{id}', name: 'app_product_admin',  methods: ['DELETE'])]
+    public function deleteProduit($id, ProductRepository $prodRepository, Request $request,EntityManagerInterface $entityManager): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $prod = $prodRepository->find($id);
+            $entityManager->remove($prod);
+            $entityManager->flush();
+
+            $products = $prodRepository->findAll();
+            return new JsonResponse(['list' => $products]);
+        }
+        
+            $responses = [
+
+                'message' => 'Product Deleted successfully.'
+            ];
+
+            return new JsonResponse($responses);
+
+        }
+
 
 
 }

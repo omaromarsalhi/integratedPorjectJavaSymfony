@@ -111,11 +111,10 @@ public class abonnementAdminController implements Initializable {
                         } else {
                             setText(abs.getNom() + " " + abs.getPrenom());
                             ImageView imageView = new ImageView();
-                            System.out.println(GlobalVariables.IMAGEPATH + "usersImg/" + abs.getImage());
                             String imagePath =  GlobalVariables.IMAGEPATH + "usersImg/" + abs.getImage();
                             try {
                                 Image image = new Image(imagePath);
-                                imageView.setImage(new Image(GlobalVariables.IMAGEPATH + "usersImg" + abs.getImage()));
+                                imageView.setImage(new Image(GlobalVariables.IMAGEPATH +"usersImg/"+ abs.getImage()));
                                 imageView.setFitWidth(70);
                                 imageView.setFitHeight(70);
                             } catch (Exception e) {
