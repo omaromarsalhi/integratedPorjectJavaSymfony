@@ -10,7 +10,7 @@ class OpenCageService
 
     public function __construct()
     {
-        $this->apiKey = $_ENV['OPENCAGE_API_KEY']; // or getenv('OPENCAGE_API_KEY')
+        $this->apiKey = $_ENV['OPENCAGE_API_KEY'];
         $this->client = new Client([
             'base_uri' => 'https://api.opencagedata.com/geocode/v1/',
         ]);

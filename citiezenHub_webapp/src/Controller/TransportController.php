@@ -298,13 +298,8 @@ public function deletetransport($id, transportRepository $transportRepository, R
 
     return new JsonResponse('This route accepts only AJAX requests', Response::HTTP_BAD_REQUEST);
 }
-/*
-#[Route('/analyze-image', name: 'analyze_image')]
-public function analyzeImage(ImaggaService $imaggaService): Response
-{
 
-}
-*/ 
+
 #[Route('/rating/add', name: 'rating_add', methods: ['POST'])]
 public function add(Request $request): JsonResponse
 {

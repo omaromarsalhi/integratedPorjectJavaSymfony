@@ -11,7 +11,6 @@ function addTransport(event) {
     let Time = $('#Time').val();
     let prix = $('#Prix').val();
  
-alert("aaaa");
     formData.append('image', $('#createinputfile').prop('files')[0]);
     formData.append('reference', reference);
     formData.append('time', Time+":00");
@@ -41,8 +40,11 @@ alert("aaaa");
         success: function(response) {
           
               if (response.message === "Transport added successfully.") {
-                alert("Added successfully");
-                $('#addDealModal').modal('hide');
+                  $('#alert').html('        ' +
+                      ' <div class="alert alert-subtle-success" role="alert">Transport deleted succefully !!!</div>\n');
+                  setTimeout(function() {
+                      $('#alert').empty();
+                  }, 6000);                $('#addDealModal').modal('hide');
                 $('#reference').val('');
                 $('#time').val('');
                 $('#prix').val('');
@@ -253,24 +255,39 @@ function updateTransport(event) {
     }
 
 
- 
-function deleteTransport(transportid) {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette transport ?")) {
+var itemId;
+function handleDelete(value) {
+    // Do something with the value (e.g., log it)
+    itemId=value;
+}
+function deleteTransport() {
+
         $.ajax({
-            url: '/transport/' + transportid,
+            url: '/transport/' + itemId,
             type: 'DELETE',
             success: function(response) {
-              alert(response.message);
-              window.location.reload();
+                $('#verticallyCentered').modal('hide');
+
+                $('#alert').html('        ' +
+                    ' <div class="alert alert-subtle-success" role="alert">Transport deleted succefully !!!</div>\n');
+                setTimeout(function() {
+                    $('#alert').empty();
+                }, 4000);
+                window.location.reload();
 
             },
             error: function(xhr, status, error) {
                               window.location.reload();
+                $('#verticallyCentered').modal('hide');
+                $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while Deleting the Transport!</div>\n');
+                setTimeout(function() {
+                    $('#alert').empty();
+                }, 4000);        }
 
-            }
+
         });
         
-    }
+
 }
 
 

@@ -57,13 +57,12 @@ function addPost(event) {
             processData: false,
             contentType: false,
             success: function (response) {
-                $('#statusSuccessModal').modal('show');
+                showValidPop("Subscription Inserted")
                 redirectToAnotherRoute();
             },
             error: function (response) {
                 console.error("error");
-                $('#statusErrorsModal').modal('show');
-
+                 showInvalidPop("Image not inserted !!!!")
             },
         });
     } else {
@@ -146,8 +145,8 @@ function testImage(filePath) {
             document.getElementById('overlay').style.display = 'none';
 
             if (critere == 2) {
-                $('#sucess-message').text(rep);
-                $('#statusSuccessModal').modal('show');
+
+                showValidPop("The  image respects our rules")
 
 
             } else {
@@ -155,19 +154,14 @@ function testImage(filePath) {
                 document.getElementById('loadingLogo').style.display = 'none';
                 document.getElementById('overlay').style.display = 'none';
                 rep = " ";
-                rep = " Les critere ne sont pas respecté : \n L'image doit etre de type portrait et d'un etre humain   ";
-                console.log(rep);
-                $('#error-message').text(rep);
-
-                $('#statusErrorsModal').modal('show');
+                showInvalidPop( " The rules have not been respected : \n The image sould be of an humain and in portrait mode  ")
 
             }
         },
         error: function (xhr, status, error) {
             document.getElementById('loadingLogo').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
-            $('#statusErrorsModal').modal('show');
-        }
+            showInvalidPop("no image is inserted")        }
     });
 }
 

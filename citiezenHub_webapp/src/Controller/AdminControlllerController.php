@@ -223,91 +223,91 @@ class AdminControlllerController extends AbstractController
         $lastUsername = $authenticationUtils->getLastUsername();
         return $this->render('admin/sign-in.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
-    #[Route('/editProfileAdmin', name: 'editProfileAdmin',methods: ['GET', 'POST'])]
-    public function editUser(UserRepository $rep, ManagerRegistry $doc, Request $req,ValidatorInterface $validator,ImageHelperUser $imageHelper,SessionInterface $session): Response
-    {
-     /*   $user=$rep->findOneBy([ 'email' =>$this->getUser()->getUserIdentifier()]);
-        $errorMessages = [];
-        if ($req->isXmlHttpRequest()) {
-            $email = $req->get('email');
-            $name = $req->get('name');
-            $lastname = $req->get('lastname');
-            $role = $req->get('role');
-            $age = $req->get('age');
-            $gender = $req->get('gender');
-            $status = $req->get('status');
-            $cin = $req->get('cin');
-            $phoneNumber = $req->get('phoneNumber');
-            $date = $req->get('date');
-            $fichierImage = $req->files->get('image');
-            $user->setFirstName($name);
-            $user->setLastName($lastname);
-            $user->setAge($age);
-            $user->setPhoneNumber($phoneNumber);
-            $user->setCin($cin);
-            $user->setRole($role);
-            $user->setStatus($status);
-            $user->setGender($gender);
-            if($fichierImage!=null)
-                $user->setImage($imageHelper->saveImages($fichierImage));
-            $datee = date_create($date);
-            $user->setDob($datee);
-            $errors = $validator->validate($user, null, 'creation');
-            foreach ($errors as $error) {
-                $field = $error->getPropertyPath();
-                $errorMessages[$field] = $error->getMessage();
-                var_dump($field);
-            }
-            if (count($errors) === 0) {
-                $em = $doc->getManager();
-                $em->persist($user);
-                $em->flush();
-
-                return new JsonResponse([
-                    'success' => true,
-                    'user' => [
-                        'name' => $user->getFirstName(),
-                        'lastname' => $user->getLastName(),
-                        'email' => $user->getEmail(),
-                        'address' => $user->getAddress(),
-                        'role' => $user->getRole(),
-                        'cin' => $user->getCin(),
-                        'phoneNumber' => $user->getPhoneNumber(),
-                        'age' => $user->getAge(),
-                        'status' => $user->getStatus(),
-                        'image' => $user->getImage(),
-                        'gender' => $user->getGender(),
-                        'dob' => $user->getDob(),
-                    ]
-                ]);
-            }
-            return new JsonResponse([
-                'success' => false,
-                'errors' => $errorMessages,
-            ],422);
-
-        }
-
-        return $this->render('admin/settings.html.twig', [
-            'name' =>$user->getFirstName(),
-            'lastname' =>$user->getLastName(),
-            'email' => $user->getEmail(),
-            'address' => $user->getAddress(),
-            'role' => $user->getRole(),
-            'cin' => $user->getCin(),
-            'phoneNumber'=>$user->getPhoneNumber(),
-            'age' =>$user->getAge(),
-            'status' =>$user->getStatus(),
-            'image'=>$user->getImage(),
-            'gender'=>$user->getGender(),
-            'dob'=>$user->getDob(),
-            'errors' => $errorMessages,
-
-        ]);*/
-
-
-        return new Response('daaa');
-    }
+//    #[Route('/editProfileAdmin', name: 'editProfileAdmin',methods: ['GET', 'POST'])]
+//    public function editUser(UserRepository $rep, ManagerRegistry $doc, Request $req,ValidatorInterface $validator,ImageHelperUser $imageHelper,SessionInterface $session): Response
+//    {
+//  $user=$rep->findOneBy([ 'email' =>$this->getUser()->getUserIdentifier()]);
+//      $errorMessages = [];
+//      if ($req->isXmlHttpRequest()) {
+//          $email = $req->get('email');
+//         $name = $req->get('name');
+//           $lastname = $req->get('lastname');
+//          $role = $req->get('role');
+//          $age = $req->get('age');
+//          $gender = $req->get('gender');
+//          $status = $req->get('status');
+//           $cin = $req->get('cin');
+//           $phoneNumber = $req->get('phoneNumber');
+//         $date = $req->get('date');
+//          $fichierImage = $req->files->get('image');
+//          $user->setFirstName($name);
+//         $user->setLastName($lastname);
+//         $user->setAge($age);
+//         $user->setPhoneNumber($phoneNumber);
+//           $user->setCin($cin);
+//          $user->setRole($role);
+//          $user->setStatus($status);
+//          $user->setGender($gender);
+//          if($fichierImage!=null)
+//              $user->setImage($imageHelper->saveImages($fichierImage));
+//            $datee = date_create($date);
+//          $user->setDob($datee);
+//           $errors = $validator->validate($user, null, 'creation');
+//          foreach ($errors as $error) {
+//               $field = $error->getPropertyPath();
+//              $errorMessages[$field] = $error->getMessage();
+//              var_dump($field);
+//           }
+//         if (count($errors) === 0) {
+//            $em = $doc->getManager();
+//              $em->persist($user);
+//               $em->flush();
+//
+//              return new JsonResponse([
+//                  'success' => true,
+//                   'user' => [
+//                      'name' => $user->getFirstName(),
+//                       'lastname' => $user->getLastName(),
+//                      'email' => $user->getEmail(),
+//                      'address' => $user->getAddress(),
+//                       'role' => $user->getRole(),
+//                      'cin' => $user->getCin(),
+//                      'phoneNumber' => $user->getPhoneNumber(),
+//                      'age' => $user->getAge(),
+//                       'status' => $user->getStatus(),
+//                    'image' => $user->getImage(),
+//                      'gender' => $user->getGender(),
+//                        'dob' => $user->getDob(),
+//                  ]
+//             ]);
+//         }
+//          return new JsonResponse([
+//               'success' => false,
+//               'errors' => $errorMessages,
+//           ],422);
+//
+//       }
+//
+//      return $this->render('admin/settings.html.twig', [
+//          'name' =>$user->getFirstName(),
+//          'lastname' =>$user->getLastName(),
+//          'email' => $user->getEmail(),
+//           'address' => $user->getAddress(),
+//          'role' => $user->getRole(),
+//          'cin' => $user->getCin(),
+//          'phoneNumber'=>$user->getPhoneNumber(),
+//           'age' =>$user->getAge(),
+//         'status' =>$user->getStatus(),
+//          'image'=>$user->getImage(),
+//           'gender'=>$user->getGender(),
+//           'dob'=>$user->getDob(),
+//           'errors' => $errorMessages,
+//
+//     ]);
+//
+//
+//        return new Response('daaa');
+//    }
 
 
 }

@@ -215,7 +215,7 @@ public class NewLogInController implements Initializable {
         if(email.getText().equals( "1" ))
             user = service.findParEmail( "salhiomar362@gmail.com" );
         else if(email.getText().equals( "2" ))
-            user=service.findParEmail("salhiomar3662@gmail.com");
+            user=service.findParEmail ("salhiomar3662@gmail.com");
         else if(email.getText().equals( "3" ))
             user=service.findParEmail("test2@gmail.com");
         else if(email.getText().equals( "4" ))

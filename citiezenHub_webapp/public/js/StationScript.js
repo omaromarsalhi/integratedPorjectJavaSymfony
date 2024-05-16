@@ -26,25 +26,34 @@ function addStation(event) {
         success: function(response) {
           
               if (response.message === "Station added successfully.") {
-                // Handle success
-                alert("Added successfully");
-                $('#addDealModal').modal('hide');
-                $('#name').val('');
-                $('#adressStation').val('');
-                $('#createinputfile').val('');
-                $('#createinputfile').closest('form').get(0).reset();
+
+                  $('#alert').html('<div class="alert alert-subtle-success" role="alert">Station added successfully!!!</div>');
+                  setTimeout(function() {
+                      $('#alert').empty();
+                  }, 4000);
+
+
+
+
+                  // Handle success
+
+
+                  $('#addDealModal').modal('hide');
+                  $('#name').val('');
+                  $('#adressStation').val('');
+                  $('#createinputfile').val('');
+                  $('#createinputfile').closest('form').get(0).reset();
                 updateStationList(response.stations); 
             } 
         },
         error: function(response) {
             if (response.responseJSON && response.responseJSON.error === 'VALIDATION_ERROR') {
-                const errorMessage = response.responseJSON.messages.join(', '); // Join error messages with ','
-                const errorMessagesArray = errorMessage.split(','); // Split the error messages on ','
-                let errorMessagesHTML = ''; // Initialize an empty string to store HTML for error messages
+                const errorMessage = response.responseJSON.messages.join(', ');
+                const errorMessagesArray = errorMessage.split(',');
+                let errorMessagesHTML = '';
         
-                // Loop through each error message and create HTML for it
                 errorMessagesArray.forEach((message) => {
-                    errorMessagesHTML += `<div>${message.trim()}</div>`; // Trim whitespace and wrap each message in a <div>
+                    errorMessagesHTML += `<div>${message.trim()}</div>`;
                 });
                 $('.error-label').html(errorMessagesHTML);
             }
@@ -54,8 +63,10 @@ function addStation(event) {
                 console.log("Duplicate entry");
             } else {
                 // Handle other errors
-                alert("An error occurred while inserting the subscription: " + response.responseJSON.message);
-                console.log("Database error");
+                $('#alert').html('        <div class="alert alert-subtle-danger" role="alert">An error while inserting  !</div>\n');
+                setTimeout(function() {
+                    $('#alert').empty();
+                }, 4000);
             } 
             // Handle AJAX errors
         },
@@ -90,8 +101,10 @@ function updateStation(event) {
         },
         success: function(response) {
             if (response.message == "Station updated successfully.") {
-                alert("Station updated successfully");
-                $('#updateDealModal').modal('hide');
+                $('#alert').html('<div class="alert alert-subtle-success" role="alert">Station Updated successfully!!!</div>');
+                setTimeout(function() {
+                    $('#alert').empty();
+                }, 4000);                $('#updateDealModal').modal('hide');
                 $('#name').val('');
                 $('#adressStation').val('');
                 $('#createinputfileUpd').val('');
@@ -115,12 +128,16 @@ function updateStation(event) {
             }
             else if (response.responseJSON && response.responseJSON.error === 'DUPLICATE_ENTRY') {
                 // Handle duplicate entry error
-                alert("Error: " + response.responseJSON.message);
-                console.log("Duplicate entry");
+                $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while updating!</div>\n');
+                setTimeout(function() {
+                    $('#alert').empty();
+                }, 4000);                console.log("Duplicate entry");
             } else {
                 // Handle other errors
-                alert("An error occurred while inserting the subscription: " + response.responseJSON.message);
-                console.log("Database error");
+                $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while updating!</div>\n');
+                setTimeout(function() {
+                    $('#alert').empty();
+                }, 4000);
             } 
             // Handle AJAX errors
         },
@@ -285,22 +302,39 @@ $('#name').change(function() {
         // Rest of your code
     });// 
 
- 
-function deleteStation(stationId) {
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette station ?")) {
-        $.ajax({
-            url: '/station/' + stationId,
-            type: 'DELETE',
-            success: function(response) {
-            updateStationList(response.stations); 
-            alert("deleted")
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-            }
-        });
-        
-    }
+
+var itemId;
+function handleDelete(value) {
+    // Do something with the value (e.g., log it)
+    itemId=value;
+}
+
+
+
+
+function deleteStation() {
+    $.ajax({
+        url: '/station/' + itemId,
+        type: 'DELETE',
+        success: function(response) {
+            $('#verticallyCentered').modal('hide');
+
+            updateStationList(response.stations);
+
+
+            $('#alert').html('         <div class="alert alert-subtle-success" role="alert">Station deleted succefully !!!</div>\n');
+            setTimeout(function() {
+                $('#alert').empty();
+            }, 4000);
+
+        },
+        error: function(xhr, status, error) {
+            $('#verticallyCentered').modal('hide');
+            $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while Deleting the station!</div>\n');
+            setTimeout(function() {
+                $('#alert').empty();
+            }, 4000);        }
+    });
 }
 
 
@@ -335,7 +369,7 @@ function updateStationList(stationList) {
                                                         class="d-flex align-items-center text-body"
                                                         href="apps/e-commerce/landing/profile.html">
                                                     <div class="avatar avatar-l"><img class="rounded-circle"
-                                                                                      src="/images/station/${station.image_station}"
+                                                                                      src="/usersImg/${station.image_station}"
                                                                                       alt=""/></div>
                                                 </a></td>
                                             <td class="align-middle rating white-space-nowrap fs-10">
@@ -344,26 +378,22 @@ function updateStationList(stationList) {
                                             <td class="align-middle review" style="min-width:350px;">
                                                 <h6 class="fs-9 fw-semibold text-body-highlight mb-0">${station.addressstation}</h6>
                                             </td>
-                                            <td class="align-middle text-start ps-5 status"><span
-                                                        class="badge badge-phoenix fs-10 badge-phoenix-warning"><span
-                                                            class="badge-label">Pending</span><span class="ms-1"
-                                                                                                    data-feather="clock"
-                                                                                                    style="height:12.8px;width:12.8px;"></span></span>
-                                            </td>
+                                         
                                             <td class="align-middle text-end time white-space-nowrap">
                                                 <div class="hover-hide">
-                                                    <h6 class="text-body-highlight mb-0">Just now</h6>
+                                                    <h6 class="text-body-highlight mb-0">Old data</h6>
                                                 </div>
                                             </td>
                                             <td class="align-middle white-space-nowrap text-end pe-0">
                                                 <div class="position-relative">
                                                     <div class="hover-actions">
                                                         <button class="btn btn-sm btn-phoenix-secondary me-1 fs-10"
-                                                                onclick=" showModifierPopup(${station.id}, ${station.NomStation}, ${station.AddressStation}, ${station.imagestation}, ${station.TypeVehicule})">
+                                                                onclick=" showModifierPopup('${ station.id }','${ station.nomstation }','${ station.addressstation }','${ station.image_station }','${ station.Type_Vehicule }')">
                                                             <span class=" fas fa-check"></span>
                                                         </button>
-                                                        <button class="btn btn-sm btn-phoenix-secondary fs-10"
-                                                                onclick="deleteStation(${ station.id })">
+                                                        <button class="btn btn-sm btn-phoenix-secondary fs-10 open-DeleteModal"
+                                                                 onclick="handleDelete('${ station.id }')"
+                                                                 data-bs-toggle="modal" data-bs-target="#verticallyCentered">
                                                             <span class="fas fa-trash"></span>
                                                         </button>
                                                     </div>

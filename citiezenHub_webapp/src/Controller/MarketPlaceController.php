@@ -100,4 +100,15 @@ class MarketPlaceController extends AbstractController
         return new Response('', Response::HTTP_BAD_REQUEST);
     }
 
+    #[Route('/showProduitAdmin', name: 'app_market_place_Admin', methods: ['GET', 'POST'])]
+    public function showProduitAdmin(ProductRepository $productRepository, Request $request): Response
+    {
+        $product = $productRepository->findAll();
+
+        return $this->render('market_place/marketplace.html.twig', [
+            'list'=>$product,
+        ]);
+    }
 }
+
+

@@ -79,7 +79,7 @@ function initMap() {
 
 
         setTimeout(function () {
-            geocoder.geocode({address: 'Municipalité de ' + municipality}, function (results, status) {
+            geocoder.geocode({address: 'MunicipalitÃ© de ' + municipality}, function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                     if (results[0]) {
                         municipalityAddress = results[0].formatted_address;
