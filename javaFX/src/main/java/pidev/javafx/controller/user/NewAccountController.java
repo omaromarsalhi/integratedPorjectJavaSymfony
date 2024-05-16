@@ -5,10 +5,9 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -17,10 +16,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pidev.javafx.controller.reclamation.ReclamationBoxController;
+import pidev.javafx.crud.reclamation.ServiceReclamation;
 import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.reclamation.Reclamation;
 import pidev.javafx.tools.UserController;
-import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyTools;
 
@@ -91,10 +91,10 @@ public class NewAccountController implements Initializable {
 //        }
         setMenueBar();
 
-        EventBus.getInstance().subscribe( "showReclamation", this::showDetailsReclamation );
+//        EventBus.getInstance().subscribe( "showReclamation", this::showDetailsReclamation );
         EventBus.getInstance().subscribe( "exitFormUser", this::onExitFormBtnClicked );
-        EventBus.getInstance().subscribe( "showReponse", this::showFormReclamationReponse );
-        EventBus.getInstance().subscribe( "refresh", this::refresh );
+//        EventBus.getInstance().subscribe( "showReponse", this::showFormReclamationReponse );
+//        EventBus.getInstance().subscribe( "refresh", this::refresh );
         showFormUser( "showDetails" );
 
         initializeButtons();
@@ -104,8 +104,10 @@ public class NewAccountController implements Initializable {
     public void setMenueBar() {
 
         var addReclamation = new MenuItem( "Add Reclamation", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
+        var showReclamation = new MenuItem( "Show Reclamation", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
         addReclamation.setOnAction( event -> showFormReclamation() );
-        menuBar.getMenus().get( 0 ).getItems().addAll( addReclamation );
+        showReclamation.setOnAction( event -> showReclamations() );
+        menuBar.getMenus().get( 0 ).getItems().addAll( addReclamation, showReclamation );
 
 
         Menu advancedSettings = new Menu( "Advanced Settings", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
@@ -136,7 +138,7 @@ public class NewAccountController implements Initializable {
         updatePassword.setOnAction( event -> showFormadvancedSettings( "updatePassword" ) );
         updateEmail.setOnAction( event -> showFormadvancedSettings( "updateEmail" ) );
 
-        menuBar.getMenus().get( 1 ).getItems().addAll(advancedSettings );
+        menuBar.getMenus().get( 1 ).getItems().addAll( advancedSettings );
 
         var openChat = new MenuItem( "Open Chat", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
 
@@ -200,7 +202,7 @@ public class NewAccountController implements Initializable {
                     "    -fx-border-width: 0 0 0 2px ;" +
                     "    -fx-border-radius: 0;" );
             showCin();
-        });
+        } );
     }
 
 
@@ -237,7 +239,7 @@ public class NewAccountController implements Initializable {
         firstinterface.setOpacity( 1 );
         loadingPage.setVisible( false );
         loadingPage.getChildren().clear();
-        showFormUser("show");
+        showFormUser( "showDetails" );
     }
 
     public void showFormUser(String usage) {
@@ -269,30 +271,93 @@ public class NewAccountController implements Initializable {
         }
 
         mainInterface.setVisible( true );
+        mainInterface.getChildren().clear();
         mainInterface.getChildren().add( form );
         MyTools.getInstance().showAnimation( form );
     }
 
-    public void refresh(CustomMouseEvent<Reclamation> customMouseEvent) {
-//        HBox reclamations = null;
-//            FXMLLoader fxmlLoader = new FXMLLoader();
-//            fxmlLoader.setLocation(getClass().getResource("/fxml/reclamation/reclamation.fxml"));
-//            try {
-//                reclamations = fxmlLoader.load( );
-//                ReclamationBoxController reclamationBoxController=fxmlLoader.getController();
-//                reclamationBoxController.setData( customMouseEvent.getEventData() );
-//                HBox finalReclamations = reclamations;
-//                reclamationBoxController.getDelete().setOnMouseClicked( event1 -> {
-//                    ServiceReclamation.getInstance().supprimer(customMouseEvent.getEventData().getIdReclamation());
-//                    MyTools.getInstance().deleteAnimation( finalReclamations,reclamsSection );
-//                } );
-//            } catch (IOException e) {
-//                throw new RuntimeException( e );
-//            }
-//            reclamsSection.getChildren().add(reclamations);
-//        MyTools.getInstance().showAnimation( reclamations );
 
+    public HBox refresh(Reclamation reclamation) {
+        HBox reclamations = null;
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation( getClass().getResource( "/fxml/reclamation/reclamation.fxml" ) );
+        try {
+            reclamations = fxmlLoader.load();
+            ReclamationBoxController reclamationBoxController = fxmlLoader.getController();
+            reclamationBoxController.setData( reclamation );
+            HBox finalReclamations = reclamations;
+            reclamationBoxController.getDelete().setOnMouseClicked( event1 -> {
+                ServiceReclamation.getInstance().supprimer( reclamation.getIdReclamation() );
+                MyTools.getInstance().deleteAnimation( finalReclamations, mainInterface );
+            } );
+            return reclamations;
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+//        MyTools.getInstance().showAnimation( reclamations );
     }
+
+
+
+
+    public void showReclamations() {
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setMaxWidth( 600 );
+        scrollPane.setPadding( new Insets( 20 ) );
+
+
+        mainInterface.getChildren().clear();
+        mainInterface.getChildren().add( scrollPane );
+
+        VBox vBox = new VBox();
+        vBox.setPrefWidth( scrollPane.getPrefWidth() );
+        vBox.setSpacing( 20 );
+        vBox.setAlignment( Pos.CENTER );
+        vBox.setPadding( new Insets( 20 ) );
+
+        var reclamations = ServiceReclamation.getInstance().getAllbyid( UserController.getInstance().getCurrentUser().getId() );
+
+        for (Reclamation reclamation : reclamations) {
+            vBox.getChildren().add( refresh( reclamation ) );
+        }
+
+        scrollPane.setContent( vBox );
+    }
+
+//    public void showDetailsReclamation(MouseEvent event) {
+//        StackPane form = null;
+//        FXMLLoader fxmlLoader = new FXMLLoader();
+//        fxmlLoader.setLocation( getClass().getResource( "/fxml/reclamation/reclamationFormShow.fxml" ) );
+//        try {
+//            form = fxmlLoader.load();
+//        } catch (IOException e) {
+//            throw new RuntimeException( e );
+//        }
+////        ReclamationFormController reclamationBoxController=fxmlLoader.getController();
+////        StackPane finalForm = form;
+//        firstinterface.setOpacity( 0.4 );
+//        secondInterface.setVisible( true );
+//        secondInterface.getChildren().add( form );
+//        MyTools.getInstance().showAnimation( form );
+//    }
+
+
+//    public void showFormReclamationReponse(MouseEvent event) {
+//        StackPane form = null;
+//        secondInterface.getChildren().clear();
+//        FXMLLoader fxmlLoader = new FXMLLoader();
+//        fxmlLoader.setLocation( getClass().getResource( "/fxml/reclamation/reclamationReponse.fxml" ) );
+//        try {
+//            form = fxmlLoader.load();
+//        } catch (IOException e) {
+//            throw new RuntimeException( e );
+//        }
+//
+//        firstinterface.setOpacity( 0.4 );
+//        secondInterface.setVisible( true );
+//        secondInterface.getChildren().add( form );
+//        MyTools.getInstance().showAnimation( form );
+//    }
 
 
     public void showFormadvancedSettings(String usage) {
