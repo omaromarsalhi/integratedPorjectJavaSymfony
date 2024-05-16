@@ -117,5 +117,14 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByGovernment(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select("m.goverment as govenmentName , COUNT('') as numberMunicipalities")
+            ->groupBy('m.goverment')
+            ->getQuery()
+            ->getResult();
+    }
+
 
 }

@@ -330,5 +330,19 @@ class UserController extends AbstractController
 //        }
 //        return $dataUser;
 //    }
+
+    #[Route('/GovrGet', name: 'GovrGet', methods: ['GET'])]
+    public function getGovermentsMuni(MunicipaliteRepository $municipaliteRepository): Response
+    {
+        $govCount = $municipaliteRepository->findByGovernment();
+        return $this->json($govCount);
+    }
+
+    #[Route('/userCountLastSixDays', name: 'userCountLastSixDays', methods: ['GET'])]
+    public function getUserCountLastSixDays(UserRepository $userRepository): Response
+    {
+        $userCounts = $userRepository->getnbruser();
+        return $this->json($userCounts);
+    }
 }
 
