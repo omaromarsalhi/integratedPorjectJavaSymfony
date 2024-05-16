@@ -13,6 +13,7 @@ use App\MyHelpers\AiVerificationMessage;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpClient\HttpClient;
@@ -27,7 +28,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[Route('/product', name: 'app_product')]
 class ProductController extends AbstractController
 {
-
 
     private $eventDispatcher;
 
@@ -243,6 +243,14 @@ class ProductController extends AbstractController
             return new JsonResponse(['page' => $map[$page]->getCurrentPage()]);
         }
         return new Response('something went wrong', Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/statProd', name: 'statProd', methods: ['GET'])]
+    public function statProd(ProductRepository $productRepository): Response
+    {
+        $prod = $productRepository->findByProductsField();
+
+        return new jsonResponse($prod);
     }
 
 
