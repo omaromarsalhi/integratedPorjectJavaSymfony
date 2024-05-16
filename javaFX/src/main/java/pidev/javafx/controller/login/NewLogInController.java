@@ -21,6 +21,7 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.mindrot.jbcrypt.BCrypt;
 import pidev.javafx.crud.user.ServiceMunicipalite;
 import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.user.Role;
@@ -31,13 +32,14 @@ import pidev.javafx.tools.marketPlace.MyTools;
 import pidev.javafx.tools.user.EmailController;
 import pidev.javafx.tools.user.GoogleApi;
 import pidev.javafx.tools.user.PasswordHasher;
+
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicReference;
-import org.mindrot.jbcrypt.BCrypt;
 
 import static pidev.javafx.controller.user.AccountController.showAlert;
 
@@ -108,10 +110,10 @@ public class NewLogInController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
 
-        firstname.setText("omar");
-        emailSignUp.setText("aaaaaaaaaaa@gmail.com");
-        lastName.setText("salhi");
-        passwordSignUp.setText("Latifa123@l");
+        firstname.setText( "omar" );
+        emailSignUp.setText( "aaaaaaaaaaa@gmail.com" );
+        lastName.setText( "salhi" );
+        passwordSignUp.setText( "Latifa123@l" );
 
         layoutCode.setVisible( false );
         signinBtn.setVisible( false );
@@ -201,41 +203,66 @@ public class NewLogInController implements Initializable {
     }
 
 
-
     public void setUser(int n) {
         nbr = n;
     }
 
+//    public void logIn(ActionEvent actionEvent) {
+//
+//        ServiceUser service=new ServiceUser();
+//        BCrypt.gensalt(15);
+////        User user=service.findParEmail(email.getText());
+//        User user=new User();
+//        if(email.getText().equals( "1" ))
+//            user = service.findParEmail( "salhiomar362@gmail.com" );
+//        else if(email.getText().equals( "2" ))
+//            user=service.findParEmail ("salhiomar3662@gmail.com");
+//        else if(email.getText().equals( "3" ))
+//            user=service.findParEmail("test2@gmail.com");
+//        else if(email.getText().equals( "4" ))
+//            user=service.findParEmail("test@gmail.com");
+//        else if(email.getText().equals( "5" ))
+//            user=service.findParEmail("test2@gmail.com");
+//
+//        if(user.getPassword()==null){
+//            Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
+//            alert.show();
+//            firstname.clear();
+//            password.clear();
+//        }
+////        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
+//        else if(BCrypt.checkpw("Latifa123@l", user.getPassword().replace( "$2y$","$2a$" ))){
+//            user.setIsConnected(1);
+//            UserController.setUser(user);
+//            ((Stage)Stage.getWindows().get(0)).close();
+//            if(user.getRole()== Role.Citoyen)
+//                loadManWindow("/fxml/mainWindow/mainWindow.fxml" );
+//            else {
+//                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
+//            }
+//        }
+//    }
+
+
     public void logIn(ActionEvent actionEvent) {
 
-        ServiceUser service=new ServiceUser();
-        BCrypt.gensalt(15);
-//        User user=service.findParEmail(email.getText());
-        User user=new User();
-        if(email.getText().equals( "1" ))
-            user = service.findParEmail( "salhiomar362@gmail.com" );
-        else if(email.getText().equals( "2" ))
-            user=service.findParEmail ("salhiomar3662@gmail.com");
-        else if(email.getText().equals( "3" ))
-            user=service.findParEmail("test2@gmail.com");
-        else if(email.getText().equals( "4" ))
-            user=service.findParEmail("test@gmail.com");
-        else if(email.getText().equals( "5" ))
-            user=service.findParEmail("test2@gmail.com");
+        ServiceUser service = new ServiceUser();
+        BCrypt.gensalt( 15 );
+        User user=service.findParEmail(email.getText());
 
-        if(user.getPassword()==null){
-            Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
+        if (user.getPassword() == null) {
+            Alert alert = showAlert( "utlisateur n'existe pas ", "il faut s'inscrire" );
             alert.show();
             firstname.clear();
             password.clear();
         }
-//        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
-        else if(BCrypt.checkpw("Latifa123@l", user.getPassword().replace( "$2y$","$2a$" ))){
-            user.setIsConnected(1);
-            UserController.setUser(user);
-            ((Stage)Stage.getWindows().get(0)).close();
-            if(user.getRole()== Role.Citoyen)
-                loadManWindow("/fxml/mainWindow/mainWindow.fxml" );
+        else if(BCrypt.checkpw( password.getText(), user.getPassword().replace( "$2y$", "$2a$" ) )){
+//        else if (BCrypt.checkpw( "Latifa123@l", user.getPassword().replace( "$2y$", "$2a$" ) )) {
+            user.setIsConnected( 1 );
+            UserController.setUser( user );
+            ((Stage) Stage.getWindows().get( 0 )).close();
+            if (user.getRole() == Role.Citoyen)
+                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
             else {
                 loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
             }
@@ -267,7 +294,7 @@ public class NewLogInController implements Initializable {
                                 ServiceUser serviceUser = new ServiceUser();
                                 setDataUser( user );
                                 serviceUser.ajouter( user );
-                                UserController.setUser( user );
+                                UserController.setUser( serviceUser.findParEmail(user.getEmail()) );
                                 loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
                                 layoutCode.setVisible( false );
                                 clean();
@@ -429,9 +456,13 @@ public class NewLogInController implements Initializable {
         user.setEmail( emailSignUp.getText() );
         user.setLastname( lastName.getText() );
 //        user.setPassword( PasswordHasher.hashPassword( passwordSignUp.getText() ) );
-        user.setPassword( BCrypt.hashpw(passwordSignUp.getText(), BCrypt.gensalt(15))  );
+        user.setPassword( BCrypt.hashpw( passwordSignUp.getText(), BCrypt.gensalt( 15 ) ) );
         user.setRole( Role.Citoyen );
-        UserController.setUser( user );
+        user.setAdresse( "" );
+        user.setAge( 0 );
+        user.setCin( "0" );
+        user.setStatus("0");
+        user.setGender("");
     }
 
 

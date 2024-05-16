@@ -1,0 +1,2 @@
+@echo off
+php \Users\omar salhi\Desktop\integratedPorjectJavaSymfony\citiezenHub_webapp\bin\console ClearIncompleteAccountsCommandphp

@@ -175,7 +175,6 @@ public class MapStationController implements Initializable {
 
     private void handleCustomEvent(CustomMouseEvent event) {
         Transport eventData = (Transport) event.getEventData();
-        System.out.println(eventData.getStation_arrive());
         showPathbetweenStations();
 
 //        return data.filtered(element -> element.getNomStation().equals(((Transport) event.getEventData()).getDepart())).stream().findFirst().orElse(null);
