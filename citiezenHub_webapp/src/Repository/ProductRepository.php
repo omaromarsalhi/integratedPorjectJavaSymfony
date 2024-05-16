@@ -93,6 +93,7 @@ class ProductRepository extends ServiceEntityRepository
             ->setParameter('max', $max)
             ->getQuery()
             ->getResult();
+
     }
 
     /**
@@ -101,7 +102,6 @@ class ProductRepository extends ServiceEntityRepository
     public function findByPriceTest($filterData): array
     {
         $qb = $this->createQueryBuilder('p');
-
 
         $qb->andWhere('p.state = :value')
             ->setParameter('value', 'verified');
@@ -169,22 +169,64 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('date', $lastMonth);
         }
 
-
         return $qb->getQuery()->getResult();
     }
 
     public function findVerifiedAndInStock(): array
-{
-    $queryBuilder = $this->createQueryBuilder('p');
-    $queryBuilder->where('p.state = :state')
-        ->andWhere('p.quantity > :quantity')
-        ->setParameter('state', 'verified')
-        ->setParameter('quantity', 0)
-        ->orderBy('p.timestamp', 'DESC')
-        ->setMaxResults(5);
+    {
+        $queryBuilder = $this->createQueryBuilder('p');
+        $queryBuilder->where('p.state = :state')
+            ->andWhere('p.quantity > :quantity')
+            ->setParameter('state', 'verified')
+            ->setParameter('quantity', 0)
+            ->orderBy('p.timestamp', 'DESC')
+            ->setMaxResults(5);
 
-    return $queryBuilder->getQuery()->getResult();
-}
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function findByProductsField(): array
+    {
+        $data = $this->createQueryBuilder('p')
+            ->select('p.category category, p.state state , COUNT(p.idProduct) as count')
+            ->groupBy('p.category , p.state ')
+            ->getQuery()
+            ->getResult();
+
+        $formattedData = [];
+        foreach ($data as $value) {
+            $formattedData[$value['category']] = ['verified' =>  0, 'unverified' =>  0];
+        }
+        foreach ($data as $value) {
+            $formattedData[$value['category']][$value['state']] = $value['count'];
+        }
+
+        return $formattedData;
+    }
+
+
+    /**
+     * @return Product[] Returns an array of Product objects
+     */
+
+    public function findByExampleField(): array
+    {
+        $data = $this->createQueryBuilder('p')
+            ->select('p.category category, p.state state , COUNT(p) as count')
+            ->groupBy('p.category , p.state ')
+            ->getQuery()
+            ->getResult();
+
+        $formattedData = [];
+        foreach ($data as $value) {
+            $formattedData[$value['category']] = ['verified' =>  0, 'unverified' =>  0];
+        }
+        foreach ($data as $value) {
+            $formattedData[$value['category']][$value['state']] = $value['count'];
+        }
+
+        return $formattedData;
+    }
 
 
 }

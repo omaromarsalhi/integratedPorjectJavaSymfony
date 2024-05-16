@@ -8,15 +8,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-
 public class AiVerification {
 
 
-    public void run(int idProduct){
-        Http(idProduct);
+    public void run(int idProduct,String mode){
+        Http(idProduct,mode);
     }
 
-    private void Http(int idProduct){
+    private void Http(int idProduct,String mode){
+        System.out.println("mode:; "+mode);
         try {
             URL url = new URL("http://localhost:8000/java/request/verifyProduct"); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -24,7 +24,7 @@ public class AiVerification {
             connection.setDoOutput(true);
 
             OutputStream os = connection.getOutputStream();
-            os.write(("idProduct="+idProduct).getBytes());
+            os.write(("idProduct="+idProduct+"&mode="+mode).getBytes());
             os.flush();
             os.close();
 
@@ -36,7 +36,7 @@ public class AiVerification {
             }
             reader.close();
 
-           // System.out.println( STR."Server response: \{response.toString()}" );
+            System.out.println( STR."Server response: \{response.toString()}" );
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
@@ -50,7 +50,7 @@ public class AiVerification {
             connection.setDoOutput(true);
 
             OutputStream os = connection.getOutputStream();
-            os.write(("idProduct"+idProduct).getBytes());
+            os.write(STR."idProduct=\{idProduct}".getBytes());
             os.flush();
             os.close();
 

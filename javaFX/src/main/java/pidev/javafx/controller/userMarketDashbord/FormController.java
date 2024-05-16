@@ -185,7 +185,7 @@ public class FormController implements Initializable {
         } );
         deleteBtn.setOnAction( event -> {
             if (product.getAllImagesSources().size() > 1) {
-                new File( "src/main/resources" + product.getImageSourceByIndex( curentIndex.get() ) ).delete();
+                new File( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ).delete();
                 product.deleteFromImagesSources( curentIndex.get() );
                 rightArrow.fire();
             }
@@ -202,7 +202,7 @@ public class FormController implements Initializable {
     @FXML
     public void handelDrag(DragEvent dragEvent) {
         for (File file : dragEvent.getDragboard().getFiles()) {
-            relativeImageVieur.setImage( new Image( file.getAbsolutePath() ) );
+            relativeImageVieur.setImage( new Image("file:"+ file.getAbsolutePath() ) );
             product.addFromImagesSources( MyTools.getInstance().getPathAndSaveIMG( file.getAbsolutePath() ) );
         }
     }
@@ -393,7 +393,8 @@ public class FormController implements Initializable {
                 bien = CrudBien.getInstance().selectLastItem();
                 MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             } else if (usageOfThisForm.equals( "update_prod" )) {
-                bien.setState( product.getState() );
+                System.out.println("idOmar: "+bien.getId());
+                bien.setState("unverified" );
                 CrudBien.getInstance().updateItem( bien );
                 MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             }
@@ -429,6 +430,7 @@ public class FormController implements Initializable {
                 EventBus.getInstance().publish( "updateTabProds", new CustomMouseEvent<>( product ) );
             else
                 EventBus.getInstance().publish( "refreshProdContainer", event );
+
             EventBus.getInstance().publish( "onExitForm", event );
             loadinPage.setVisible( false );
             MyTools.getInstance().getTextNotif().setText( "Prod Has Been Added And Under Verification" );
@@ -438,31 +440,17 @@ public class FormController implements Initializable {
     }
 
     private Thread aiVerifyThread() {
-        Task<String> myTask = new Task<>() {
+        Task<Void> myTask = new Task<>() {
             @Override
-            protected String call() throws Exception {
-//                String descreption = CallPythonFromJava.run( "src/main/resources" + product.getImageSourceByIndex( 0 ) );
-//                return "does this paragraph " + descreption.substring( 0, descreption.indexOf( "." ) ) + " speaks about " + product.getName() + " and please answer me with yes or no?";
+            protected Void call() {
                 var aiVerification=new AiVerification();
-                aiVerification.run(CrudBien.getInstance().selectLastItem().getId());
-                return "yes";
+                aiVerification.run(product.getId(),usageOfThisForm.equals( "add_prod" )?"add":"edit");
+                return null;
             }
         };
 
         myTask.setOnSucceeded( event -> {
-//            String respose = ChatGPTAPIDescriber.chatGPT( myTask.getValue() );
-//            if (respose.toLowerCase().contains( "yes" )) {
-//                product.setState( "verified" );
-//                CrudBien.getInstance().updateItem( product );
-//                MyTools.getInstance().getTextNotif().setText( "Prod Has Been Verified" );
-//                MyTools.getInstance().showNotif();
-//            } else {
-//                CrudBien.getInstance().deleteItem( product.getId() );
-//                MyTools.getInstance().getTextNotif().setText( "Prod Has Been Disqualified" );
-//                MyTools.getInstance().showNotif();
-//            }
-            EventBus.getInstance().publish( "doUpdateTabprodAfterAIverif", new CustomMouseEvent<>( product ) );
-            System.out.println( "done 2" );
+//            EventBus.getInstance().publish( "doUpdateTabprodAfterAIverif", new CustomMouseEvent<>( product ) );
         } );
 
         return new Thread( myTask );
@@ -525,7 +513,6 @@ public class FormController implements Initializable {
 
     public void setInformaton(Product product) {
         if (product != null) {
-            product = (Bien) product;
             this.product = (Bien) product;
             Pname.setText( product.getName() );
             Pdescretion.setText( product.getDescreption() );
@@ -538,6 +525,7 @@ public class FormController implements Initializable {
             isAllInpulValid[0] = true;
             isAllInpulValid[1] = true;
             isAllInpulValid[2] = true;
+            System.out.println("idddddd:"+product.getId());
         }
     }
 

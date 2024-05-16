@@ -1,61 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<ScrollPane hbarPolicy="NEVER" maxHeight="400.0" maxWidth="800.0" prefHeight="252.0" prefWidth="564.0" style="-fx-background-radius: 10; -fx-border-radius: 10;" stylesheets="@../../style/scrollBarStlyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.userMarketDashbord.AiResultController">
-   <content>
-      <VBox fx:id="formBox" alignment="CENTER" minWidth="-Infinity" prefHeight="242.0" prefWidth="555.0" stylesheets="@../../style/marketPlace/formLayout.css">
+
+<VBox alignment="CENTER" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: white;" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.userMarketDashbord.AiResultController">
+   <children>
+      <ScrollPane fx:id="scrollobalArea" hbarPolicy="NEVER" maxHeight="418.0" maxWidth="800.0" prefHeight="418.0" prefWidth="564.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: transparent;" stylesheets="@../../style/scrollBarStlyle.css" vbarPolicy="NEVER">
+         <content>
+            <VBox fx:id="formBox" alignment="CENTER" prefHeight="410.0" prefWidth="555.0" stylesheets="@../../style/marketPlace/formLayout.css" />
+         </content>
+         <padding>
+            <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+         </padding>
+      </ScrollPane>
+      <HBox alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="555.0" spacing="10.0">
          <children>
-            <HBox fx:id="detailsBox" alignment="TOP_CENTER" prefHeight="181.0" prefWidth="555.0">
-               <children>
-                  <Label fx:id="imageNumber" prefHeight="60.0" prefWidth="160.0" text="Image 1:">
-                     <font>
-                        <Font name="Candara Bold" size="24.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="10.0" />
-                     </HBox.margin>
-                  </Label>
-                  <HBox prefHeight="180.0" prefWidth="306.0">
-                     <children>
-                        <VBox prefHeight="186.0" prefWidth="306.0">
-                           <children>
-                              <VBox fx:id="titleSection">
-                                 <children>
-                                    <Label prefHeight="27.0" prefWidth="82.0" text="*Title">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <TextArea fx:id="titleDesc" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="306.0" text="vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" wrapText="true" />
-                                 </children>
-                              </VBox>
-                              <VBox fx:id="categorySection">
-                                 <children>
-                                    <Label prefHeight="27.0" prefWidth="66.0" text="*Category">
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </Label>
-                                    <TextArea fx:id="categoryDesc" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="306.0" wrapText="true" />
-                                 </children>
-                              </VBox>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-               </children>
-            </HBox>
+            <Button fx:id="restartAiVerifBtn" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/marketPlace/social.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Button fx:id="exitBtn" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../icons/marketPlace/exit-full-screen.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
          </children>
-      </VBox>
-   </content>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+         <VBox.margin>
+            <Insets top="4.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
    <padding>
       <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
    </padding>
-</ScrollPane>
+</VBox>

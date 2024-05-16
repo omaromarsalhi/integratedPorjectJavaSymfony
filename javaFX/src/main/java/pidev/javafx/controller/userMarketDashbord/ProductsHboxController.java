@@ -2,6 +2,7 @@ package pidev.javafx.controller.userMarketDashbord;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -16,8 +17,10 @@ import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.json.JSONObject;
+import pidev.javafx.crud.marketplace.CrudBien;
 import pidev.javafx.model.MarketPlace.Bien;
 import pidev.javafx.model.MarketPlace.Product;
+import pidev.javafx.tools.marketPlace.*;
 import pidev.javafx.tools.marketPlace.AiVerification;
 
 import java.net.URL;
@@ -49,13 +52,15 @@ public class ProductsHboxController implements Initializable {
     private ImageView stateImage;
     @FXML
     private Button aiResultBtn;
-
+    @FXML
+    private Button updateBtn;
+    @FXML
+    private Button deleteBtn;
 
 
     private Bien bien;
     private Popup popup = new Popup();
     private Timeline fiveSecondsWonder = new Timeline();
-
 
 
     private JSONObject jsonObject;
@@ -167,7 +172,6 @@ public class ProductsHboxController implements Initializable {
     private boolean testStateAiVerification() {
         var ai = new AiVerification();
         var result = ai.HttpAiResultState( Integer.parseInt( id.getText() ) );
-        System.out.println(result);
         jsonObject = new JSONObject( result );
         return (boolean) jsonObject.get( "doesItExist" );
     }
@@ -175,8 +179,11 @@ public class ProductsHboxController implements Initializable {
     public String getVerificationState() {
         return verificationState;
     }
+
     public JSONObject getJsonObject() {
         return jsonObject;
     }
+
+
 
 }

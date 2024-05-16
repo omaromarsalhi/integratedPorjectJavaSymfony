@@ -30,7 +30,7 @@ public class ServiceReclamation  {
     }
 
     public void ajouter(Reclamation reclamation) {
-        String req = "INSERT INTO `reclamation`(`privateKey` ,`idUser`, `subject`, `description`, imagePath) VALUES (?,?,?,?,?)";
+        String req = "INSERT INTO `reclamation`(`privateKey` ,`idUser`, `subject`, `description`, image) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, reclamation.getPrivateKey());
@@ -82,7 +82,7 @@ public class ServiceReclamation  {
             ps.setInt(1, idReclamation);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                reclamation = new Reclamation(rs.getInt("idReclamtion"),-1,rs.getString("privateKey"), rs.getString("subject"), rs.getDate("date").toString(), rs.getString("description"), rs.getString("imagePath"));
+                reclamation = new Reclamation(rs.getInt("idReclamtion"),-1,rs.getString("privateKey"), rs.getString("subject"), rs.getDate("date").toString(), rs.getString("description"), rs.getString("image"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -99,7 +99,7 @@ public class ServiceReclamation  {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 System.out.println(rs.toString());
-                reclamations.add(new Reclamation(rs.getInt("idReclamtion"),-1,rs.getString("privateKey"), rs.getString("subject"), rs.getDate("date").toString(), rs.getString("description"), rs.getString("imagePath")));
+                reclamations.add(new Reclamation(rs.getInt("idReclamtion"),-1,rs.getString("privateKey"), rs.getString("subject"), rs.getDate("date").toString(), rs.getString("description"), rs.getString("image")));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -108,14 +108,13 @@ public class ServiceReclamation  {
     }
     public Set<Reclamation> getAllbyid(int i) {
         Set<Reclamation> reclamations = new HashSet<>();
-        String req = "SELECT * FROM `reclamation` where idUser = ? ";
+        String req = "SELECT * FROM reclamation where idUser = ? ";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setInt(1, i);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                System.out.println(rs.toString());
-                reclamations.add(new Reclamation(rs.getInt("idReclamtion"),rs.getInt("idUser"),rs.getString("privateKey"), rs.getString("subject"), rs.getDate("date").toString(), rs.getString("description"), rs.getString("imagePath")));
+                reclamations.add(new Reclamation(rs.getInt("idReclamtion"),rs.getInt("idUser"),rs.getString("privateKey"), rs.getString("subject"), rs.getDate("date").toString(), rs.getString("description"), rs.getString("image")));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
