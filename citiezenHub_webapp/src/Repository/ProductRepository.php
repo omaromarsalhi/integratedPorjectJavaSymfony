@@ -185,6 +185,25 @@ class ProductRepository extends ServiceEntityRepository
         return $queryBuilder->getQuery()->getResult();
     }
 
+    public function findByProductsField(): array
+    {
+        $data = $this->createQueryBuilder('p')
+            ->select('p.category category, p.state state , COUNT(p.idProduct) as count')
+            ->groupBy('p.category , p.state ')
+            ->getQuery()
+            ->getResult();
+
+        $formattedData = [];
+        foreach ($data as $value) {
+            $formattedData[$value['category']] = ['verified' =>  0, 'unverified' =>  0];
+        }
+        foreach ($data as $value) {
+            $formattedData[$value['category']][$value['state']] = $value['count'];
+        }
+
+        return $formattedData;
+    }
+
 
     /**
      * @return Product[] Returns an array of Product objects

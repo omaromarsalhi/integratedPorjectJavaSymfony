@@ -49,7 +49,7 @@ class MunicipaliteRepository extends ServiceEntityRepository
     public function findTopMunicipalities(): array
     {
         $queryBuilder = $this->createQueryBuilder('m');
-        $queryBuilder->select('m.name as municipalite, COUNT(u.idUser) as userCount')
+        $queryBuilder->select('m as municipalite, COUNT(u.idUser) as userCount')
             ->join('m.users', 'u')
             ->groupBy('m.goverment')
             ->orderBy('userCount', 'DESC')
@@ -59,5 +59,23 @@ class MunicipaliteRepository extends ServiceEntityRepository
     }
 
 
+    public function findByGovernment(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select("m.goverment as govenmentName , COUNT('') as numberMunicipalities")
+            ->groupBy('m.goverment')
+            ->getQuery()
+            ->getResult();
+    }
 
+    public function findTopMunicipalitiesdashBoard(): array
+    {
+        $queryBuilder = $this->createQueryBuilder('m');
+        $queryBuilder->select('m.name as municipalite, COUNT(u.idUser) as userCount')
+            ->join('m.users', 'u')
+            ->groupBy('m.goverment')
+            ->orderBy('userCount', 'DESC')
+            ->setMaxResults(5);
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

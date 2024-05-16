@@ -120,58 +120,58 @@ class UserController extends AbstractController
         if ($req->isXmlHttpRequest()) {
 //            if ($current->getTimestamp() < $expiryTime->getTimestamp() || $user->getState()) {
 //                $emailService->envoyerEmail($mailer);
-                $email = $req->get('email');
-                $name = $req->get('name');
-                $lastname = $req->get('lastname');
-                $age = $req->get('age');
-                $gender = $req->get('gender');
-                $status = $req->get('status');
-                $cin = $req->get('cin');
-                $phoneNumber = $req->get('phoneNumber');
-                $date = $req->get('date');
-                $fichierImage = $req->files->get('image');
-                $user->setFirstName($name);
-                $user->setLastName($lastname);
-                $user->setAge($age);
-                $user->setPhoneNumber($phoneNumber);
-                $user->setCin($cin);
-                $user->setStatus($status);
-                $user->setGender($gender);
-                if ($fichierImage != null)
-                    $user->setImage($imageHelper->saveImages($fichierImage));
-                $datee = date_create($date);
-                $user->setDob($datee);
-                $errors = $validator->validate($user, null, 'creation');
-                foreach ($errors as $error) {
-                    $field = $error->getPropertyPath();
-                    $errorMessages[$field] = $error->getMessage();
-                }
-                if (count($errors) === 0) {
-                    $em = $doc->getManager();
-                    $em->persist($user);
-                    $em->flush();
+            $email = $req->get('email');
+            $name = $req->get('name');
+            $lastname = $req->get('lastname');
+            $age = $req->get('age');
+            $gender = $req->get('gender');
+            $status = $req->get('status');
+            $cin = $req->get('cin');
+            $phoneNumber = $req->get('phoneNumber');
+            $date = $req->get('date');
+            $fichierImage = $req->files->get('image');
+            $user->setFirstName($name);
+            $user->setLastName($lastname);
+            $user->setAge($age);
+            $user->setPhoneNumber($phoneNumber);
+            $user->setCin($cin);
+            $user->setStatus($status);
+            $user->setGender($gender);
+            if ($fichierImage != null)
+                $user->setImage($imageHelper->saveImages($fichierImage));
+            $datee = date_create($date);
+            $user->setDob($datee);
+            $errors = $validator->validate($user, null, 'creation');
+            foreach ($errors as $error) {
+                $field = $error->getPropertyPath();
+                $errorMessages[$field] = $error->getMessage();
+            }
+            if (count($errors) === 0) {
+                $em = $doc->getManager();
+                $em->persist($user);
+                $em->flush();
 
-                    return new JsonResponse([
-                        'success' => true,
-                        'user' => [
-                            'name' => $user->getFirstName(),
-                            'lastname' => $user->getLastName(),
-                            'email' => $user->getEmail(),
-                            'address' => $user->getAddress(),
-                            'cin' => $user->getCin(),
-                            'phoneNumber' => $user->getPhoneNumber(),
-                            'age' => $user->getAge(),
-                            'status' => $user->getStatus(),
-                            'image' => $user->getImage(),
-                            'gender' => $user->getGender(),
-                            'dob' => $user->getDob(),
-                        ]
-                    ]);
-                }
                 return new JsonResponse([
-                    'success' => false,
-                    'errors' => $errorMessages,
-                ], 422);
+                    'success' => true,
+                    'user' => [
+                        'name' => $user->getFirstName(),
+                        'lastname' => $user->getLastName(),
+                        'email' => $user->getEmail(),
+                        'address' => $user->getAddress(),
+                        'cin' => $user->getCin(),
+                        'phoneNumber' => $user->getPhoneNumber(),
+                        'age' => $user->getAge(),
+                        'status' => $user->getStatus(),
+                        'image' => $user->getImage(),
+                        'gender' => $user->getGender(),
+                        'dob' => $user->getDob(),
+                    ]
+                ]);
+            }
+            return new JsonResponse([
+                'success' => false,
+                'errors' => $errorMessages,
+            ], 422);
 
 //            } else
 //                return new JsonResponse([
@@ -181,7 +181,7 @@ class UserController extends AbstractController
 
         $map = new Map();
         if ($user->getCinImages() === null) {
-            $cinImages=['none','none'];
+            $cinImages = ['none', 'none'];
         } else
             $cinImages = explode("_", $user->getCinImages());
 
@@ -202,8 +202,8 @@ class UserController extends AbstractController
             'routePrecedente' => $path,
             'expiry_time' => $expiryTime,
             'date' => $user->getDate(),
-            'cinFront' => $cinImages[0] ,
-            'cinBack' => $cinImages[1] ,
+            'cinFront' => $cinImages[0],
+            'cinBack' => $cinImages[1],
             'map' => $map,
         ]);
     }
@@ -305,6 +305,21 @@ class UserController extends AbstractController
         return $this->render('user/404.html.twig', [
 
         ]);
+    }
+
+
+    #[Route('/userCountLastSixDays', name: 'userCountLastSixDays', methods: ['GET'])]
+    public function getUserCountLastSixDays(UserRepository $userRepository): Response
+    {
+        $userCounts = $userRepository->getnbruser();
+        return $this->json($userCounts);
+    }
+
+    #[Route('/GovrGet', name: 'GovrGet', methods: ['GET'])]
+    public function getGovermentsMuni(MunicipaliteRepository $municipaliteRepository): Response
+    {
+        $govCount = $municipaliteRepository->findByGovernment();
+        return $this->json($govCount);
     }
 
 
