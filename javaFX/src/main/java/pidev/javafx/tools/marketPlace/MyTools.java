@@ -139,7 +139,7 @@ public class MyTools {
         String path = "usersImg/" + UUID.randomUUID() + ".png";
 
         Path src = Paths.get( chosenFilePath );
-        Path dest = Paths.get( "C:/Users/omar salhi/Desktop/integratedPorjectJavaSymfony/citiezenHub_webapp/public/" + path );
+        Path dest = Paths.get( "C:/Users/khali/OneDrive - ESPRIT/Documents/integratedPorjectJavaSymfony/citiezenHub_webapp/public/" + path );
 
         try {
             Files.copy( src, dest );

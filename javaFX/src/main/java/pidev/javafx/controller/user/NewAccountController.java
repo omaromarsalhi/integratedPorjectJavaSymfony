@@ -103,8 +103,8 @@ public class NewAccountController implements Initializable {
 
     public void setMenueBar() {
 
-        var addReclamation = new MenuItem( "Add Reclamation", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
-        var showReclamation = new MenuItem( "Show Reclamation", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
+        var addReclamation = new MenuItem( "Add Reclamation", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/add.png" ) ) ) );
+        var showReclamation = new MenuItem( "Show Reclamation", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/poster.png" ) ) ) );
         addReclamation.setOnAction( event -> showFormReclamation() );
         showReclamation.setOnAction( event -> showReclamations() );
         menuBar.getMenus().get( 0 ).getItems().addAll( addReclamation, showReclamation );

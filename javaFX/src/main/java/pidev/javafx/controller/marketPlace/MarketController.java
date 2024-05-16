@@ -138,8 +138,8 @@ public class MarketController implements Initializable {
     }
 
     public void setMenueBar(){
-        var allProducts=new MenuItem("All Products",new ImageView(new Image(getClass().getResourceAsStream( "/icons/marketPlace/more.png" ))));
-        var todayProducts=new MenuItem("Today's Products",new ImageView(new Image(getClass().getResourceAsStream( "/icons/marketPlace/database.png" ))));
+        var allProducts=new MenuItem("All Products",new ImageView(new Image(getClass().getResourceAsStream( "/icons/newicons/products.png" ),20,20,true,true)));
+        var todayProducts=new MenuItem("Today's Products",new ImageView(new Image(getClass().getResourceAsStream( "/icons/newicons/box.png" ),20,20,true,true)));
         allProducts.setOnAction( event -> {
             loadingAllProductsThread(CrudBien.getInstance().selectItems()).start();
         } );
@@ -151,7 +151,7 @@ public class MarketController implements Initializable {
 
         menuBar.getMenus().get(0).getItems().addAll(allProducts,todayProducts);
 
-        var filterProd=new MenuItem("Product",new ImageView(new Image(getClass().getResourceAsStream( "/icons/marketPlace/database.png" ))));
+        var filterProd=new MenuItem("Product",new ImageView(new Image(getClass().getResourceAsStream( "/icons/newicons/checklist.png" ),20,20,true,true)));
         menuBar.getMenus().get( 1 ).getItems().addAll(filterProd);
 
 

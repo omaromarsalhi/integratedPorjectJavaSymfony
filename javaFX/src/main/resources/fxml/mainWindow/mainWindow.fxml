@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="718.0" prefWidth="1300.0" styleClass="borderPane" stylesheets="@../../style/style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.mainWindow.MainWindowController">
+<BorderPane fx:id="mainBorderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="718.0" prefWidth="1300.0" styleClass="borderPane" stylesheets="@../../style/style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.mainWindow.MainWindowController">
     <left>
         <VBox fx:id="sideBar" prefHeight="890.0" prefWidth="235.0" BorderPane.alignment="CENTER">
             <children>
@@ -39,7 +34,7 @@
                             <graphic>
                                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../../icons/blogIcons/dashBoard.png" />
+                                        <Image url="@../../icons/newicons/blog.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -51,7 +46,7 @@
                             <graphic>
                                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../../icons/blogIcons/facture.png" />
+                                        <Image url="@../../icons/newicons/subscription.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -63,7 +58,7 @@
                             <graphic>
                                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../../icons/blogIcons/transport.png" />
+                                        <Image url="@../../icons/newicons/train-station.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -75,7 +70,7 @@
                             <graphic>
                                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../../icons/blogIcons/icons8-nouvelles-50.png" />
+                                        <Image url="@../../icons/newicons/newspaper.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -87,7 +82,7 @@
                             <graphic>
                                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../../icons/blogIcons/marketSpace.png" />
+                                        <Image url="@../../icons/newicons/location.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
@@ -99,7 +94,7 @@
                             <graphic>
                                 <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../../icons/blogIcons/demande.png" />
+                                        <Image url="@../../icons/newicons/shopping-cart.png" />
                                     </image>
                                 </ImageView>
                             </graphic>
