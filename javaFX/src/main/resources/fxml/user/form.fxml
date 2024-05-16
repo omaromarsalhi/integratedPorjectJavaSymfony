@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<StackPane alignment="TOP_LEFT" prefHeight="558.0" prefWidth="673.0" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.user.UserFormController">
+<StackPane alignment="TOP_LEFT" prefHeight="558.0" prefWidth="673.0" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.user.UserFormController">
    <children>
       <HBox fx:id="formBox" alignment="CENTER" fillHeight="false" prefHeight="538.0" prefWidth="673.0" spacing="10.0" style="-fx-background-radius: 10; -fx-border-width: 0; -fx-border-radius: 10; -fx-background-color: white; -fx-border-color: black;" stylesheets="@../../style/marketPlace/formLayout.css">
          <children>
@@ -278,7 +284,7 @@
       </HBox>
       <AnchorPane fx:id="loadinPage" prefHeight="570.0" prefWidth="673.0" style="-fx-background-color: transparent;">
          <children>
-            <ImageView fitHeight="85.0" fitWidth="90.0" layoutX="293.0" layoutY="206.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="220.2" AnchorPane.leftAnchor="293.0" AnchorPane.rightAnchor="294.0" AnchorPane.topAnchor="206.0">
+            <ImageView fitHeight="38.0" fitWidth="47.0" layoutX="318.0" layoutY="261.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="260.20000000000005" AnchorPane.leftAnchor="318.0" AnchorPane.rightAnchor="317.6" AnchorPane.topAnchor="261.0">
                <image>
                   <Image url="@../../img/marketPlace/grey-9026_256.gif" />
                </image>

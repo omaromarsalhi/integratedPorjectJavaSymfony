@@ -207,6 +207,7 @@ public class MainDashbordController implements Initializable {
         } );
         showAllProduct.setOnAction( event -> {
             deleteFavorite();
+            showAllProdsInfo.getChildren().clear();
             scroll.removeEventFilter( MouseEvent.MOUSE_PRESSED, eventHandler4ScrollPane );
             loadingAllProductsThread( CrudBien.getInstance().selectItemsById() ).start();
         } );

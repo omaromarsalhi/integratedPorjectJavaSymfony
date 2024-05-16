@@ -66,7 +66,7 @@ public class MapController implements Initializable {
             String address = (String) result.getMember( "address" );
             User user = UserController.getInstance().getCurrentUser();
             user.setAdresse(address);
-            System.out.println(user);
+
             ServiceUser service = new ServiceUser();
             service.modifier( user );
             UserController.setUser( user );

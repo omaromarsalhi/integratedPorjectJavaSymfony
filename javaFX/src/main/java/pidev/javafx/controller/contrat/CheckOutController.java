@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import org.json.JSONObject;
 import pidev.javafx.crud.marketplace.CrudContract;
 import pidev.javafx.crud.marketplace.CrudTransaction;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
@@ -85,7 +86,7 @@ public class CheckOutController implements Initializable {
         this.bien=bien;
         Pname.setText( bien.getName() );
         Pcategroy.setText( bien.getCategorie().toString() );
-        Pimg.setImage( new Image( getClass().getResourceAsStream( bien.getImgSource() ) ) );
+        Pimg.setImage( new Image( GlobalVariables.IMAGEPATH+ bien.getImgSource() ) );
         Pdesc.setText( bien.getDescreption() );
         Pprice.setText( Float.toString( bien.getPrice() ) );
         Pquantity.setText( Float.toString( bien.getQuantity() ) );

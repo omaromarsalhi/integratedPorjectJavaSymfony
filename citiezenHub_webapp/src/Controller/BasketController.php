@@ -138,7 +138,7 @@ class BasketController extends AbstractController
                     "3/aiyuzr aizuyryfg aoiuyrf \n" .
                     "4/aiyuzr aizuyryfg aoiuyrf rrtyhzyjz ztey rtyh\n" .
                     "5/aiyuzr aizuyryfg  , ftujse qrgztheyik brghert \n");
-                $new_contract->setPaymentMethod("Credit Card");
+                $new_contract->setPaymentMethod("CREDIT_CARD");
                 $new_contract->setRecivingLocation($address);
 
                 $entityManager->persist($new_contract);
