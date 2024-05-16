@@ -17,6 +17,7 @@ url='https://082b-34-72-197-96.ngrok-free.app'
 def generate():
     text=generate_produxt_description(request.args.get('title'))
     return jsonify(text),200
+    
 
 @app.route('/get-product_image_descreption',methods=['POST'])
 def generate_desc_image():

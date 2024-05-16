@@ -261,11 +261,9 @@ public class NewLogInController implements Initializable {
             user.setIsConnected( 1 );
             UserController.setUser( user );
             ((Stage) Stage.getWindows().get( 0 )).close();
-            if (user.getRole() == Role.Citoyen)
+            
                 loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-            else {
-                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
-            }
+
         }
     }
 
