@@ -57,7 +57,7 @@ public class ServiceUser implements IserviceUser<User> {
                 String photos = rs.getString( "image" );
                 String gender = rs.getString( "gender" );
                 String email = rs.getString( "email" );
-                user = new User( id, firstname, email, "", cin, age, num, adresse, dob, lastName, status, date, Role.valueOf( role ), photos, gender );
+                user = new User( id, firstname, email, "", cin, age, num, adresse, dob, lastName, status, date, Role.valueOf( "Citoyen" ), photos, gender );
             }
         } catch (SQLException e) {
             System.out.println( e.getMessage() );

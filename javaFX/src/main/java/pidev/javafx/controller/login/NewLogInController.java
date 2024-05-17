@@ -107,7 +107,6 @@ public class NewLogInController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-
         firstname.setText( "omar" );
         emailSignUp.setText( "aaaaaaaaaaa@gmail.com" );
         lastName.setText( "salhi" );
@@ -127,44 +126,55 @@ public class NewLogInController implements Initializable {
             translate( -400, 300 );
             btnState = !btnState;
         } );
+
         setRegEx();
+
         isAllInpulValid = new boolean[]{false, false, false};
         Popup popup4Regex = MyTools.getInstance().createPopUp();
 
-        resetPassword.setOnMouseClicked( event -> {
-            signin.setDisable( true );
-            signup.setDisable( true );
-            layoutReset.setVisible( true );
-            layoutSignin.setVisible( false );
-            layoutSignup.setVisible( false );
-            resetBtn.setOnMouseClicked( event1 -> {
-                if (!emailReset.getText().isEmpty()) {
-                    AtomicReference<User> user = new AtomicReference<>( new User() );
-                    EmailController.sendEmail( "latifa.benzaied@esprit.tn", "bla", user.get().generateVerificationCode() );
-                    firstLayout.setVisible( false );
-                    layoutCode.setVisible( true );
-                    System.out.println( user.get().generateVerificationCode() );
-                    verifier.setOnMouseClicked( event2 -> {
-                        if (code.getText().equals( user.get().getVerificationCode() )) {
-                            ServiceUser serviceUser = new ServiceUser();
-                            User userCopy = serviceUser.findParEmail( emailReset.getText() );
-                            System.out.println( emailReset.getText() );
-                            System.out.println( userCopy );
-
-//                            userCopy.setPassReseted( true );
-                            setDataUser( userCopy );
-                            UserController.setUser( serviceUser.findParEmail( emailReset.getText() ) );
-                            UserController.getInstance().getCurrentUser().setPassReseted( true );
-                            loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-                            layoutCode.setVisible( false );
-                        } else {
-                            System.out.println( "ghlalet " );
-                        }
-                    } );
-                }
-            } );
-        } );
+        resetPassword.setOnMouseClicked( event -> showResetPassword() );
     }
+
+    public void showResetPassword() {
+        signin.setDisable( true );
+        signup.setDisable( true );
+        layoutReset.setVisible( true );
+        layoutSignin.setVisible( false );
+        layoutSignup.setVisible( false );
+        resetBtn.setOnMouseClicked( event1 ->
+                resetPassword()
+        );
+
+    }
+
+
+    public void resetPassword() {
+        if (emailReset.getText().isEmpty())
+            return;
+
+        AtomicReference<User> user = new AtomicReference<>( new User() );
+        EmailController.sendEmail( emailReset.getText(), "bla", user.get().generateVerificationCode() );
+        firstLayout.setVisible( false );
+        layoutCode.setVisible( true );
+        System.out.println( user.get().generateVerificationCode() );
+        verifier.setOnMouseClicked( event2 -> {
+            if (code.getText().equals( user.get().getVerificationCode() )) {
+                ServiceUser serviceUser = new ServiceUser();
+                User userCopy = serviceUser.findParEmail( emailReset.getText() );
+                System.out.println( emailReset.getText() );
+                System.out.println( userCopy );
+                setDataUser( userCopy );
+                UserController.setUser( serviceUser.findParEmail( emailReset.getText() ) );
+                UserController.getInstance().getCurrentUser().setPassReseted( true );
+                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
+                layoutCode.setVisible( false );
+            } else {
+                System.out.println( "ghlalet " );
+            }
+        } );
+
+    }
+
 
     public void translate(int yellowX, int blackX) {
         TranslateTransition translateTransitionYellowPart = new TranslateTransition( Duration.seconds( 0.6 ), yellowSide );
@@ -205,64 +215,60 @@ public class NewLogInController implements Initializable {
         nbr = n;
     }
 
-//    public void logIn(ActionEvent actionEvent) {
-//
-//        ServiceUser service=new ServiceUser();
-//        BCrypt.gensalt(15);
-////        User user=service.findParEmail(email.getText());
-//        User user=new User();
-//        if(email.getText().equals( "1" ))
-//            user = service.findParEmail( "salhiomar362@gmail.com" );
-//        else if(email.getText().equals( "2" ))
-//            user=service.findParEmail ("salhiomar3662@gmail.com");
-//        else if(email.getText().equals( "3" ))
-//            user=service.findParEmail("test2@gmail.com");
-//        else if(email.getText().equals( "4" ))
-//            user=service.findParEmail("test@gmail.com");
-//        else if(email.getText().equals( "5" ))
-//            user=service.findParEmail("test2@gmail.com");
-//
-//        if(user.getPassword()==null){
-//            Alert alert=showAlert("utlisateur n'existe pas ","il faut s'inscrire");
-//            alert.show();
-//            firstname.clear();
-//            password.clear();
-//        }
-////        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
-//        else if(BCrypt.checkpw("Latifa123@l", user.getPassword().replace( "$2y$","$2a$" ))){
-//            user.setIsConnected(1);
-//            UserController.setUser(user);
-//            ((Stage)Stage.getWindows().get(0)).close();
-//            if(user.getRole()== Role.Citoyen)
-//                loadManWindow("/fxml/mainWindow/mainWindow.fxml" );
-//            else {
-//                loadManWindow( "/fxml/mainWindow/mainWindowAdmin.fxml" );
-//            }
-//        }
-//    }
-
-
     public void logIn(ActionEvent actionEvent) {
 
         ServiceUser service = new ServiceUser();
         BCrypt.gensalt( 15 );
-        User user = service.findParEmail( email.getText() );
+//        User user=service.findParEmail(email.getText());
+        User user = new User();
+        if (email.getText().equals( "1" ))
+            user = service.findParEmail( "salhiomar362@gmail.com" );
+        else if (email.getText().equals( "2" ))
+            user = service.findParEmail( "salhiomar3662@gmail.com" );
+        else if (email.getText().equals( "3" ))
+            user = service.findParEmail( "test2@gmail.com" );
+        else if (email.getText().equals( "4" ))
+            user = service.findParEmail( "test@gmail.com" );
+        else if (email.getText().equals( "5" ))
+            user = service.findParEmail( "test2@gmail.com" );
 
         if (user.getPassword() == null) {
             Alert alert = showAlert( "utlisateur n'existe pas ", "il faut s'inscrire" );
             alert.show();
             firstname.clear();
             password.clear();
-        } else if (BCrypt.checkpw( password.getText(), user.getPassword().replace( "$2y$", "$2a$" ) )) {
-//        else if (BCrypt.checkpw( "Latifa123@l", user.getPassword().replace( "$2y$", "$2a$" ) )) {
+        }
+//        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
+        else if (BCrypt.checkpw( "Latifa123@l", user.getPassword().replace( "$2y$", "$2a$" ) )) {
             user.setIsConnected( 1 );
             UserController.setUser( user );
             ((Stage) Stage.getWindows().get( 0 )).close();
-
             loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-
         }
     }
+
+//
+//    public void logIn(ActionEvent actionEvent) {
+//
+//        ServiceUser service = new ServiceUser();
+//        BCrypt.gensalt( 15 );
+//        User user = service.findParEmail( email.getText() );
+//
+//        if (user.getPassword() == null) {
+//            Alert alert = showAlert( "utlisateur n'existe pas ", "il faut s'inscrire" );
+//            alert.show();
+//            firstname.clear();
+//            password.clear();
+//        } else if (BCrypt.checkpw( password.getText(), user.getPassword().replace( "$2y$", "$2a$" ) )) {
+////        else if (BCrypt.checkpw( "Latifa123@l", user.getPassword().replace( "$2y$", "$2a$" ) )) {
+//            user.setIsConnected( 1 );
+//            UserController.setUser( user );
+//            ((Stage) Stage.getWindows().get( 0 )).close();
+//
+//            loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
+//
+//        }
+//    }
 
     @FXML
     public void signUp(ActionEvent actionEvent) {

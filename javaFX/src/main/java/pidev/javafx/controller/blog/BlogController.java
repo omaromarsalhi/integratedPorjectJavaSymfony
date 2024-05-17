@@ -145,13 +145,7 @@ public class BlogController implements Initializable {
         }
 
 
-        if (UserController.getInstance().getCurrentUser().getRole() == Role.admin) {
-            postController.getMenuBtnPost().setVisible( true );
-            postController.getModifierPost().setVisible( false );
-            if (post.getIdCompte() == ConnectedAccount) {
-                postController.getModifierPost().setVisible( true );
-            }
-        } else if (post.getIdCompte() == ConnectedAccount) {
+         if (post.getIdCompte() == ConnectedAccount) {
             postController.getMenuBtnPost().setVisible( true );
         } else if (post.getIdCompte() != ConnectedAccount) {
             postController.getMenuBtnPost().setVisible( false );
