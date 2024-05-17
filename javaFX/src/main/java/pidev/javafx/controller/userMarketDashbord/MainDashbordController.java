@@ -196,10 +196,10 @@ public class MainDashbordController implements Initializable {
 
 
     public void setMenueBar() {
-        var addProduct = new MenuItem( "Add Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/more.png" ) ) ) );
-        var showAllProduct = new MenuItem( "Show  My Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/database.png" ) ) ) );
-        var showForPushasedProduct = new MenuItem( "Show Purshased Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/database.png" ) ) ) );
-        var showForSelledProduct = new MenuItem( "Show Selled Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/database.png" ) ) ) );
+        var addProduct = new MenuItem( "Add Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/delivery.png" ),20,20,true,true ) ) );
+        var showAllProduct = new MenuItem( "Show  My Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/received.png" ),20,20,true,true ) ) );
+        var showForPushasedProduct = new MenuItem( "Show Purshased Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/brand-identity.png" ),20,20,true,true ) ) );
+        var showForSelledProduct = new MenuItem( "Show Selled Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/trade.png" ),20,20,true,true ) ) );
         addProduct.setOnAction( event -> {
             secondInterface.setVisible( true );
             firstInterface.setOpacity( 0.4 );
@@ -216,7 +216,7 @@ public class MainDashbordController implements Initializable {
 
         menuBar.getMenus().get( 0 ).getItems().addAll( addProduct, showAllProduct, showForPushasedProduct, showForSelledProduct );
 
-        var add2Favorite = new MenuItem( "Manage", new ImageView( new Image( getClass().getResourceAsStream( "/icons/marketPlace/database.png" ) ) ) );
+        var add2Favorite = new MenuItem( "Manage", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/favourite.png" ),20,20,true,true ) ) );
         menuBar.getMenus().get( 1 ).getItems().add( add2Favorite );
 
         add2Favorite.setOnAction( event -> {

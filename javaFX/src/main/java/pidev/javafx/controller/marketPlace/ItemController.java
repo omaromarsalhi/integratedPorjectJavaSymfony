@@ -125,7 +125,7 @@ public class ItemController implements Initializable {
         info.setPrefWidth( 42 );
         info.setMinHeight( 32 );
 
-        Image img3= new Image(String.valueOf( getClass().getResource( "/icons/marketPlace/information.png" )),24,24,true,true );
+        Image img3= new Image(String.valueOf( getClass().getResource( "/icons/newicons/info (1).png" )),24,24,true,true );
         info.setGraphic( new ImageView( img3 ));
 
         info.setOnMouseClicked( event -> {
