@@ -282,7 +282,6 @@ public class ServiceUser implements IserviceUser<User> {
                 int idUser = rs.getInt( "idUser" );
                 String firstname = rs.getString( "firstName" );
                 String lastName = rs.getString( "lastname" );
-//                email = rs.getString( "email" );
                 int age = rs.getInt( "age" );
                 int num = rs.getInt( "phoneNumber" );
                 String adresse = rs.getString( "address" );

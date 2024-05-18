@@ -69,35 +69,19 @@ public class NewAccountController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loadingPage.setVisible( false );
-//        HBox reclamations = null;
 
-//        for (Reclamation reclamationData: ServiceReclamation.getInstance().getAll()){
-//            FXMLLoader fxmlLoader = new FXMLLoader();
-//            fxmlLoader.setLocation(getClass().getResource("/fxml/reclamation/reclamation.fxml"));
-//            try {
-//                reclamations = fxmlLoader.load( );
-//                ReclamationBoxController reclamationBoxController=fxmlLoader.getController();
-//                reclamationBoxController.setData( reclamationData );
-//                HBox finalReclamations = reclamations;
-//                reclamationBoxController.getDelete().setOnMouseClicked( event1 -> {
-//                    ServiceReclamation.getInstance().supprimer(reclamationData.getIdReclamation());
-//                    MyTools.getInstance().deleteAnimation( finalReclamations,reclamsSection );
-//                } );
-//            } catch (IOException e) {
-//                throw new RuntimeException( e );
-//            }
-//            reclamsSection.getChildren().add(reclamations);
-//        }
+        loadingPage.setVisible( false );
+
         setMenueBar();
 
-//        EventBus.getInstance().subscribe( "showReclamation", this::showDetailsReclamation );
-        EventBus.getInstance().subscribe( "exitFormUser", this::onExitFormBtnClicked );
-//        EventBus.getInstance().subscribe( "showReponse", this::showFormReclamationReponse );
-//        EventBus.getInstance().subscribe( "refresh", this::refresh );
-        showFormUser( "showDetails" );
+        if (UserController.getInstance().getCurrentUser().getPassReseted())
+            showFormadvancedSettings( "updatePassword" );
+        else
+            showFormUser( "showDetails" );
 
         initializeButtons();
+
+        EventBus.getInstance().subscribe( "exitFormUser", this::onExitFormBtnClicked );
     }
 
 
@@ -296,8 +280,6 @@ public class NewAccountController implements Initializable {
         }
 //        MyTools.getInstance().showAnimation( reclamations );
     }
-
-
 
 
     public void showReclamations() {

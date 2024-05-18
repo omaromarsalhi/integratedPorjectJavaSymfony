@@ -9,27 +9,6 @@ public class UserController {
     private static UserController instance;
 
     private UserController() {
-
-//        user=new User(1,
-//                "omar",
-//                "salhi",
-//                "salhiomar362@gmail.com",
-//                "12710434",
-//                22,
-//                29624921,
-//                "beb saadoun",
-//                Role.Citoyen);
-
-//        user=new User(2,
-//                "latifa",
-//                "benzaied",
-//                "latifa@gmail.com",
-//                "25251400",
-//                22,
-//                50421001,
-//                "menzah 1",
-//                Role.simpleutlisateur
-//        );
     }
 
     public static UserController getInstance() {

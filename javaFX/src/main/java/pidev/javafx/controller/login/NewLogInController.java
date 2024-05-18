@@ -2,12 +2,13 @@ package pidev.javafx.controller.login;
 
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -17,12 +18,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.mindrot.jbcrypt.BCrypt;
-import pidev.javafx.crud.user.ServiceMunicipalite;
 import pidev.javafx.crud.user.ServiceUser;
 import pidev.javafx.model.user.Role;
 import pidev.javafx.model.user.User;
@@ -37,71 +36,116 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static pidev.javafx.controller.user.AccountController.showAlert;
 
 
 public class NewLogInController implements Initializable {
 
     @FXML
+    private TextField alert;
+
+    @FXML
+    private TextField alertLogIn;
+
+    @FXML
     private StackPane blackSide;
-    @FXML
-    private AnchorPane layoutSignup;
-    @FXML
-    private VBox vboxSignup;
-    @FXML
-    private Button signin;
-    @FXML
-    private Button signup;
-    @FXML
-    private AnchorPane layoutSignin;
-    @FXML
-    private AnchorPane yellowSide;
-    @FXML
-    private Button signupBtn;
-    @FXML
-    private Button signinBtn;
-    @FXML
-    private TextField password;
-    @FXML
-    private TextField email;
-    @FXML
-    private TextField firstname;
-    @FXML
-    private TextField lastName;
-    @FXML
-    private TextField emailSignUp;
-    @FXML
-    private TextField passwordSignUp;
-    @FXML
-    private AnchorPane layoutCode;
-    @FXML
-    private AnchorPane firstLayout;
+
     @FXML
     private TextField code;
+
     @FXML
-    private Button google;
-    @FXML
-    private Button googleSignUp;
-    @FXML
-    private Button verifier;
-    @FXML
-    private Label resetPassword;
+    private TextField email;
+
     @FXML
     private TextField emailReset;
+
     @FXML
-    private Button resetBtn;
+    private TextField emailSignUp;
+
+    @FXML
+    private AnchorPane firstLayout;
+
+    @FXML
+    private TextField firstname;
+
+    @FXML
+    private Button google;
+
+
+    @FXML
+    private Button googleSignup;
+
+    @FXML
+    private TextField lastName;
+
+    @FXML
+    private AnchorPane layoutCode;
+
     @FXML
     private AnchorPane layoutReset;
 
+    @FXML
+    private AnchorPane layoutSignin;
+
+    @FXML
+    private AnchorPane layoutSignup;
+
+    @FXML
+    private VBox mailCode;
+
+    @FXML
+    private AnchorPane opsPage;
+
+    @FXML
+    private TextField password;
+
+    @FXML
+    private TextField passwordSignUp;
+
+    @FXML
+    private AnchorPane preloadingPage;
+
+    @FXML
+    private Button resetBtn;
+
+    @FXML
+    private VBox resetLoading;
+
+    @FXML
+    private Label resetPassword;
+
+    @FXML
+    private Button signin;
+
+    @FXML
+    private Button signinBtn;
+
+    @FXML
+    private Button signup;
+
+    @FXML
+    private Button signupBtn;
+
+    @FXML
+    private VBox vboxSignup;
+
+    @FXML
+    private Button verifier;
+
+    @FXML
+    private TextField alertSignUp;
+
+    @FXML
+    private AnchorPane yellowSide;
+
+    @FXML
+    private WebView googleWebView;
+
 
     private boolean btnState;
-    private boolean[] isAllInpulValid;
-    Popup popup4Regex = MyTools.getInstance().createPopUp();
-    private String styleInitiale = "";
+    private boolean[] loginInputValidation;
+    private boolean[] signUpInputValidation;
+    private boolean resetPasswordInputValidation;
     private int elapsedTime = 0;
-    private int nbr;
 
 
     @Override
@@ -117,7 +161,11 @@ public class NewLogInController implements Initializable {
         signinBtn.setVisible( false );
         layoutSignup.setVisible( false );
         layoutReset.setVisible( false );
+        opsPage.setVisible( false );
+        preloadingPage.setVisible( false );
+        resetLoading.setVisible( false );
         btnState = true;
+
         signinBtn.setOnMouseClicked( event -> {
             translate( -400, 300 );
             btnState = !btnState;
@@ -129,10 +177,30 @@ public class NewLogInController implements Initializable {
 
         setRegEx();
 
-        isAllInpulValid = new boolean[]{false, false, false};
-        Popup popup4Regex = MyTools.getInstance().createPopUp();
+        loginInputValidation = new boolean[]{false, false};
+        signUpInputValidation = new boolean[]{false, false, false, false};
+        resetPasswordInputValidation = false;
 
         resetPassword.setOnMouseClicked( event -> showResetPassword() );
+
+        hideAlertDanger( alert );
+        hideAlertDanger( alertLogIn );
+        hideAlertDanger( alertSignUp );
+    }
+
+
+    private void showAlertDanger(TextField node, String message) {
+        node.setText( message );
+        node.setVisible( true );
+        node.setStyle( "-fx-background-color: rgba(224,55,55,0.48);" +
+                "-fx-border-color: red;" +
+                "-fx-border-radius: 5px;" +
+                "-fx-background-radius: 5px" );
+    }
+
+
+    private void hideAlertDanger(TextField node) {
+        node.setVisible( false );
     }
 
     public void showResetPassword() {
@@ -144,35 +212,282 @@ public class NewLogInController implements Initializable {
         resetBtn.setOnMouseClicked( event1 ->
                 resetPassword()
         );
-
     }
 
 
     public void resetPassword() {
-        if (emailReset.getText().isEmpty())
-            return;
 
-        AtomicReference<User> user = new AtomicReference<>( new User() );
-        EmailController.sendEmail( emailReset.getText(), "bla", user.get().generateVerificationCode() );
+        if (emailReset.getText().isEmpty()) {
+            showAlertDanger( alert, "this mail does not existe !!" );
+            return;
+        }
+
+        ServiceUser serviceUser = new ServiceUser();
+        User user = serviceUser.findParEmail( emailReset.getText() );
+
+        if (user == null) {
+            showAlertDanger( alert, "this mail does not existe !!" );
+            return;
+        }
+
+        EmailController.sendEmail( emailReset.getText(), "this is a generated code to reset your password", user.generateVerificationCode() );
+
         firstLayout.setVisible( false );
         layoutCode.setVisible( true );
-        System.out.println( user.get().generateVerificationCode() );
+
         verifier.setOnMouseClicked( event2 -> {
-            if (code.getText().equals( user.get().getVerificationCode() )) {
-                ServiceUser serviceUser = new ServiceUser();
-                User userCopy = serviceUser.findParEmail( emailReset.getText() );
-                System.out.println( emailReset.getText() );
-                System.out.println( userCopy );
-                setDataUser( userCopy );
-                UserController.setUser( serviceUser.findParEmail( emailReset.getText() ) );
+            if (code.getText().equals( user.getVerificationCode() )) {
+                resetLoading.setVisible( true );
+                setDataUser( user );
+                UserController.setUser( user );
                 UserController.getInstance().getCurrentUser().setPassReseted( true );
-                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-                layoutCode.setVisible( false );
+                loginThread( "reset" ).start();
             } else {
-                System.out.println( "ghlalet " );
+                layoutCode.setVisible( false );
+                firstLayout.setVisible( false );
+                opsPage.setVisible( true );
+                sleepThread().start();
             }
         } );
+    }
 
+    private Thread sleepThread() {
+        Task<Void> myTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                Thread.sleep( 4000 );
+                return null;
+            }
+        };
+
+        myTask.setOnSucceeded( e -> {
+            System.exit( 0 );
+        } );
+
+        return new Thread( myTask );
+    }
+
+
+    @FXML
+    public void logIn(ActionEvent actionEvent) {
+        preloadingPage.setVisible( true );
+        loginThread( "login" ).start();
+    }
+
+    private Thread loginThread(String usage) {
+        Task<Integer> myTask = new Task<>() {
+            @Override
+            protected Integer call() throws Exception {
+                Thread.sleep( 1000 );
+
+                if (usage.equals( "reset" ))
+                    return 4;
+
+                if (!loginInputValidation[0] || !loginInputValidation[1])
+                    return 1;
+
+                ServiceUser serviceUser = new ServiceUser();
+                User user = serviceUser.findParEmail( email.getText() );
+
+                if (user == null)
+                    return 2;
+
+                BCrypt.gensalt( 15 );
+                if (BCrypt.checkpw( password.getText(), user.getPassword().replace( "$2y$", "$2a$" ) )) {
+                    UserController.setUser( user );
+                    return 4;
+                }
+
+                return 3;
+            }
+        };
+
+        myTask.setOnSucceeded( e -> {
+            Platform.runLater( () -> {
+                if (myTask.getValue() == 1) {
+                    preloadingPage.setVisible( false );
+                    showAlertDanger( alertLogIn, "some data is not well formatted !!" );
+                } else if (myTask.getValue() == 2) {
+                    preloadingPage.setVisible( false );
+                    showAlertDanger( alertLogIn, " this email is wrong  !!" );
+                    email.setStyle( "-fx-border-color: red;" +
+                            "-fx-border-width: 0 0 1px 0" );
+                    email.setText( "" );
+                } else if (myTask.getValue() == 3) {
+                    preloadingPage.setVisible( false );
+                    showAlertDanger( alertLogIn, " this password is wrong !!" );
+                    password.setStyle( "-fx-border-color: red;" +
+                            "-fx-border-width: 0 0 1px 0" );
+                    password.setText( "" );
+                } else if (myTask.getValue() == 4) {
+                    loadManWindow();
+                }
+            } );
+        } );
+
+        return new Thread( myTask );
+    }
+
+
+    @FXML
+    public void signUp(ActionEvent actionEvent) {
+        preloadingPage.setVisible( true );
+        signUpThread().start();
+    }
+
+
+    private Thread signUpThread() {
+        Task<Integer> myTask = new Task<>() {
+            @Override
+            protected Integer call() throws Exception {
+                Thread.sleep( 1000 );
+
+                if (!signUpInputValidation[0] || !signUpInputValidation[1] || !signUpInputValidation[2] || !signUpInputValidation[3])
+                    return 1;
+
+                ServiceUser serviceUser = new ServiceUser();
+                User user = serviceUser.findParEmail( email.getText() );
+
+                if (user != null)
+                    return 2;
+
+                return 3;
+            }
+        };
+
+        myTask.setOnSucceeded( e -> {
+            Platform.runLater( () -> {
+                if (myTask.getValue() == 1) {
+                    preloadingPage.setVisible( false );
+                    showAlertDanger( alertSignUp, "some data is not well formatted !!" );
+                } else if (myTask.getValue() == 2) {
+                    preloadingPage.setVisible( false );
+                    showAlertDanger( alertSignUp, " this account already exists  !!" );
+                } else if (myTask.getValue() == 3) {
+                    User user = new User();
+                    layoutSignup.setStyle( String.valueOf( getClass().getResource( "/style/user/newLogIn.css" ) ) );
+                    firstLayout.setVisible( false );
+                    layoutCode.setVisible( true );
+                    MyTools.getInstance().showAnimation( layoutCode );
+                    System.out.println( user.generateVerificationCode() );
+                    timer( 60, 1000, user );
+                }
+            } );
+        } );
+        return new Thread( myTask );
+    }
+
+    private void timer(int timeToWait, int period, User user) {
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            public void run() {
+                if (elapsedTime < timeToWait) {
+                    verifier.setOnAction( event -> {
+                        if (code.getText().equals( user.getVerificationCode() )) {
+                            resetLoading.setVisible( true );
+                            ServiceUser serviceUser = new ServiceUser();
+                            setDataUser( user );
+                            serviceUser.ajouter( user );
+                            UserController.setUser( user );
+                            loginThread( "reset" ).start();
+                            timer.cancel();
+                        } else {
+                            Platform.runLater( () -> {
+                                firstLayout.setVisible( false );
+                                opsPage.setVisible( true );
+                                sleepThread().start();
+                            } );
+                            elapsedTime = timeToWait * 2;
+                        }
+                    } );
+                    elapsedTime++;
+                } else {
+                    timer.cancel();
+                }
+            }
+        };
+        timer.schedule( task, 0, period );
+    }
+
+
+    public void loadManWindow() {
+        FXMLLoader fxmlLoader = new FXMLLoader( Main.class.getResource( "/fxml/mainWindow/mainWindow.fxml" ) );
+        Scene scene = null;
+        try {
+            scene = new Scene( fxmlLoader.load(), Color.TRANSPARENT );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+        Stage stage = new Stage();
+        stage.initStyle( StageStyle.TRANSPARENT );
+        stage.setTitle( "CitizenHub" );
+        stage.setResizable( true );
+        stage = (Stage) signinBtn.getScene().getWindow();
+        stage.close();
+        stage.setScene( scene );
+        stage.show();
+    }
+
+
+    public void clean() {
+        firstname.clear();
+        lastName.clear();
+        emailSignUp.clear();
+        passwordSignUp.clear();
+        code.clear();
+    }
+
+    public void setDataUser(User user) {
+        user.setFirstname( firstname.getText() );
+        user.setEmail( emailSignUp.getText() );
+        user.setLastname( lastName.getText() );
+        user.setPassword( BCrypt.hashpw( passwordSignUp.getText(), BCrypt.gensalt( 15 ) ) );
+        user.setRole( Role.Citoyen );
+        user.setAdresse( "" );
+        user.setAge( 0 );
+        user.setCin( "0" );
+        user.setStatus( "0" );
+        user.setGender( "" );
+    }
+
+
+    public void signupWithGoogle(ActionEvent actionEvent) {
+        GoogleApi googleApi = new GoogleApi();
+        WebView webView = googleApi.AccessTokenFetcher();
+        AnchorPane anchorPane = new AnchorPane( webView );
+        anchorPane.setMaxWidth( 150 );
+        anchorPane.setMaxHeight( 100 );
+        WebEngine webEngine = webView.getEngine();
+        Scene scene = new Scene( anchorPane );
+        Stage stage;
+        stage = (Stage) google.getScene().getWindow();
+        stage.setScene( scene );
+        stage.close();
+        stage.show();
+    }
+
+    public void signInWithGoogle(ActionEvent actionEvent) {
+//        GoogleApi googleApi = new GoogleApi();
+//        WebView webView = googleApi.AccessTokenFetcher();
+//        AnchorPane anchorPane = new AnchorPane( webView );
+//        anchorPane.setMaxWidth( 150 );
+//        anchorPane.setMaxHeight( 100 );
+//        WebEngine webEngine = webView.getEngine();
+//        Scene scene = new Scene( anchorPane );
+//        Stage stage;
+//        stage = (Stage) google.getScene().getWindow();
+//        stage.setScene( scene );
+//        stage.close();
+//        stage.show();
+        System.setProperty( "sun.net.http.allowRestrictedHeaders", "true" );
+        GoogleApi googleApi = new GoogleApi();
+        WebView webView = googleApi.AccessTokenFetcher();
+    }
+
+    public void display(String email, String name, String lastname) {
+        this.emailSignUp.setText( email );
+        this.firstname.setText( name );
+        //this.lastname=lastname;
     }
 
 
@@ -210,302 +525,87 @@ public class NewLogInController implements Initializable {
         } );
     }
 
-
-    public void setUser(int n) {
-        nbr = n;
-    }
-
-    public void logIn(ActionEvent actionEvent) {
-
-        ServiceUser service = new ServiceUser();
-        BCrypt.gensalt( 15 );
-//        User user=service.findParEmail(email.getText());
-        User user = new User();
-        if (email.getText().equals( "1" ))
-            user = service.findParEmail( "salhiomar362@gmail.com" );
-        else if (email.getText().equals( "2" ))
-            user = service.findParEmail( "salhiomar3662@gmail.com" );
-        else if (email.getText().equals( "3" ))
-            user = service.findParEmail( "test2@gmail.com" );
-        else if (email.getText().equals( "4" ))
-            user = service.findParEmail( "test@gmail.com" );
-        else if (email.getText().equals( "5" ))
-            user = service.findParEmail( "test2@gmail.com" );
-
-        if (user.getPassword() == null) {
-            Alert alert = showAlert( "utlisateur n'existe pas ", "il faut s'inscrire" );
-            alert.show();
-            firstname.clear();
-            password.clear();
-        }
-//        else if(PasswordHasher.verifyPassword(password.getText(),user.getPassword())){
-        else if (BCrypt.checkpw( "Latifa123@l", user.getPassword().replace( "$2y$", "$2a$" ) )) {
-            user.setIsConnected( 1 );
-            UserController.setUser( user );
-            ((Stage) Stage.getWindows().get( 0 )).close();
-            loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-        }
-    }
-
-//
-//    public void logIn(ActionEvent actionEvent) {
-//
-//        ServiceUser service = new ServiceUser();
-//        BCrypt.gensalt( 15 );
-//        User user = service.findParEmail( email.getText() );
-//
-//        if (user.getPassword() == null) {
-//            Alert alert = showAlert( "utlisateur n'existe pas ", "il faut s'inscrire" );
-//            alert.show();
-//            firstname.clear();
-//            password.clear();
-//        } else if (BCrypt.checkpw( password.getText(), user.getPassword().replace( "$2y$", "$2a$" ) )) {
-////        else if (BCrypt.checkpw( "Latifa123@l", user.getPassword().replace( "$2y$", "$2a$" ) )) {
-//            user.setIsConnected( 1 );
-//            UserController.setUser( user );
-//            ((Stage) Stage.getWindows().get( 0 )).close();
-//
-//            loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-//
-//        }
-//    }
-
-    @FXML
-    public void signUp(ActionEvent actionEvent) {
-
-        ServiceUser service = new ServiceUser();
-        ServiceMunicipalite serviceMunicipalite = new ServiceMunicipalite();
-        User usexist = service.findParEmail( emailSignUp.getText() );
-
-        if (isAllInpulValid[0] && isAllInpulValid[1] && isAllInpulValid[2] && usexist == null) {
-            User user = new User();
-
-            layoutSignup.setStyle( String.valueOf( getClass().getResource( "/style/user/newLogIn.css" ) ) );
-            firstLayout.setVisible( false );
-            layoutCode.setVisible( true );
-            MyTools.getInstance().showAnimation( layoutCode );
-            System.out.println( user.generateVerificationCode() );
-            Timer timer = new Timer();
-            TimerTask task = new TimerTask() {
-                public void run() {
-                    if (elapsedTime < 60) {
-                        verifier.setOnAction( event -> {
-                            if (code.getText().equals( user.getVerificationCode() )) {
-                                timer.cancel();
-                                ServiceUser serviceUser = new ServiceUser();
-                                setDataUser( user );
-                                serviceUser.ajouter( user );
-                                UserController.setUser( serviceUser.findParEmail( user.getEmail() ) );
-                                loadManWindow( "/fxml/mainWindow/mainWindow.fxml" );
-                                layoutCode.setVisible( false );
-                                clean();
-                            } else {
-                                System.out.println( "ghlalet " );
-                            }
-                        } );
-                        elapsedTime++;
-                    } else {
-                        timer.cancel();
-                        ((Stage) Stage.getWindows().get( 0 )).close();
-                        clean();
-                    }
-                }
-
-            };
-            timer.schedule( task, 0, 1000 );
-        } else {
-            System.out.println( "ya ajax ,ya mawjoud " );
-        }
-    }
-
-
-    public void loadManWindow(String fileName) {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader( Main.class.getResource( fileName ) );
-        Scene scene = null;
-        try {
-            scene = new Scene( fxmlLoader.load(), Color.TRANSPARENT );
-        } catch (IOException e) {
-            throw new RuntimeException( e );
-        }
-        stage.initStyle( StageStyle.TRANSPARENT );
-        stage.setTitle( "CitizenHub" );
-        stage.setResizable( true );
-        stage = (Stage) signinBtn.getScene().getWindow();
-        stage.close();
-        stage.setScene( scene );
-        stage.show();
-    }
-
-
     public void setRegEx() {
 
         String firstnameRegex = "[a-zA-Z\\s]{3,}+";
         String passwordRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        String emaill = "Doit être au format standard, par exemple \"utilisateur@example.com";
-        String firstName = "Accepte uniquement les chaines composés d'au moins 3 caractères alphabétiques.";
-        String passwordd = " Doit contenir au moins 8 caractères, avec au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial. Pas d'espaces autorisés";
-
 
         firstname.setOnKeyTyped( event -> {
-            String color = (isAllInpulValid[0]) ? "green" : "#ff4343";
-            isAllInpulValid[0] = firstname.getText().matches( firstnameRegex );
+            String color = (firstname.getText().matches( firstnameRegex )) ? "green" : "#ff4343";
+            signUpInputValidation[0] = color.equals( "green" );
             if (firstname.getText().isEmpty()) {
                 firstname.setStyle( "" );
-                isAllInpulValid[0] = false;
-
             } else {
-
-                firstname.setStyle( "-fx-border-color: transparent transparent " + color + " transparent;" +
-                        "-fx-border-width:0 0 2 0;" +
-                        "-fx-border-radius: 0" );
+                firstname.setStyle( "-fx-border-color:" + color + ";" +
+                        "-fx-border-width:0 0 2 0;" );
             }
+        } );
 
+        lastName.setOnKeyTyped( event -> {
+            String color = (lastName.getText().matches( firstnameRegex )) ? "green" : "#ff4343";
+            signUpInputValidation[1] = color.equals( "green" );
+            if (lastName.getText().isEmpty()) {
+                lastName.setStyle( "" );
+            } else {
+                lastName.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
+            }
         } );
 
         emailSignUp.setOnKeyTyped( event -> {
-            String color = (isAllInpulValid[1]) ? "green" : "#ff4343";
-            isAllInpulValid[1] = emailSignUp.getText().matches( emailRegex );
+            String color = (emailSignUp.getText().matches( emailRegex )) ? "green" : "#ff4343";
+            signUpInputValidation[2] = color.equals( "green" );
             if (emailSignUp.getText().isEmpty()) {
                 emailSignUp.setStyle( "" );
-                isAllInpulValid[1] = false;
-
             } else {
-                System.out.println( "lllll" );
-                emailSignUp.setStyle( "-fx-border-color: transparent transparent " + color + " transparent;" +
-                        "-fx-border-width:0 0 2 0;" +
-                        "-fx-border-radius: 0" );
+                emailSignUp.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
             }
-
         } );
-
 
         passwordSignUp.setOnKeyTyped( event -> {
-            String color = (isAllInpulValid[2]) ? "#8FFA54FF" : "#ff4343";
-            isAllInpulValid[2] = passwordSignUp.getText().matches( passwordRegex );
+            String color = (passwordSignUp.getText().matches( passwordRegex )) ? "green" : "#ff4343";
+            signUpInputValidation[3] = color.equals( "green" );
             if (passwordSignUp.getText().isEmpty()) {
                 passwordSignUp.setStyle( "" );
-                isAllInpulValid[2] = false;
-
             } else {
-                passwordSignUp.setStyle( "-fx-border-color: transparent transparent " + color + " transparent;" +
-                        "-fx-border-width:0 0 2 0;" +
-                        "-fx-border-radius: 0" );
-
-            }
-
-        } );
-
-        firstname.setOnMouseEntered( event -> {
-            if (firstname.getText() != null && !firstname.getText().isEmpty() && !firstname.getText().isEmpty() && !firstname.getText().matches( firstnameRegex )) {
-                ((Label) popup4Regex.getContent().get( 0 )).setText( firstName );
-                popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: #ed1c27;" );
-                popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 40 );
+                passwordSignUp.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
             }
         } );
-        firstname.setOnMouseExited( event -> {
-            popup4Regex.hide();
-        } );
 
-        emailSignUp.setOnMouseEntered( event -> {
-            if (emailSignUp.getText() != null && !emailSignUp.getText().isEmpty() && !emailSignUp.getText().isEmpty() && !emailSignUp.getText().matches( emailRegex )) {
-                ((Label) popup4Regex.getContent().get( 0 )).setText( emaill );
-                popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: #ed1c27;" );
-                popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 40 );
+
+        email.setOnKeyTyped( event -> {
+            String color = (email.getText().matches( emailRegex )) ? "green" : "#ff4343";
+            loginInputValidation[0] = color.equals( "green" );
+            if (email.getText().isEmpty()) {
+                email.setStyle( "" );
+            } else {
+                email.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
             }
         } );
-        emailSignUp.setOnMouseExited( event -> {
-            popup4Regex.hide();
-        } );
 
-        passwordSignUp.setOnMouseEntered( event -> {
-            if (passwordSignUp.getText() != null && !passwordSignUp.getText().isEmpty() && !passwordSignUp.getText().isEmpty() && !passwordSignUp.getText().matches( passwordRegex )) {
-                ((Label) popup4Regex.getContent().get( 0 )).setText( passwordd );
-                popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: #ed1c27;" );
-                popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 40 );
+
+        password.setOnKeyTyped( event -> {
+            String color = (passwordSignUp.getText().matches( passwordRegex )) ? "green" : "#ff4343";
+            loginInputValidation[1] = color.equals( "green" );
+            if (passwordSignUp.getText().isEmpty()) {
+                passwordSignUp.setStyle( "" );
+            } else {
+                passwordSignUp.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
             }
         } );
-        passwordSignUp.setOnMouseExited( event -> {
-            popup4Regex.hide();
+
+
+        emailReset.setOnKeyTyped( event -> {
+            String color = (emailReset.getText().matches( emailRegex )) ? "green" : "#ff4343";
+            resetPasswordInputValidation = color.equals( "green" );
+            if (emailReset.getText().isEmpty()) {
+                emailReset.setStyle( "" );
+            } else {
+                emailReset.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
+            }
         } );
-
-//        adresse.setOnMouseEntered( event -> {
-//            ((Label) popup4Regex.getContent().get( 0 )).setText( "You Need To Enter A valid Address" );
-//            popup4Regex.getContent().get( 0 ).setStyle( popup4Regex.getContent().get( 0 ).getStyle() + "-fx-background-color: white; -fx-text-fill: black;" );
-//            popup4Regex.show( Stage.getWindows().get( 0 ), event.getScreenX() + 40, event.getScreenY() - 40 );
-//
-//        } );
-//        adresse.setOnMouseExited( event -> {
-//            popup4Regex.hide();
-//        } );
-
-
     }
 
-
-    public void clean() {
-        firstname.clear();
-        lastName.clear();
-        emailSignUp.clear();
-        passwordSignUp.clear();
-        code.clear();
-    }
-
-    public void setDataUser(User user) {
-        user.setFirstname( firstname.getText() );
-        user.setEmail( emailSignUp.getText() );
-        user.setLastname( lastName.getText() );
-//        user.setPassword( PasswordHasher.hashPassword( passwordSignUp.getText() ) );
-        user.setPassword( BCrypt.hashpw( passwordSignUp.getText(), BCrypt.gensalt( 15 ) ) );
-        user.setRole( Role.Citoyen );
-        user.setAdresse( "" );
-        user.setAge( 0 );
-        user.setCin( "0" );
-        user.setStatus( "0" );
-        user.setGender( "" );
-    }
-
-
-    public void signupWithGoogle(ActionEvent actionEvent) {
-        GoogleApi googleApi = new GoogleApi();
-        WebView webView = googleApi.AccessTokenFetcher();
-//        Button button=new Button();
-        AnchorPane anchorPane = new AnchorPane( webView );
-        anchorPane.setPrefWidth( 450 );
-        anchorPane.setPrefHeight( 650 );
-        WebEngine webEngine = webView.getEngine();
-        Scene scene = new Scene( anchorPane );
-        Stage stage;
-        stage = (Stage) google.getScene().getWindow();
-        stage.setScene( scene );
-        stage.close();
-        stage.show();
-    }
-
-    public void signInWithGoogle(ActionEvent actionEvent) {
-        GoogleApi googleApi = new GoogleApi();
-        WebView webView = googleApi.AccessTokenFetcher();
-        AnchorPane anchorPane = new AnchorPane( webView );
-        anchorPane.setPrefWidth( 450 );
-        anchorPane.setPrefHeight( 650 );
-        WebEngine webEngine = webView.getEngine();
-        Scene scene = new Scene( anchorPane );
-        Stage stage;
-        stage = (Stage) google.getScene().getWindow();
-        stage.setScene( scene );
-        stage.close();
-        stage.show();
-
-    }
-
-    public void display(String email, String name, String lastname) {
-        this.emailSignUp.setText( email );
-        this.firstname.setText( name );
-        //this.lastname=lastname;
-
-
-    }
 
 }
 

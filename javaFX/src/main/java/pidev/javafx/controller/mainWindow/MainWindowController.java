@@ -63,13 +63,7 @@ public class MainWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println(UserController.getInstance().getCurrentUser());
-//        EventBus.getInstance().subscribe( "laodCheckOut",this::laodCheckOut );
-//        EventBus.getInstance().subscribe( "laodMarketPlace",this::onMarketPlaceBtnClicked );
-//        mainBorderPane.getCenter())
 
-//        accountImg.setImage(new Image( GlobalVariables.IMAGEPATH+UserController.getInstance().getCurrentUser().getPhotos(),25,25,true,true)  );
-//        accountBtn.setText( UserController.getInstance().getCurrentUser().getFirstname()+" "+UserController.getInstance().getCurrentUser().getLastname() );
-//        ChatClient.getInstance().establishConnection();
         notifHbox.setVisible( false );
         MyTools.getInstance().setImageNotif( imageNotif );
         MyTools.getInstance().setNotifHbox( notifHbox );
@@ -79,6 +73,7 @@ public class MainWindowController implements Initializable {
 
 
         StackPane dashbord = null;
+
         try {
             dashbord = FXMLLoader.load( getClass().getResource( "/fxml/user/newAccountOmar.fxml" ) );
         } catch (IOException e) {
@@ -92,7 +87,7 @@ public class MainWindowController implements Initializable {
     }
 
 
-    //    btns that changes the scenes
+
     @FXML
     public void onBlogBtnClicked(ActionEvent event) throws IOException {
         btns();
