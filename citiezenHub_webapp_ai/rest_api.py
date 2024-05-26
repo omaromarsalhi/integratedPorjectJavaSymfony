@@ -8,7 +8,7 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://082b-34-72-197-96.ngrok-free.app'
+url='https://e9f0-34-91-73-157.ngrok-free.app'
 
 
 
@@ -17,7 +17,7 @@ url='https://082b-34-72-197-96.ngrok-free.app'
 def generate():
     text=generate_produxt_description(request.args.get('title'))
     return jsonify(text),200
-    
+
 
 @app.route('/get-product_image_descreption',methods=['POST'])
 def generate_desc_image():

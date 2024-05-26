@@ -42,7 +42,7 @@ public class AiVerification {
         }
     }
 
-    public String HttpAiResultState(int idProduct){
+    public  String HttpAiResultState(int idProduct){
         try {
             URL url = new URL("http://localhost:8000/java/request/verifyAiResultState"); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -51,6 +51,32 @@ public class AiVerification {
 
             OutputStream os = connection.getOutputStream();
             os.write(STR."idProduct=\{idProduct}".getBytes());
+            os.flush();
+            os.close();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            StringBuilder response = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            return response.toString();
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public static String HttpCinVerification(int idUser,String frontId,String backId){
+        try {
+            URL url = new URL("http://localhost:8000/java/request/getCinData"); // Replace with your API endpoint
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+
+            OutputStream os = connection.getOutputStream();
+            os.write(("userId="+idUser+"&frontId="+frontId+"&backId="+backId).getBytes());
             os.flush();
             os.close();
 

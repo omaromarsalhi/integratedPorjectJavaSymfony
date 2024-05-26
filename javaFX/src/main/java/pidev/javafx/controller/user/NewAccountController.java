@@ -191,7 +191,7 @@ public class NewAccountController implements Initializable {
 
 
     public void showCin() {
-        VBox cin;
+        StackPane cin;
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation( getClass().getResource( "/fxml/user/insertingCin.fxml" ) );
         try {

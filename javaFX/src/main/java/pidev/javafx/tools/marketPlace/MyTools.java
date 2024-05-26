@@ -139,7 +139,7 @@ public class MyTools {
         String path = "usersImg/" + UUID.randomUUID() + ".png";
 
         Path src = Paths.get( chosenFilePath );
-        Path dest = Paths.get( "C:/Users/khali/OneDrive - ESPRIT/Documents/integratedPorjectJavaSymfony/citiezenHub_webapp/public/" + path );
+        Path dest = Paths.get( "C:/Users/omar salhi/Desktop/integratedPorjectJavaSymfony/citiezenHub_webapp/public/" + path );
 
         try {
             Files.copy( src, dest );
@@ -278,6 +278,8 @@ public class MyTools {
     }
 
     public void showNotif(){
+        textNotif.setStyle( "-fx-background-color: #fdc847" );
+        imageNotif.setStyle( "-fx-background-color: #fdc847" );
         showAndHideAnimation( notifHbox,1,500 );
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(5000), event1 -> {
             showAndHideAnimation( notifHbox,0,0 );
@@ -287,8 +289,8 @@ public class MyTools {
     }
 
     public void showErrorNotif(){
-        textNotif.setStyle( "-fx-background-color: red" );
-        imageNotif.setStyle( "-fx-background-color: red" );
+        textNotif.setStyle( "-fx-background-color: rgba(224,55,55,0.48)" );
+        imageNotif.setStyle( "-fx-background-color: rgba(224,55,55,0.48)" );
         imageNotif.setGraphic(new ImageView(new Image( String.valueOf( getClass().getResource("/icons/marketPlace/cancel.png")) ,16,16,false,false)) );
         showAndHideAnimation( notifHbox,1,500 );
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(5000), event1 -> {

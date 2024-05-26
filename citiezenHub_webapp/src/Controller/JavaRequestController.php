@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\MyHelpers\AiDataHolder;
+use App\MyHelpers\AiVerification;
 use App\MyHelpers\AiVerificationMessage;
+use App\MyHelpers\ImageHelperUser;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,7 +34,7 @@ class JavaRequestController extends AbstractController
     public function verifyProduct(Request $request, ProductRepository $productRepository, MessageBusInterface $messageBus): Response
     {
         $product = $productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
-        $mode=$request->get('mode');
+        $mode = $request->get('mode');
 
 
         $newImagesPath = [];
@@ -71,5 +74,32 @@ class JavaRequestController extends AbstractController
             return new JsonResponse(['doesItExist' => true, 'data' => $result], Response::HTTP_OK);
         }
         return new JsonResponse(['doesItExist' => false], Response::HTTP_OK);
+    }
+
+
+    #[Route('/java/request/getCinData', name: 'app_java_request_getCinData')]
+    public function getCinData(UserRepository $userRepository, AiVerification $aiVerification, Request $request, EntityManagerInterface $entityManager, ImageHelperUser $imageHelperUser): Response
+    {
+        $userId = $request->get('userId');
+
+        $frontId = $request->get('frontId');
+        $backId = $request->get('backId');
+        $frontIdPath = "../citiezenHub_webapp/public/" . $frontId;
+        $backIdPath = "../citiezenHub_webapp/public/" . $backId;
+        $user = $userRepository->findOneBy(['idUser' => $userId]);
+        $user->setCinImages($frontId . '_' . $backId);
+        $entityManager->flush();
+        $obj = [
+            'pathFrontCin' => $frontIdPath,
+            'pathBackCin' => $backIdPath,
+            'fileNameFront' => md5('user_front' . ($user->getId() * 1000 + 17)),
+            'fileNameBackCin' => md5('user_backCin' . ($user->getId() * 1000 + 17)),
+        ];
+        try {
+            $aiVerification->runOcr($obj);
+        } catch (\Exception $exception) {
+            return new Response('please insure that you added the right images', Response::HTTP_OK);
+        }
+        return new Response('image has been treated successfully', Response::HTTP_OK);
     }
 }

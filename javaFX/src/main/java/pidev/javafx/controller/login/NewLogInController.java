@@ -150,11 +150,14 @@ public class NewLogInController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        firstname.setText( "omar" );
-        emailSignUp.setText( "aaaaaaaaaaa@gmail.com" );
-        lastName.setText( "salhi" );
-        passwordSignUp.setText( "Latifa123@l" );
+//
+//        firstname.setText( "omar" );
+//        emailSignUp.setText( "aaaaaaaaaaa@gmail.com" );
+//        lastName.setText( "salhi" );
+//        passwordSignUp.setText( "Latifa123@l" );
+//
+//        email.setText( "salhiomar362@gmail.com" );
+//        password.setText( "Latifa123@l" );
 
         layoutCode.setVisible( false );
         signinBtn.setVisible( false );
@@ -177,7 +180,8 @@ public class NewLogInController implements Initializable {
 
         setRegEx();
 
-        loginInputValidation = new boolean[]{false, false};
+//        loginInputValidation = new boolean[]{false, false};
+        loginInputValidation = new boolean[]{true, true};
         signUpInputValidation = new boolean[]{false, false, false, false};
         resetPasswordInputValidation = false;
 
@@ -585,12 +589,12 @@ public class NewLogInController implements Initializable {
 
 
         password.setOnKeyTyped( event -> {
-            String color = (passwordSignUp.getText().matches( passwordRegex )) ? "green" : "#ff4343";
+            String color = (password.getText().matches( passwordRegex )) ? "green" : "#ff4343";
             loginInputValidation[1] = color.equals( "green" );
-            if (passwordSignUp.getText().isEmpty()) {
-                passwordSignUp.setStyle( "" );
+            if (password.getText().isEmpty()) {
+                password.setStyle( "" );
             } else {
-                passwordSignUp.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
+                password.setStyle( "-fx-border-color:" + color + ";-fx-border-width:0 0 2 0;" );
             }
         } );
 

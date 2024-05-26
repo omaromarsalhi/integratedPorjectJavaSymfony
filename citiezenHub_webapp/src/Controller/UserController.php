@@ -109,15 +109,14 @@ class UserController extends AbstractController
         $routePrecedente = $req->headers->get('referer');
         $parsedUrl = parse_url($routePrecedente);
         $path = $parsedUrl['path'];
-        $alertMessage = "Votre profil a été modifié avec succès !";
-        $session->set('profile_alert_message', $alertMessage);
+        $alertMessage = "Votre profil a été modifié avec succès !";        $session->set('profile_alert_message', $alertMessage);
 //        $currentDate = $user->getDate();
         $expiryTime = $user->getDate()->modify('+5 minutes');
         $session->set('profile_alert_expiry', $expiryTime);
         $errorMessages = [];
         $current = new \DateTime('now', new \DateTimeZone('Africa/Tunis'));
         if ($req->isXmlHttpRequest()) {
-             if ($current->format('Y-m-d H:i:s')< $expiryTime->format('Y-m-d H:i:s') || $user->getState()) {
+             if ($urrent->format('Y-m-d H:i:s')< $expiryTime->format('Y-m-d H:i:s') || $user->getState()) {
 //              $emailService->envoyerEmail($mailer);
                 $email = $req->get('email');
                 $name = $req->get('name');
