@@ -4,6 +4,7 @@ namespace App\MyHelpers;
 
 use Exception;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\HttpClient;
 
 
@@ -28,13 +29,13 @@ class AiVerification
         $this->getOcrResult($obj['pathFrontCin'], $obj['fileNameFront']);
         $this->getOcrResult($obj['pathBackCin'], $obj['fileNameBackCin']);
         try {
-            $this->formatJsonFilesOfCin($obj['fileNameFront'], $obj['fileNameBackCin']);
+            $this->formatJsonFilesOfCin($obj['fileNameFront'], $obj['fileNameBackCin'],$obj['path']);
         }catch (Exception $e){
             throw new \Exception('something went wrong');
         }
     }
 
-    public function formatJsonFilesOfCin($filePathFrontCin, $filePathBackCin): void
+    public function formatJsonFilesOfCin($filePathFrontCin, $filePathBackCin,$path): void
     {
         try {
             $pathFrontCin = '../../files/usersJsonFiles/' . $filePathFrontCin . '.json';
@@ -194,9 +195,13 @@ class AiVerification
             $userCinData['في']['data'] = date('m-d-Y', strtotime($dateString2));
 //
 
-            dump($userCinData);
+            $filesystem = new Filesystem();
+
+            $filesystem->remove($pathFrontCin);
+            $filesystem->remove($pathBackCin);
+
             $modifiedJsonString = json_encode($userCinData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            file_put_contents('../../files/usersJsonFiles/' . $filePathFrontCin . $filePathBackCin . '.json', $modifiedJsonString);
+            file_put_contents('../../files/usersJsonFiles/' .$path. '.json', $modifiedJsonString);
         } catch (Exception $e) {
             throw new \Exception('something went wrong');
         }

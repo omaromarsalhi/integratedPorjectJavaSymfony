@@ -1,9 +1,34 @@
+function getCinTimeInfo() {
+    $.ajax({
+        url: '/cinTimeInfo',
+        type: "POST",
+        async: true,
+        success: function (response) {
+            if (response.state === 'verified') {
+                $('#cinInfoTime').html("you are verified put another image if you have updated your location or id card" )
+                $('#cinInfoModel').modal('show')
+            } else {
+                $('#cinInfoTime').html("you need to add your cin images ( front and back ) so that we can verify you info" +
+                    " otherwise your account will be deleted within: <p style='color: red'>" + response.hours + "H and " + response.minutes + "m</p>")
+                $('#cinInfoModel').modal('show')
+            }
+        }, error: function (response) {
+            console.log("error");
+        },
+    });
+
+}
+
+
 function saveCin() {
 
     let formData = new FormData();
     formData.append('frontId', $('#createinputfile4').prop('files')[0]);
     formData.append('backId', $('#createinputfile5').prop('files')[0]);
-
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#cinLoading').html('<img src="' + value + '" width="30"/>')
+    $('#cinLoading').addClass('btnTransparent');
+    $('#cinLoading').prop('disabled', true)
     $.ajax({
         url: '/cinUpdate',
         type: "POST",
@@ -12,7 +37,14 @@ function saveCin() {
         processData: false,
         contentType: false,
         success: function (response) {
-            console.log('done');
+            console.log(response)
+            $('#cinLoading').html('Save')
+            $('#cinLoading').removeClass('btnTransparent');
+            $('#cinLoading').prop('disabled', false)
+            if (response === 'error' || response === 'false')
+                showInvalidPop('please do input the right data')
+            else
+                showValidPop('now your are verified')
         }, error: function (response) {
             console.log("error");
         },
@@ -162,8 +194,8 @@ function editProfile(event) {
             loader_stop(3000)
             setTimeout(function () {
                 const messagesErreur = parserMessagesErreur(response.responseText);
-                    afficherMessagesErreur(messagesErreur);
-                    showInvalidPop('Data not updated successfully');
+                afficherMessagesErreur(messagesErreur);
+                showInvalidPop('Data not updated successfully');
                 if (messagesErreur.hasOwnProperty('other')) {
                     showInvalidPop('Invalid condtienls');
                 }
@@ -233,8 +265,6 @@ function editPassword(event) {
         },
     });
 }
-
-
 
 
 function DeleteCustomer(event) {

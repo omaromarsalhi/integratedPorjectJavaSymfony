@@ -24,9 +24,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?int $idUser = null;
 
 
-
-
-
     #[ORM\Column(name: "firstName", length: 255)]
     #[Assert\NotBlank(message: 'Please enter at least 3 alphabetical characters.')]
     #[Assert\Regex(
@@ -35,9 +32,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         groups: ['add'],
     )]
     private ?string $firstName = null;
-
-
-
 
     #[ORM\Column(name: "lastName", length: 255)]
     #[Assert\NotBlank(message: 'Please enter at least 3 alphabetical characters.')]
@@ -49,8 +43,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $lastName = null;
 
 
-
-
     #[ORM\Column(name: "cin", length: 255)]
     #[Assert\Regex(
         pattern: '/^[0-9]{8}$/',
@@ -58,8 +50,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         groups: ['creation'],
     )]
     private ?string $cin = null;
-
-
 
 
     #[ORM\Column(name: "email", length: 255)]
@@ -73,8 +63,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     private ?string $email = null;
 
 
-
-
     #[ORM\Column(name: "age")]
     #[Assert\GreaterThanOrEqual(
         value: 18,
@@ -83,9 +71,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     )]
     private ?int $age = null;
-
-
-
 
     #[Assert\NotBlank(message: 'phone number ')]
     #[Assert\Regex(
@@ -96,7 +81,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     )]
     #[ORM\Column(name: "phoneNumber")]
     private ?int $phoneNumber = null;
-
 
     #[Assert\NotBlank(message: 'Ladresse ne peut pas être vide')]
 //    #[Assert\Length(
@@ -143,19 +127,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(name: "state")]
     private ?int $state = null;
 
-    public function getState(): ?int
-    {
-        return $this->state;
-    }
+    #[ORM\Column(name: "isVerified")]
+    private ?int $isVerified = null;
 
-    public function setState(?int $state): void
-    {
-        $this->state = $state;
-    }
 
-//    #[Vich\UploadableField(mapping: 'users', fileNameProperty: 'image')]
-//    #@Ignore()
-//    private ?File $imageFile = null;
+
+
+
 
     #[ORM\Column(name: "gender", length: 255, nullable: true)]
     private ?string $gender = null;
@@ -168,6 +146,19 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(name:'cin_images',length: 1000, nullable: true)]
     private ?string $cin_images = null;
+
+
+
+
+    public function getState(): ?int
+    {
+        return $this->state;
+    }
+
+    public function setState(?int $state): void
+    {
+        $this->state = $state;
+    }
 
     public function getMunicipalite(): ?Municipalite
     {
@@ -429,5 +420,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
+    public function getIsVerified(): ?int
+    {
+        return $this->isVerified;
+    }
 
+    public function setIsVerified(?int $isVerified): void
+    {
+        $this->isVerified = $isVerified;
+    }
 }

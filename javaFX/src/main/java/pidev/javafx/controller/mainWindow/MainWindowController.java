@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import pidev.javafx.tools.GlobalVariables;
@@ -62,7 +63,6 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        System.out.println(UserController.getInstance().getCurrentUser());
 
         notifHbox.setVisible( false );
         MyTools.getInstance().setImageNotif( imageNotif );
@@ -84,6 +84,12 @@ public class MainWindowController implements Initializable {
         accountBtn.setStyle( " -fx-border-color: #fdc847;" +
                 "    -fx-border-width: 0 0 0 2px ;" +
                 "    -fx-border-radius: 0;" );
+
+        EventBus.getInstance().subscribe( "setUserImage", this::setUserImage );
+    }
+
+    public void setUserImage(MouseEvent event){
+        accountImg.setImage( new Image( GlobalVariables.IMAGEPATH4USER+UserController.getInstance().getCurrentUser().getPhotos(),24,24,true,true ) );
     }
 
 

@@ -49,11 +49,15 @@
     color: #00a3ff;
 }
 
+.blur{
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+}
 
 .description_style {
-    background: transparent no-repeat center center url("../marketPlaceImages/Ripple-1s-200px.gif") !important;
-    background-size: 6% !important;
-    z-index: 100;
+    background: transparent no-repeat center center url("../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif") !important;
+    background-size: 12% !important;
+    z-index: 99999;
 }
 
 .aiverif {
@@ -97,4 +101,8 @@
 .splide__slide img {
     width: 100%;
     height: auto;
+}
+
+.btnTransparent{
+    background-color: transparent !important;
 }

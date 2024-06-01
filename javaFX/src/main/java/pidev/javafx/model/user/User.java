@@ -3,6 +3,7 @@ package pidev.javafx.model.user;
 import java.util.Random;
 
 public class User {
+
     private int id;
     private int age;
     private int num;
@@ -10,7 +11,7 @@ public class User {
     private String firstname;
     private String lastname;
     private String email;
-    private  String cin;
+    private String cin;
     private String adresse;
     private Role role;
     private String password;
@@ -20,10 +21,35 @@ public class User {
     private String verificationCode;
     private String photos;
     private String gender;
+    private int isVerified;
     private int state;
+    private Boolean isPassReseted = false;
 
-    public User(String firstname, String email, String password, String cin, int age, int num, String adresse, String dob, String lastName, String status, String date, Role role, String photos, String gender) {
+
+    public User(int id, String firstname, String email, String cin, int age, int num, String adresse, String dob, String lastName, String status, String date, Role role, String photos, String gender,String password,int idMunicipalite,int isVerified) {
+        this.adresse = adresse;
+        this.age = age;
+        this.cin = cin;
+        this.date = date;
+        this.dob = dob;
+        this.email = email;
+        this.firstname = firstname;
+        this.gender = gender;
+        this.id = id;
+        this.lastname = lastName;
+        this.num = num;
+        this.photos = photos;
+        this.role = role;
+        this.status = status;
+        this.password = password;
+        this.idMunicipalite = idMunicipalite;
+        this.isVerified = isVerified;
     }
+
+    public User(int idUser) {
+        id=idUser;
+    }
+
 
     public Boolean getPassReseted() {
         return isPassReseted;
@@ -33,30 +59,6 @@ public class User {
         isPassReseted = passReseted;
     }
 
-    private Boolean isPassReseted=false;
-
-
-    public User(int idUser, String firstname, String email, String password, String cin, int age, int num, String adresse, String dob, String lastName, String status, String date, Role role, String photos, String gender) {
-        this.id = idUser;
-        this.firstname = firstname;
-        this.email = email;
-        this.cin = cin;
-        this.age = age;
-        this.num = num;
-        this.adresse = adresse;
-        this.dob = dob;
-        this.lastname = lastName;
-        this.role=role;
-        this.status =status;
-        this.date=date;
-        this.photos=photos;
-        this.gender=gender;
-        this.password=password;
-    }
-
-    public User(int idUser) {
-        this.id = idUser;
-    }
 
     @Override
     public String toString() {
@@ -85,7 +87,6 @@ public class User {
     }
 
 
-
     public String getVerificationCode() {
         return verificationCode;
     }
@@ -94,87 +95,20 @@ public class User {
 
 
     int IsConnected;
-      int idMunicipalite;
+    int idMunicipalite;
 
 
     public User() {
     }
 
-    public User(String firstname, String lastname, String email) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
 
+    public int getIsVerified() {
+        return isVerified;
     }
 
-
-
-    public User(int id, String firstname, String lastname, String email, String cin, int age, int num, String adresse, Role role, int droit_acces, String password, String date) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.cin = cin;
-        this.age = age;
-        this.num = num;
-        this.adresse = adresse;
-        this.role = role;
-        this.droit_acces = droit_acces;
-        this.password = password;
-        this.date = date;
+    public void setIsVerified(int isVerified) {
+        this.isVerified = isVerified;
     }
-
-
-
-
-
-    public User(String firstname, String email, String cin, int age, int num, String adresse, String dob, String lastname,String status,String date,Role role,int idMunicipalite ) {
-        this.firstname = firstname;
-        this.email = email;
-        this.cin = cin;
-        this.age = age;
-        this.num = num;
-        this.adresse = adresse;
-        this.dob = dob;
-        this.lastname = lastname;
-        this.role=role;
-        this.status =status;
-        this.date=date;
-        this.idMunicipalite=idMunicipalite;
-    }
-
-
-    public User(int id, String firstname, String lastname, String email, String cin, int age, int num, String adresse, Role role,String password,String photos) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.cin = cin;
-        this.age = age;
-        this.num = num;
-        this.adresse = adresse;
-        this.role = role;
-        this.password = password;
-        this.photos=photos;
-
-    }
-
-    public User(String firstname, String email, String cin, int age, int num, String adresse, String dob, String lastName, String status, String date, Role role,String Photos,String gender) {
-        this.firstname = firstname;
-        this.email = email;
-        this.cin = cin;
-        this.age = age;
-        this.num = num;
-        this.adresse = adresse;
-        this.dob = dob;
-        this.lastname = lastName;
-        this.role=role;
-        this.status =status;
-        this.date=date;
-        this.photos=Photos;
-        this.gender=gender;
-    }
-
 
     public int getId() {
         return id;
@@ -183,8 +117,6 @@ public class User {
     public void setId(int id) {
         this.id = id;
     }
-
-
 
 
     public String getFirstname() {
@@ -212,7 +144,6 @@ public class User {
     }
 
 
-
     public String getEmail() {
         return email;
     }
@@ -220,7 +151,6 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
 
     public String getCin() {
@@ -232,7 +162,6 @@ public class User {
     }
 
 
-
     public int getAge() {
         return age;
     }
@@ -240,7 +169,6 @@ public class User {
     public void setAge(int age) {
         this.age = age;
     }
-
 
 
     public int getNum() {
@@ -265,8 +193,8 @@ public class User {
         return role;
     }
 
-    public void setRole( Role role) {
-        this.role=role;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 
@@ -279,7 +207,6 @@ public class User {
     }
 
 
-
     public String getPassword() {
         return password;
     }
@@ -289,7 +216,6 @@ public class User {
     }
 
 
-
     public String getDate() {
         return date;
     }
@@ -297,7 +223,6 @@ public class User {
     public void setDate(String date) {
         this.date = date;
     }
-
 
 
     public String getStatus() {
@@ -333,6 +258,7 @@ public class User {
     public void setIdMunicipalite(int idMunicipalite) {
         this.idMunicipalite = idMunicipalite;
     }
+
     public String getPhotos() {
         return photos;
     }
@@ -356,16 +282,12 @@ public class User {
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < 6; i++) {
-            int index = random.nextInt(characters.length());
-            sb.append(characters.charAt(index));
+            int index = random.nextInt( characters.length() );
+            sb.append( characters.charAt( index ) );
         }
         verificationCode = sb.toString();
         return verificationCode;
     }
-
-
-
-
 
 
 }

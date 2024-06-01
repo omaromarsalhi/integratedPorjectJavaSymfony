@@ -209,13 +209,11 @@ function getCityFromGeocodeResponse(response) {
         if (component.types.includes('administrative_area_level_1')) {
             municipality = component.long_name;
 
-            console.log('state:', municipality);
             $('#state').val(municipality)
         }
         if (component.types.includes('administrative_area_level_2')) {
             municipality = component.long_name;
 
-            console.log('Municipality:', municipality);
             $('#municipality').val(municipality)
         }
     }

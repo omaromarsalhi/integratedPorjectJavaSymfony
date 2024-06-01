@@ -29,7 +29,6 @@ function loader_stop_desc(time){
     }, time)
 }
 
-
 function loader_start_unverified(){
     document.getElementById('container-ai').classList.add('body');
     document.getElementById('loading-ai').classList.add('loader-ai');

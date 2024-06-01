@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+
+use App\Service\GeocodingService;
 use Symfony\Component\Translation\Translator;
 use App\Entity\Municipalite;
 use App\MyHelpers\AiVerification;
@@ -18,6 +20,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
 class UserController extends AbstractController
@@ -32,8 +35,49 @@ class UserController extends AbstractController
     }
 
 
+    #[Route('/cinTimeInfo', name: 'app_cinTimeInfo', methods: ['GET', 'POST'])]
+    public function cinTimeInfo(Request $request): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $user = $this->getUser();
+            if($user->getIsVerified()==0) {
+                $dateString = $user->getDate()->format('Y-m-d H:i:s');
+                $userDate = \DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+                $now = new \DateTime();
+                $timeDifferenceMillis = 48 * 3600 * 1000 - ($now->getTimestamp() * 1000 - $userDate->getTimestamp() * 1000);
+                $hours = intdiv($timeDifferenceMillis, 3600 * 1000);
+                $minutes = intdiv($timeDifferenceMillis % (3600 * 1000), 60 * 1000);
+                return new JsonResponse(['state'=>'notVerified','hours' => $hours, 'minutes' => $minutes], Response::HTTP_OK);
+            }
+            else
+                return new JsonResponse(['state'=>'verified'], Response::HTTP_OK);
+        }
+        return new Response('error', Response::HTTP_FORBIDDEN);
+    }
+
+
+    #[Route('/verifyInfoCinWithOtherInfo', name: 'app_verifyInfoCinWithOtherInfo', methods: ['GET', 'POST'])]
+    public function verifyInfoCinWithOtherInfo(HttpClientInterface $client,EntityManagerInterface $entityManager): string
+    {
+        $geocoder = new GeocodingService($client);
+        $user = $this->getUser();
+        $path = '../../files/usersJsonFiles/' . md5('user' . ($user->getId() * 1000 + 17)) . '.json';
+
+        $jsonString = file_get_contents($path);
+        $jsonDataCin = json_decode($jsonString, true);
+        $returnedData = 'error';
+        if ($geocoder->isInMunicipality($jsonDataCin['العنوان']['data'], $user->getMunicipalite()->getName())) {
+            $user->setIsVerified(1);
+            $entityManager->flush();
+            $returnedData = 'success';
+        }
+
+        return $returnedData;
+    }
+
+
     #[Route('/cinUpdate', name: 'app_user_cinUpdate', methods: ['GET', 'POST'])]
-    public function cinUpdate(AiVerification $aiVerification, Request $request, EntityManagerInterface $entityManager, ImageHelperUser $imageHelperUser): Response
+    public function cinUpdate(HttpClientInterface $client, AiVerification $aiVerification, Request $request, EntityManagerInterface $entityManager, ImageHelperUser $imageHelperUser): Response
     {
         if ($request->isXmlHttpRequest()) {
 
@@ -45,13 +89,19 @@ class UserController extends AbstractController
             $user->setCinImages($frontIdPath . '_' . $backIdPath);
             $entityManager->flush();
             $obj = [
-                'pathFrontCin' => 'C:\\Users\\Latifa\\Desktop\\integratedPorjectJavaSymfony\\citiezenHub_webapp\\public\\usersImg\\' . $frontIdPath,
-                'pathBackCin' => 'C:\\Users\\Latifa\\Desktop\\integratedPorjectJavaSymfony\\citiezenHub_webapp\\public\\usersImg\\' . $backIdPath,
+                'pathFrontCin' => 'C:\\Users\\omar salhi\\Desktop\\integratedPorjectJavaSymfony\\citiezenHub_webapp\\public\\usersImg\\' . $frontIdPath,
+                'pathBackCin' => 'C:\\Users\\omar salhi\\Desktop\\integratedPorjectJavaSymfony\\citiezenHub_webapp\\public\\usersImg\\' . $backIdPath,
                 'fileNameFront' => md5('user_front' . ($user->getId() * 1000 + 17)),
                 'fileNameBackCin' => md5('user_backCin' . ($user->getId() * 1000 + 17)),
+                'path' => md5('user' . ($user->getId() * 1000 + 17)),
             ];
-            $aiVerification->runOcr($obj);
-            return new Response('done', Response::HTTP_OK);
+            try {
+                $aiVerification->runOcr($obj);
+            } catch (\Exception $exception) {
+                return new Response('error', Response::HTTP_OK);
+            }
+
+            return new Response($this->verifyInfoCinWithOtherInfo($client,$entityManager), Response::HTTP_OK);
         }
         return new Response('error', Response::HTTP_FORBIDDEN);
     }
@@ -109,14 +159,15 @@ class UserController extends AbstractController
         $routePrecedente = $req->headers->get('referer');
         $parsedUrl = parse_url($routePrecedente);
         $path = $parsedUrl['path'];
-        $alertMessage = "Votre profil a été modifié avec succès !";        $session->set('profile_alert_message', $alertMessage);
+        $alertMessage = "Votre profil a été modifié avec succès !";
+        $session->set('profile_alert_message', $alertMessage);
 //        $currentDate = $user->getDate();
         $expiryTime = $user->getDate()->modify('+5 minutes');
         $session->set('profile_alert_expiry', $expiryTime);
         $errorMessages = [];
         $current = new \DateTime('now', new \DateTimeZone('Africa/Tunis'));
         if ($req->isXmlHttpRequest()) {
-             if ($urrent->format('Y-m-d H:i:s')< $expiryTime->format('Y-m-d H:i:s') || $user->getState()) {
+            if ($current->format('Y-m-d H:i:s') < $expiryTime->format('Y-m-d H:i:s') || $user->getState()) {
 //              $emailService->envoyerEmail($mailer);
                 $email = $req->get('email');
                 $name = $req->get('name');
@@ -135,7 +186,7 @@ class UserController extends AbstractController
                 $user->setCin($cin);
                 $user->setStatus($status);
                 $user->setGender($gender);
-                 $user->setState(1);
+                $user->setState(1);
                 if ($fichierImage != null)
                     $user->setImage($imageHelper->saveImages($fichierImage));
                 $datee = date_create($date);
@@ -173,8 +224,7 @@ class UserController extends AbstractController
                     'errors' => $errorMessages,
                 ], 422);
 
-            }
-             else
+            } else
                 return new JsonResponse([
                     'redirect' => $this->generateUrl('page404')
                 ]);
@@ -182,10 +232,7 @@ class UserController extends AbstractController
         }
 
         $map = new Map();
-        if ($user->getCinImages() === null) {
-            $cinImages = ['none', 'none'];
-        } else
-            $cinImages = explode("_", $user->getCinImages());
+
         return $this->render('user/edit_profile.html.twig', [
             'name' => $user->getFirstName(),
             'lastname' => $user->getLastName(),
@@ -202,8 +249,6 @@ class UserController extends AbstractController
             'routePrecedente' => $path,
             'expiry_time' => $expiryTime,
             'date' => $user->getDate(),
-            'cinFront' => $cinImages[0],
-            'cinBack' => $cinImages[1],
             'map' => $map,
         ]);
     }
@@ -221,6 +266,7 @@ class UserController extends AbstractController
         }
         return new Response('bad');
     }
+
     #[Route('/delete', name: 'app_user_delete')]
     public function delete(ManagerRegistry $doctrine, UserRepository $userRepository, Request $req): Response
     {
@@ -230,6 +276,7 @@ class UserController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('app_login');
     }
+
     #[Route('/profile', name: 'profile', methods: ['GET', 'POST'])]
     public function consulterProfile(Request $req): Response
     {
@@ -290,7 +337,9 @@ class UserController extends AbstractController
 
         ]);
     }
-    function translateText($textToTranslate, $sourceLanguage, $targetLanguage) {
+
+    function translateText($textToTranslate, $sourceLanguage, $targetLanguage)
+    {
         $apiKey = "db017c40fad98dc5b9fc";
         $url = "https://api.mymemory.translated.net/get?q=" . urlencode($textToTranslate) . "&langpair=" . $sourceLanguage . "|" . $targetLanguage . "&key=" . $apiKey;
 
@@ -343,5 +392,6 @@ class UserController extends AbstractController
         $userCounts = $userRepository->getnbruser();
         return $this->json($userCounts);
     }
+
 }
 

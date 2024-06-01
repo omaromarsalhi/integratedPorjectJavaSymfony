@@ -31,6 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+
 public class CinController implements Initializable {
 
 
@@ -115,23 +116,32 @@ public class CinController implements Initializable {
         return new Thread( task );
     }
 
+    
+
 
 
     @FXML
     private void onStateMouseEntered(MouseEvent event) throws ParseException {
-        String date=UserController.getInstance().getCurrentUser().getDate();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date1 = format.parse(date);
-        String now=LocalDateTime.now().format( DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Date date2 = format.parse(now);
-
-        long timeDifferenceMillis=48*3600*1000- (date2.getTime()-date1.getTime());
-        long hours = timeDifferenceMillis / (60 * 60 * 1000);
-        long minutes = (timeDifferenceMillis % (60 * 60 * 1000)) / (60 * 1000);
-
         Label mainContainer;
-        mainContainer = new Label( "you need to add your cin images (front and back) so that we can verify you info " +
-                "otherwise your account will be deleted within: "+hours+"H and "+minutes+"m" );
+
+        if(UserController.getInstance().getCurrentUser().getIsVerified()==0) {
+            String date = UserController.getInstance().getCurrentUser().getDate();
+            SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+            Date date1 = format.parse( date );
+            String now = LocalDateTime.now().format( DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss" ) );
+            Date date2 = format.parse( now );
+
+            long timeDifferenceMillis = 48 * 3600 * 1000 - (date2.getTime() - date1.getTime());
+            long hours = timeDifferenceMillis / (60 * 60 * 1000);
+            long minutes = (timeDifferenceMillis % (60 * 60 * 1000)) / (60 * 1000);
+
+
+            mainContainer = new Label( "you need to add your cin images (front and back) so that we can verify you info " +
+                    "otherwise your account will be deleted within: " + hours + "H and " + minutes + "m" );
+        }
+        else{
+            mainContainer = new Label( "your account is verified" );
+        }
         mainContainer.setMaxWidth( 400 );
         mainContainer.setWrapText( true );
         mainContainer.setAlignment( Pos.CENTER );

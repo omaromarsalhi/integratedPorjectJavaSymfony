@@ -14,7 +14,7 @@ public class ServiceUser implements IserviceUser<User> {
     @Override
     public void ajouter(User user) { //ajouter citoyen
         Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "INSERT INTO `user`(`firstName`,`lastName`,`email`,`password`,`date`,`role`) VALUES (?,?,?,?,?,?)";
+        String req = "INSERT INTO `user`(`firstName`,`lastName`,`email`,`password`,`date`,`role`,isVerified) VALUES (?,?,?,?,?,?,?)";
         try {
 
             PreparedStatement ps = cnx.prepareStatement( req );
@@ -25,6 +25,7 @@ public class ServiceUser implements IserviceUser<User> {
             ps.setString( 4, user.getPassword() );
             ps.setString( 5, String.valueOf( LocalDate.now() ) );
             ps.setString( 6, String.valueOf( user.getRole() ) );
+            ps.setInt( 7, user.getIsVerified() );
 
             ps.executeUpdate();
 
@@ -51,13 +52,15 @@ public class ServiceUser implements IserviceUser<User> {
                 String adresse = rs.getString( "address" );
                 String dob = rs.getString( "dob" );
                 String cin = rs.getString( "cin" );
-                String role = rs.getString( "role" );
                 String status = rs.getString( "status" );
                 String date = rs.getString( "date" );
                 String photos = rs.getString( "image" );
                 String gender = rs.getString( "gender" );
                 String email = rs.getString( "email" );
-                user = new User( id, firstname, email, "", cin, age, num, adresse, dob, lastName, status, date, Role.valueOf( "Citoyen" ), photos, gender );
+                int idMun = rs.getInt( "idMunicipalite" );
+                String password = rs.getString( "password" );
+                int isVerified = rs.getInt( "isVerified" );
+                user = new User( id, firstname, email, cin, age, num, adresse, dob, lastName, status, date, Role.valueOf( "Citoyen" ), photos, gender, password, idMun, isVerified );
             }
         } catch (SQLException e) {
             System.out.println( e.getMessage() );
@@ -65,32 +68,6 @@ public class ServiceUser implements IserviceUser<User> {
         return user;
     }
 
-
-    public void ajouteremploye(User user) {
-        Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "INSERT INTO `user`(`firstName`,`lastname`,`email`,`age`,`phoneNumber`,`password`,`address`,`date`,`role`,`cin`,`status`,`idMunicipalite`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-        try {
-            PreparedStatement ps = cnx.prepareStatement( req );
-            ps.setString( 1, user.getFirstname() );
-            ps.setString( 2, user.getLastname() );
-            ps.setString( 3, user.getEmail() );
-            ps.setString( 4, String.valueOf( user.getAge() ) );
-            ps.setString( 5, String.valueOf( user.getNum() ) );
-            ps.setString( 6, user.getPassword() );
-            ps.setString( 7, user.getAdresse() );
-            ps.setString( 8, String.valueOf( LocalDate.now() ) );
-            ps.setString( 9, String.valueOf( user.getRole() ) );
-            ps.setString( 10, user.getCin() );
-            ps.setString( 11, user.getStatus() );
-            ps.setString( 12, String.valueOf( user.getIdMunicipalite() ) );
-
-            ps.executeUpdate();
-            System.out.println( "Personne added !" );
-        } catch (SQLException e) {
-            System.out.println( e.getMessage() );
-        }
-
-    }
 
     public void ajouterResponsable(User user) {
         Connection cnx = ConnectionDB.getInstance().getCnx();
@@ -136,7 +113,7 @@ public class ServiceUser implements IserviceUser<User> {
             ps.setString( 7, user.getStatus() );
             ps.setString( 8, user.getPhotos() );
             ps.setString( 9, user.getGender() );
-            ps.setString(10,user.getAdresse());
+            ps.setString( 10, user.getAdresse() );
             ps.setString( 11, user.getEmail() );
             ps.executeUpdate();
             System.out.println( "User updated !" );
@@ -146,17 +123,15 @@ public class ServiceUser implements IserviceUser<User> {
 
     }
 
-    public void isconnected(User user) {
+    public void isVerified(User user) {
         Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "UPDATE `user` SET `IsConnected`= ? WHERE  `email`= ?";
+        String req = "UPDATE `user` SET `isVerified`= ? WHERE  `email`= ?";
         try {
             PreparedStatement ps = cnx.prepareStatement( req );
-
             ps.setInt( 1, user.getIsConnected() );
             ps.setString( 2, user.getEmail() );
             System.out.println( user.getIsConnected() );
             ps.executeUpdate();
-            System.out.println( "User updated !" );
         } catch (SQLException e) {
             System.out.println( e.getMessage() );
         }
@@ -235,40 +210,7 @@ public class ServiceUser implements IserviceUser<User> {
     }
 
 
-    public boolean chercherParEmail(String email) {         //hethi bech nahiha
-        Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "SELECT firstName,lastname,email FROM `user` where email=?";
-        try {
-            PreparedStatement ps = cnx.prepareStatement( req );
-            ps.setString( 1, email );
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {//au moins 1
-                System.out.println( rs.getString( "firstName" ) + " " + rs.getString( "lastName" ) + " " + rs.getString( "email" ) );
-                return true;
-            }
-        } catch (SQLException e) {
-            System.out.println( e.getMessage() );
-        }
-        return false;
 
-    }
-
-    public int chercherParIsconnected() {//hethi bech nahiha
-        Connection cnx = ConnectionDB.getInstance().getCnx();
-        int idMunicipalite = -1;
-        String req = "SELECT  idMunicipalite FROM `user` where IsConnected=1";
-
-        try {
-            PreparedStatement ps = cnx.prepareStatement( req );
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                idMunicipalite = rs.getInt( "idMunicipalite" );
-            }
-        } catch (SQLException e) {
-            System.out.println( e.getMessage() );
-        }
-        return idMunicipalite;
-    }
 
     public User findParEmail(String email) {
         Connection cnx = ConnectionDB.getInstance().getCnx();
@@ -279,7 +221,7 @@ public class ServiceUser implements IserviceUser<User> {
             ps.setString( 1, email );
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int idUser = rs.getInt( "idUser" );
+                int id = rs.getInt( "idUser" );
                 String firstname = rs.getString( "firstName" );
                 String lastName = rs.getString( "lastname" );
                 int age = rs.getInt( "age" );
@@ -287,13 +229,14 @@ public class ServiceUser implements IserviceUser<User> {
                 String adresse = rs.getString( "address" );
                 String dob = rs.getString( "dob" );
                 String cin = rs.getString( "cin" );
-                String role = rs.getString( "role" );
                 String status = rs.getString( "status" );
                 String date = rs.getString( "date" );
                 String photos = rs.getString( "image" );
                 String gender = rs.getString( "gender" );
+                int idMun = rs.getInt( "idMunicipalite" );
                 String password = rs.getString( "password" );
-                user = new User( idUser, firstname, email, password, cin, age, num, adresse, dob, lastName, status, date, Role.valueOf( role ), photos, gender );
+                int isVerified = rs.getInt( "isVerified" );
+                user = new User( id, firstname, email, cin, age, num, adresse, dob, lastName, status, date, Role.valueOf( "Citoyen" ), photos, gender, password, idMun, isVerified );
             }
         } catch (SQLException e) {
             System.out.println( e.getMessage() );
@@ -301,46 +244,6 @@ public class ServiceUser implements IserviceUser<User> {
         return user;
     }
 
-
-    public Boolean TestAuthentifier(String email, String password) {
-        Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "SELECT COUNT(*) AS user_exists From user WHERE email = ? and password=?;";
-        try {
-            PreparedStatement ps = cnx.prepareStatement( req );
-            ps.setString( 1, email );
-            ps.setString( 2, password );
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.getInt( "user_exists" ) == 1) {
-                return true;
-            }
-        } catch (SQLException e) {
-
-            System.out.println( e.getMessage() );
-        }
-        return false;
-    }
-
-    public String RetriveHashedPassword(String email) {
-        Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "SELECT password FROM user WHERE email=?";
-        String password = null;
-
-        try {
-            PreparedStatement ps = cnx.prepareStatement( req );
-            ps.setString( 1, email );
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                password = rs.getString( "password" );
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return password;
-    }
 
     public void modifierPassword(String email, String password) {
         Connection cnx = ConnectionDB.getInstance().getCnx();
@@ -373,55 +276,5 @@ public class ServiceUser implements IserviceUser<User> {
         }
     }
 
-    public String getImgUser(int idUser) {
-        Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "SELECT * FROM `user` WHERE idUser=?";
-        String photos = null;
-        try {
-            PreparedStatement ps = cnx.prepareStatement( req );
-            ps.setInt( 1, idUser );
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                photos = rs.getString( "photos" );
-            }
-        } catch (SQLException e) {
-            System.out.println( e.getMessage() );
-        }
-        return photos;
-    }
-
-    public List<User> rechercherUser(String recherche) {
-        Connection cnx = ConnectionDB.getInstance().getCnx();
-        User user = new User();
-        List<User> resultat = new ArrayList<>();
-        String req = "SELECT * FROM user WHERE CONCAT(firstName, ' ', lastName) LIKE ? ";
-        try {
-            PreparedStatement ps = cnx.prepareStatement( req );
-            ps.setString( 1, "%" + recherche + "%" );
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String firstname = rs.getString( "firstName" );
-                String lastName = rs.getString( "lastname" );
-                String email = rs.getString( "email" );
-                int age = rs.getInt( "age" );
-                int num = rs.getInt( "num" );
-                String adresse = rs.getString( "address" );
-                String dob = rs.getString( "dob" );
-                String cin = rs.getString( "cin" );
-                String role = rs.getString( "role" );
-                String status = rs.getString( "status" );
-                String date = rs.getString( "date" );
-                String photos = rs.getString( "image" );
-                String gender = rs.getString( "gender" );
-                String password = rs.getString( "password" );
-                user = new User( firstname, email, password, cin, age, num, adresse, dob, lastName, status, date, Role.valueOf( role ), photos, gender );
-                resultat.add( user );
-                System.out.println( resultat );
-            }
-        } catch (SQLException e) {
-            System.out.println( e.getMessage() );
-        }
-        return resultat;
-    }
 
 }

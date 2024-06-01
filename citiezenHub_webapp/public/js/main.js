@@ -1,8 +1,9 @@
 $(document).ready(function () {
+    // $('#nav-cin-tab').prop('disabled',true)
+    // $('#nav-contact-tab').prop('disabled',true)
     // countBasket()
     new Splide('#image-slider').mount();
     launchSwiper()
-
 
 });
 

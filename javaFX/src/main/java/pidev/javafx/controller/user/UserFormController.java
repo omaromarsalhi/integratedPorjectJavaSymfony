@@ -200,6 +200,7 @@ public class UserFormController implements Initializable {
                         Platform.runLater( () -> {
                             loadinPage.setOpacity( 0 );
                             EventBus.getInstance().publish( "exitFormUser", event );
+                            EventBus.getInstance().publish( "setUserImage", event );
                             MyTools.getInstance().getTextNotif().setText( "User Has Been Modified Successfully" );
                             MyTools.getInstance().showNotif();
                         } );

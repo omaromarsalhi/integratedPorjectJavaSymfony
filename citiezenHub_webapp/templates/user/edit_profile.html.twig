@@ -152,7 +152,7 @@
                                                             <img
                                                                     id="createfileImage"
                                                                     {% if(app.user.image) %}
-                                                                        src="{{ asset('usersImg/'~app.user.image) }}"
+                                                                        src="{{ asset(app.user.image) }}"
                                                                     {% else %}
                                                                         src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
                                                                     {% endif %}
@@ -435,9 +435,14 @@
                                 </div>
 
                                 <div class="tab-pane fade" id="nav-cin" role="tabpanel"
-                                     aria-labelledby="nav-cin-tab">
+                                     aria-labelledby="nav-cin-tab" >
                                     <!-- start personal information -->
-                                    <div class="nuron-information">
+                                    <div class="d-flex justify-content-between">
+                                        <a class="btn save-btn-edit mt-0 mb-2"
+                                           onclick="getCinTimeInfo()"
+                                        ><i class="fa-solid fa-circle-info fa-bounce" style="color: #2899d8"></i></a>
+                                    </div>
+                                    <div class="nuron-information" >
 
                                         <div class="row g-5">
                                             <div class="profile-left col-lg-6">
@@ -453,11 +458,7 @@
                                                             />
                                                             <img
                                                                     id="createfileImage4"
-                                                                    {% if(cinFront=='none') %}
-                                                                        src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
-                                                                    {% else %}
-                                                                        src="{{ asset('usersImg/'~cinFront) }}"
-                                                                    {% endif %}
+                                                                    src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
                                                                     alt=""
                                                                     data-black-overlay="6"
                                                             />
@@ -487,11 +488,7 @@
                                                             />
                                                             <img
                                                                     id="createfileImage5"
-                                                                    {% if(cinBack=='none') %}
-                                                                        src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
-                                                                    {% else %}
-                                                                        src="{{ asset('usersImg/'~cinBack) }}"
-                                                                    {% endif %}
+                                                                    src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
                                                                     alt=""
                                                                     data-black-overlay="6"
                                                             />
@@ -508,7 +505,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <a class="btn btn-primary save-btn-edit mt-1 mb-1"
+
+                                        <a class="btn btn-primary save-btn-edit mt-1 mb-1" id="cinLoading"
                                            onclick="saveCin()">Save</a>
                                     </div>
                                     <!-- End personal information -->
@@ -521,6 +519,48 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <!-- Modal -->
+    <div
+            class="rn-popup-modal report-modal-wrapper modal fade"
+            id="cinInfoModel"
+            tabindex="-1"
+            aria-hidden="true"
+    >
+        <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+        >
+            <i data-feather="x"></i>
+        </button>
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content report-content-wrapper">
+                <div class="modal-header report-modal-header">
+                    <h5 class="modal-title">Restrictions</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="cinInfoTime">
+                    </p>
+                    <div class="report-form-box justify-content-end">
+                        <button
+                                type="button"
+                                class="btn btn-primary-alta w-auto"
+                                data-bs-dismiss="modal"
+                        >
+                            exit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
 
     <!-- End tabs area -->
 {% endblock %}

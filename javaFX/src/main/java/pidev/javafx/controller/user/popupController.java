@@ -95,10 +95,7 @@ public class popupController implements Initializable {
             user=serviceUser.findParEmail(email);
             System.out.println(user.getEmail());
             user.setIsConnected(0);
-            serviceUser.isconnected(user);
-
             windowController.delete();
-
         });
 
     }
