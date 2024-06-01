@@ -8,7 +8,7 @@ import org.json.JSONObject;
 public class ChatGPTAPIDescriber {
     public static String chatGPT(String prompt) {
         String url = "https://api.openai.com/v1/chat/completions";
-        String apiKey = "sk-proj-huWsRAQ5aZwAxutI8lBXT3BlbkFJN4T8ZCYo2we2UTJHTzbA";
+        String apiKey = "sk-proj-25zJjGtVKNQ82MUQnRvfT3BlbkFJFpNUAuTX2F7JAkAmYx8A";
         String model = "gpt-3.5-turbo";
 //        String model = "gpt-3.5-turbo-instruct-0914";
 
@@ -48,6 +48,7 @@ public class ChatGPTAPIDescriber {
 
     public static String extractMessageFromJSONResponse(String response) {
         JSONObject jsonObject = new JSONObject(response);
+        System.out.println(jsonObject);
         return jsonObject.getJSONArray( "choices" ).getJSONObject( 0 ).getJSONObject( "message" ).getString( "content" );
     }
 

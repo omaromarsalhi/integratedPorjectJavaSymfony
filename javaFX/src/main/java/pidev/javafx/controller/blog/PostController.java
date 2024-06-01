@@ -346,7 +346,8 @@ public class PostController extends VBox implements Initializable {
         }
 
         if (!post.getImages().isEmpty() /*&& !post.getImage().isEmpty()*/) {
-            img = new Image(GlobalVariables.IMAGEPATH + post.getImages().get(0));
+            img = new Image(GlobalVariables.IMAGEPATH4USER + post.getImages().get(0));
+//            img = new Image(GlobalVariables.IMAGEPATH4USER +"/usersImg/6aa95ab93e82c924423c02c6ffb05965.png");
             imgPost.setImage(img);
             if (post.getImages().size() > 1) {
                 rightArrow.setVisible(true);
@@ -397,7 +398,7 @@ public class PostController extends VBox implements Initializable {
         parallelTransition.play();
 
         parallelTransition.setOnFinished(event -> {
-            Image img = new Image(GlobalVariables.IMAGEPATH + post.getImages().get(currentImgToShow));
+            Image img = new Image(GlobalVariables.IMAGEPATH4USER + post.getImages().get(currentImgToShow));
             imgPost.setImage(img);
             imgPost.setTranslateX(0);
 

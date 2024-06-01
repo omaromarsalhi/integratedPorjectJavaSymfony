@@ -1,5 +1,7 @@
 package pidev.javafx.tools.marketPlace;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Paragraph;
@@ -11,11 +13,9 @@ import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,6 +26,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import pidev.javafx.crud.marketplace.CrudFavorite;
 import pidev.javafx.model.Contrat.Contract;
@@ -33,18 +36,18 @@ import pidev.javafx.model.MarketPlace.Bien;
 import pidev.javafx.model.MarketPlace.Favorite;
 import pidev.javafx.model.MarketPlace.Product;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.UUID;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 public class MyTools {
 
@@ -57,7 +60,6 @@ public class MyTools {
     public Label getTextNotif() {
         return textNotif;
     }
-
 
 
     private MyTools() {
@@ -136,19 +138,10 @@ public class MyTools {
 
     public String getPathAndSaveIMG(String chosenFilePath) {
 
-        String path = "usersImg/" + UUID.randomUUID() + ".png";
-
-        Path src = Paths.get( chosenFilePath );
-        Path dest = Paths.get( "C:/Users/omar salhi/Desktop/integratedPorjectJavaSymfony/citiezenHub_webapp/public/" + path );
-
-        try {
-            Files.copy( src, dest );
-        } catch (IOException e) {
-            throw new RuntimeException( e );
-        }
-
-        return path;
+        var byteArray=imageToByteArray(chosenFilePath);
+        return sendImage(byteArray,"http://localhost:8000/api/upload-image").replace( '"',' ').trim();
     }
+
     public String getPathAndSaveIMGUser(String chosenFilePath) {
 
         String path = "usersImg/" + UUID.randomUUID() + ".png";
@@ -165,6 +158,66 @@ public class MyTools {
         return path;
     }
 
+
+    public static byte[] imageToByteArray(String imagePath) {
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read( new File( imagePath ) );
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write( bufferedImage, "png", byteArrayOutputStream );
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public static String sendImage(byte[] imageData, String targetUrl) {
+        URL url = null;
+        try {
+            ;
+            url = new URL( targetUrl );
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setDoOutput( true );
+            httpURLConnection.setRequestMethod( "POST" );
+            httpURLConnection.setRequestProperty( "Content-Type", "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW" );
+
+            try (DataOutputStream dataOutputStream = new DataOutputStream( httpURLConnection.getOutputStream() )) {
+                // Write the multipart form data content
+                String boundary = "----WebKitFormBoundary7MA4YWxkTrZu0gW";
+                dataOutputStream.writeBytes( "--" + boundary + "\r\n" );
+                dataOutputStream.writeBytes( "Content-Disposition: form-data; name=\"image\"; filename=\"image.png\"\r\n" );
+                dataOutputStream.writeBytes( "Content-Type: image/png\r\n\r\n" );
+                dataOutputStream.write( imageData );
+                dataOutputStream.writeBytes( "\r\n--" + boundary + "--\r\n" );
+                dataOutputStream.flush();
+            }
+
+            try (InputStreamReader reader = new InputStreamReader( httpURLConnection.getInputStream() )) {
+                StringBuilder response = new StringBuilder();
+                int c;
+                while ((c = reader.read()) != -1) {
+                    response.append( (char) c );
+                }
+                return handleJsonResponse( response.toString() );
+            }
+
+        } catch (MalformedURLException e) {
+            throw new RuntimeException( e );
+        } catch (ProtocolException e) {
+            throw new RuntimeException( e );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public static String handleJsonResponse(String jsonResponse) {
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson( jsonResponse, JsonObject.class );
+        if (jsonObject.has( "path" )) {
+            return jsonObject.get( "path" ).toString();
+        }
+        return null;
+    }
 
     public void notifyUser4NewAddedProduct(Product product) {
         ObservableList<Favorite> favoriteObservableList = CrudFavorite.getInstance().selectItems();
@@ -222,12 +275,12 @@ public class MyTools {
 
 
     public void showAnimation(Node child) {
-        child.setVisible(false );
-        ScaleTransition scaleTransition = new ScaleTransition( Duration.seconds( 0.1), child );
-        scaleTransition.setToX( 0);
+        child.setVisible( false );
+        ScaleTransition scaleTransition = new ScaleTransition( Duration.seconds( 0.1 ), child );
+        scaleTransition.setToX( 0 );
         scaleTransition.setToY( 0 );
         scaleTransition.setCycleCount( 1 );
-        scaleTransition.setAutoReverse(false);
+        scaleTransition.setAutoReverse( false );
         scaleTransition.play();
         scaleTransition.setOnFinished( event -> {
             child.setVisible( true );
@@ -239,22 +292,21 @@ public class MyTools {
     }
 
 
-    public void showAndHideAnimation(Node child,int ttoWhat,double delay ) {
+    public void showAndHideAnimation(Node child, int ttoWhat, double delay) {
 
-        ScaleTransition scaleTransition = new ScaleTransition( Duration.seconds( 0.5), child );
+        ScaleTransition scaleTransition = new ScaleTransition( Duration.seconds( 0.5 ), child );
         scaleTransition.setToX( ttoWhat );
         scaleTransition.setToY( ttoWhat );
         scaleTransition.setCycleCount( 1 );
-        scaleTransition.setAutoReverse(false);
+        scaleTransition.setAutoReverse( false );
         scaleTransition.setDelay( Duration.millis( delay ) );
-        if(ttoWhat==1)
-            child.setVisible(true);
-        else{
-            scaleTransition.setOnFinished( event ->  child.setVisible(false) );
+        if (ttoWhat == 1)
+            child.setVisible( true );
+        else {
+            scaleTransition.setOnFinished( event -> child.setVisible( false ) );
         }
         scaleTransition.play();
     }
-
 
 
     public void setTextNotif(Label textNotif) {
@@ -277,26 +329,26 @@ public class MyTools {
         this.imageNotif = imageNotif;
     }
 
-    public void showNotif(){
+    public void showNotif() {
         textNotif.setStyle( "-fx-background-color: #fdc847" );
         imageNotif.setStyle( "-fx-background-color: #fdc847" );
-        showAndHideAnimation( notifHbox,1,500 );
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(5000), event1 -> {
-            showAndHideAnimation( notifHbox,0,0 );
-        }) );
-        timeline.setCycleCount( Animation.INDEFINITE);
+        showAndHideAnimation( notifHbox, 1, 500 );
+        Timeline timeline = new Timeline( new KeyFrame( Duration.millis( 5000 ), event1 -> {
+            showAndHideAnimation( notifHbox, 0, 0 );
+        } ) );
+        timeline.setCycleCount( Animation.INDEFINITE );
         timeline.play();
     }
 
-    public void showErrorNotif(){
+    public void showErrorNotif() {
         textNotif.setStyle( "-fx-background-color: rgba(224,55,55,0.48)" );
         imageNotif.setStyle( "-fx-background-color: rgba(224,55,55,0.48)" );
-        imageNotif.setGraphic(new ImageView(new Image( String.valueOf( getClass().getResource("/icons/marketPlace/cancel.png")) ,16,16,false,false)) );
-        showAndHideAnimation( notifHbox,1,500 );
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(5000), event1 -> {
-            showAndHideAnimation( notifHbox,0,0 );
-        }) );
-        timeline.setCycleCount( Animation.INDEFINITE);
+        imageNotif.setGraphic( new ImageView( new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/cancel.png" ) ), 16, 16, false, false ) ) );
+        showAndHideAnimation( notifHbox, 1, 500 );
+        Timeline timeline = new Timeline( new KeyFrame( Duration.millis( 5000 ), event1 -> {
+            showAndHideAnimation( notifHbox, 0, 0 );
+        } ) );
+        timeline.setCycleCount( Animation.INDEFINITE );
         timeline.play();
     }
 

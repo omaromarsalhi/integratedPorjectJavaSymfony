@@ -156,8 +156,8 @@ public class NewLogInController implements Initializable {
 //        lastName.setText( "salhi" );
 //        passwordSignUp.setText( "Latifa123@l" );
 //
-//        email.setText( "salhiomar362@gmail.com" );
-//        password.setText( "Latifa123@l" );
+        email.setText( "salhiomar362@gmail.com" );
+        password.setText( "Latifa123@l" );
 
         layoutCode.setVisible( false );
         signinBtn.setVisible( false );
@@ -274,6 +274,7 @@ public class NewLogInController implements Initializable {
 
     @FXML
     public void logIn(ActionEvent actionEvent) {
+//        MyTools.HttpSaveImage();
         preloadingPage.setVisible( true );
         loginThread( "login" ).start();
     }

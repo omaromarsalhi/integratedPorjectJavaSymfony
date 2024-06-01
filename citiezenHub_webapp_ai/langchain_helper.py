@@ -3,7 +3,7 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 
 def generate_produxt_description(title):
-    llm = OpenAI(temperature=0.8,openai_api_key='sk-proj-3EnTi3kB4TXCgmYyuhHUT3BlbkFJxiVUTFomh8SAEsuX68sV')
+    llm = OpenAI(temperature=0.8,openai_api_key='sk-proj-JEfxUYNBvZdOFt53ak98T3BlbkFJL6bNZPP87kEAYVoXZMXs')
 
     prompt_template_name = PromptTemplate(
         input_variables = ['title'],

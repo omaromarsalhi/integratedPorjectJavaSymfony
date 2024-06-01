@@ -34,6 +34,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
+
 public class UserFormController implements Initializable {
 
     @FXML
@@ -240,7 +241,7 @@ public class UserFormController implements Initializable {
             lastName.setText( user.getLastname() );
         if (user.getAge() != 0)
             age.setText( String.valueOf( user.getAge() ) );
-        if (user.getCin()!= null)
+        if (user.getCin() != null)
             cin.setText( user.getCin() );
         email.setText( user.getEmail() );
         if (user.getGender() != null)
@@ -257,10 +258,6 @@ public class UserFormController implements Initializable {
     }
 
     public boolean modifierData() {
-        // testChampsBeforRegex();
-
-
-        // if (isAllInpulValid[0] && isAllInpulValid[1] && isAllInpulValid[2] && isAllInpulValid[3] && isAllInpulValid[4] && isAllInpulValid[5] && isAllInpulValid[6]) {
         User user = new User();
         user.setFirstname( name.getText() );
         user.setEmail( email.getText() );
@@ -274,12 +271,13 @@ public class UserFormController implements Initializable {
         user.setPhotos( UserController.getInstance().getCurrentUser().getPhotos() );
         user.setGender( gender.getText() );
         user.setAdresse( adresse.getText() );
+        System.out.println( user );
+        System.out.println( UserController.getInstance().getCurrentUser() );
         ServiceUser service = new ServiceUser();
         service.modifier( user );
         UserController.setUser( user );
+        System.out.println( UserController.getInstance().getCurrentUser() );
         return true;
-        //  }
-        //  return false;
     }
 
     public void setRegEx() {
@@ -569,16 +567,16 @@ public class UserFormController implements Initializable {
     @FXML
     public void imageDragDropped(DragEvent dragEvent) {
         for (File file : dragEvent.getDragboard().getFiles()) {
-            img.setImage( new Image( file.getAbsolutePath() ) );
-            UserController.getInstance().getCurrentUser().setPhotos( MyTools.getInstance().getPathAndSaveIMGUser( file.getAbsolutePath() ) );
+            img.setImage( new Image( "file:" + file.getAbsolutePath() ) );
+            String path=MyTools.getInstance().getPathAndSaveIMG( file.getAbsolutePath() );
+            UserController.getInstance().getCurrentUser().setPhotos( path );
         }
     }
 
     @FXML
     public void imageDragOver(DragEvent dragEvent) {
-        if (dragEvent.getDragboard().hasImage() || dragEvent.getDragboard().hasFiles())
-            dragEvent.acceptTransferModes( TransferMode.COPY );
-        dragEvent.consume();
+        if (dragEvent.getDragboard().hasFiles())
+            dragEvent.acceptTransferModes( TransferMode.ANY );
     }
 }
 
