@@ -7,6 +7,7 @@ parameters:
   locale: en
   images_directory: '%kernel.project_dir%/public/usersImg'
 services:
+
   # default configuration for Service in *this* file
   _defaults:
     autowire: true      # Automatically injects dependencies in your Service.
@@ -24,6 +25,9 @@ services:
       - '../src/Entity/'
       - '../src/Kernel.php'
   App\MyHelpers\ImageHelper: ~
+
+
+
 
 
   # config/Service.yaml

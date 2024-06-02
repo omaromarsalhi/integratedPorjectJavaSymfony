@@ -45,7 +45,7 @@ class MarketPlaceController extends AbstractController
 
         }
 
-        $session->set('allProducts', $productRepository->findBy(['state'=>'verified']));
+        $session->set('allProducts', $productRepository->findBy(['state'=>'verified'],['idProduct' => 'DESC']   ));
         $prods = $session->get('allProducts');
         $session->set('nbr_pages', ceil(sizeof($prods) / 12));
         $session->set('current_page', 1);
@@ -79,6 +79,7 @@ class MarketPlaceController extends AbstractController
         if ($request->isXmlHttpRequest()) {
 
             $filterBy=$request->get('filterBy');
+            dump($filterBy);
             $prods=$productRepository->findByPriceTest($filterBy);
             $session->set('allProducts',$prods);
             $session->set('nbr_pages', ceil(sizeof($prods) / 12));
@@ -95,6 +96,21 @@ class MarketPlaceController extends AbstractController
             ]);
 
             return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent()]);
+        }
+
+        return new Response('', Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/renderSingleProduct', name: 'app_market_renderSingleProduct', methods: ['GET', 'POST'])]
+    public function renderSingleProduct(ProductRepository $productRepository, Request $request): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $product = $productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
+
+            return $this->render('market_place/singleProduct.html.twig', [
+                'product' => $product,
+                'index' => $request->get('index'),
+            ]);
         }
 
         return new Response('', Response::HTTP_BAD_REQUEST);

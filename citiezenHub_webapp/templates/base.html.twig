@@ -168,8 +168,6 @@
             <div class="header-right mr-2 ml-2">
 
 
-
-
                 <div class="setting-option d-none d-lg-block">
                     <form class="search-form-wrapper" action="#">
                         <input
@@ -295,8 +293,6 @@
                         </li>
                     </ul>
                 </div>
-
-
 
 
             </div>
@@ -946,7 +942,15 @@
     </svg>
 </div>
 <!-- End Top To Bottom Area  -->
-
+{% if app.user %}
+    <script>
+        var currentUser = {{ app.user.getId()|json_encode }};
+    </script>
+{% else %}
+    <script>
+        var currentUser =-1;
+    </script>
+{% endif %}
 
 <!-- JS ============================================ -->
 <script src="{{ asset('bestFormAssets/js/2.js') }}"></script>

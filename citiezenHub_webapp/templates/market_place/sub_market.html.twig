@@ -6,11 +6,10 @@
     <div
             class="col-lg-4 col-md-6 col-sm-12"
             data-sal="slide-up"
-            data-sal-delay="{{ 200*i +100 }}"
+            data-sal-delay="{{ 100*i }}"
             data-sal-duration="800"
     >
-        <div class="product-style-one no-overlay with-placeBid">
-
+        <div class="product-style-one no-overlay with-placeBid " id="container_product_{{ product.idProduct }}">
             <div class="card-thumbnail">
                 <a href="../pages/product-details.html">
                     {% if product.images|length > 1 %}
@@ -127,6 +126,7 @@
                 <div class="last-bid mt-3 " id="price_model">{{ product.price }} DT</div>
             </div>
         </div>
+
     </div>
     <!-- end single product -->
 

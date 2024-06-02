@@ -169,6 +169,8 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('date', $lastMonth);
         }
 
+        $qb->orderBy('p.idProduct','DESC');
+
         return $qb->getQuery()->getResult();
     }
 

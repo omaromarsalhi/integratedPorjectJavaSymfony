@@ -1,20 +1,13 @@
 
 $(document).ready(function () {
     setTimeout(function (){
-        loadChatInfo()
+        // loadChatInfo()
     },500)
 });
 
 
 
-const socket = new WebSocket("ws://localhost:8090?userId=" + currentUser);
-
-socket.addEventListener("open", function () {
-    console.log("CONNECTED");
-});
-
-socket.addEventListener('message', (event) => {
-    const messageData = JSON.parse(event.data);
+function receiveMsg(messageData){
     const {senderId, message, recipientId} = messageData;
 
     let reciverId = $('#currentUserInChat').attr('data-value');
@@ -57,8 +50,7 @@ socket.addEventListener('message', (event) => {
             count++
         }
     }
-
-});
+};
 
 
 function sendMsg() {
@@ -76,6 +68,7 @@ function sendMsg() {
 
 
     msg = {
+        'action':'chat',
         'message': msg,
         'senderId': currentUser,
         'recipientId': reciverId

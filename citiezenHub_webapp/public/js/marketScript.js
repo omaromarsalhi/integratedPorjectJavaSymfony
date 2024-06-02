@@ -22,7 +22,9 @@ $(document).ready(function () {
 
 
 function filterByPrice() {
-    console.log(filterBy);
+    jQuery('html, body').animate({scrollTop: 10}, 550);
+    $("#sub-market-block").html('<div style="max-width: 150px !important; max-height: 150px !important;margin-top: 60px;"><img src="../../marketPlaceImages/basketAnimation.gif" alt="nft-logo"></div>');
+    $("#navPages").html('');
     $.ajax({
         url: '/market/place/filtered',
         type: "post",
@@ -39,8 +41,6 @@ function filterByPrice() {
                 showProducts();
                 launchSwiper();
             }, 1000);
-
-            jQuery('html, body').animate({scrollTop: 10}, 550);
 
             var page_index_to_enable = $('#currentPage').val();
             var page_index_to_disable = $('#previousPage').val();
