@@ -1,26 +1,37 @@
-
 $(document).ready(function () {
-    setTimeout(function (){
+    setTimeout(function () {
         // loadChatInfo()
-    },500)
+    }, 500)
 });
 
 
-
-function receiveMsg(messageData){
+function receiveMsg(messageData) {
     const {senderId, message, recipientId} = messageData;
-
     let reciverId = $('#currentUserInChat').attr('data-value');
+    // if (reciverId == senderId && recipientId == currentUser) {
+    if (recipientId == currentUser) {
+        if(document.getElementById('chatContainer')) {
+            $('#chatContainer').append('<div class="row no-gutters ">\n' +
+                '                        <div class="dynamic-resizing">\n' +
+                '                            <div class="chat-bubble chat-bubble--left">\n' +
+                '                                ' + message + ' ' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>')
+            $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
 
-    if (reciverId == senderId && recipientId == currentUser) {
-        $('#chatContainer').append('<div class="row no-gutters ">\n' +
-            '                        <div class="dynamic-resizing">\n' +
-            '                            <div class="chat-bubble chat-bubble--left">\n' +
-            '                                ' + message + ' ' +
-            '                            </div>\n' +
-            '                        </div>\n' +
-            '                    </div>')
-        $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
+            changeView()
+        }
+         if(document.getElementById('miniChatContainer')) {
+            $('#miniChatContainer').append('<div class="message reply">\n' +
+                '                        <p class="text">' + message + ' ' +
+                '                        </p>' +
+                '                    </div>')
+
+            $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
+
+             changeView()
+        }
     } else {
         let out = false
         let numberOfJumps = 0
@@ -35,8 +46,8 @@ function receiveMsg(messageData){
         while (!out) {
             let user = document.getElementById("list_user_" + count)
             if (user) {
-                let userId=$('#list_user_' + count).attr('data-value').split(':')[1]
-                if(userId==senderId) {
+                let userId = $('#list_user_' + count).attr('data-value').split(':')[1]
+                if (userId == senderId) {
                     $('#userLastMessage_' + count).html(message)
                     $('#userLastMessage_' + count).addClass("show")
                     $('#userLastMessageTime_' + count).html(currentTime)
@@ -52,31 +63,57 @@ function receiveMsg(messageData){
     }
 };
 
+function changeView(){
+    $.ajax({
+        url: "/chat/view",
+        type: "POST",
+        async: true,
+        success: function (response) {
+        },
+    });
+}
 
 function sendMsg() {
-    let msg = $('#msgToSend').val();
-    $('#chatContainer').append('<div class="row no-gutters ">\n' +
-        '                        <div class="dynamic-resizing-reverse right">\n' +
-        '                            <div class="chat-bubble chat-bubble--right">\n' +
-        '                                ' + msg + ' ' +
-        '                            </div>\n' +
-        '                        </div>\n' +
-        '                    </div>')
-    $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
-    $('#msgToSend').val('');
-    let reciverId = $('#currentUserInChat').attr('data-value');
+
+    let reciverId
+    let message
+
+    if (document.getElementById('chatContainer')) {
+        message = $('#msgToSend').val();
+        $('#chatContainer').append('<div class="row no-gutters ">\n' +
+            '                        <div class="dynamic-resizing-reverse right">\n' +
+            '                            <div class="chat-bubble chat-bubble--right">\n' +
+            '                                ' + message + ' ' +
+            '                            </div>\n' +
+            '                        </div>\n' +
+            '                    </div>')
+        $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
+        $('#msgToSend').val('');
+        reciverId = $('#currentUserInChat').attr('data-value');
+    }
+    if (document.getElementById('miniChatContainer')) {
+        message = $('#miniMsgToSend').val();
+        $('#miniChatContainer').append('<div class="message">\n' +
+            '                        <p class="text">' + message + ' ' +
+            '                        </p>' +
+            '                    </div>')
+        $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
+        $('#miniMsgToSend').val('');
+        reciverId = $('#miniCurrentUserInChat').val();
+    }
 
 
-    msg = {
-        'action':'chat',
-        'message': msg,
+    let msg = {
+        'action': 'chat',
+        'message': message,
         'senderId': currentUser,
         'recipientId': reciverId
     }
 
     socket.send(JSON.stringify(msg));
+
     $.ajax({
-        url: "/chat/new",
+        url: "/chat/getData",
         type: "POST",
         data: {
             reciverId: reciverId,
@@ -91,15 +128,48 @@ function sendMsg() {
 
 }
 
+
+function loadChatInfoForMiniChat(idReciver) {
+    $.ajax({
+        url: "/chat/getData",
+        type: "POST",
+        data: {
+            idReciver: idReciver,
+            idSender: currentUser
+        },
+        async: true,
+        success: function (response) {
+            $('#miniChatContainer').html('')
+            for (let i = 0; i < response.messages.length; i++) {
+                if (response.messages[i][2]) {
+                    $('#miniChatContainer').append('<div class="message">\n' +
+                        '                        <p class="text">' + response.messages[i][0] + ' ' +
+                        '                        </p>' +
+                        '                    </div>')
+                    $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
+                } else {
+                    $('#miniChatContainer').append('<div class="message reply">\n' +
+                        '                        <p class="text">' + response.messages[i][0] + ' ' +
+                        '                        </p>' +
+                        '                    </div>')
+                    $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
+                }
+            }
+
+        },
+    });
+}
+
+
 function loadChatInfo() {
-    let index=document.getElementById('#list_user_0')
-    let idReciver=0
-    if(index){
+    let index = document.getElementById('#list_user_0')
+    let idReciver = 0
+    if (index) {
         console.log('here')
-         idReciver = $('#list_user_0').data('value').split(':')[1]
-    }else{
+        idReciver = $('#list_user_0').data('value').split(':')[1]
+    } else {
         console.log('here2')
-         idReciver = $('#list_user_0').data('value').split(':')[1]
+        idReciver = $('#list_user_0').data('value').split(':')[1]
     }
 
     $.ajax({
@@ -139,7 +209,6 @@ function loadChatInfo() {
 }
 
 
-
 $('.friend-drawer--onhover').on('click', function () {
     $('.chat-bubble').hide('slow').show('slow');
 
@@ -151,8 +220,8 @@ $('.friend-drawer--onhover').on('click', function () {
     $('#currentUserInChatImg').attr('src', imageUser)
     $('#currentUserInChatName').html(userName)
     $('#currentUserInChat').attr('data-value', $(this).data('value').split(':')[1]);
-    $('#userLastMessageTime_'+index).removeClass("show")
-    $('#userLastMessage_'+index).removeClass("show")
+    $('#userLastMessageTime_' + index).removeClass("show")
+    $('#userLastMessage_' + index).removeClass("show")
 
     $.ajax({
         url: "/chat/getData",

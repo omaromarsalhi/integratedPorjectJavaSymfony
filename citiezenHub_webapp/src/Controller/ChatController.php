@@ -6,7 +6,13 @@ use App\Entity\Chat;
 use App\Entity\User;
 use App\Repository\ChatRepository;
 use App\Repository\UserRepository;
+use App\Websocket\MessageHandler;
 use Doctrine\ORM\EntityManagerInterface;
+use Ratchet\Client\Connector;
+use Ratchet\Client\WebSocket;
+use React\EventLoop\Factory;
+use React\Promise\Deferred;
+use SebastianBergmann\Diff\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,7 +82,6 @@ class ChatController extends AbstractController
             $chat->setReciver($userRepository->findOneBy(['idUser' => intval($request->get('reciverId'))]));
             $chat->setSender($this->getUser());
             $chat->setMsgState(0);
-
             $entityManager->persist($chat);
             $entityManager->flush();
 
@@ -86,5 +91,18 @@ class ChatController extends AbstractController
             'users' => $userRepository->findAll(),
         ]);
     }
+
+
+    #[Route('/view', name: 'view')]
+    public function view(ChatRepository $chatRepository, Request $request): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $chatRepository->updateChatState($this->getUser());
+            return new JsonResponse(['messages' => 'done']);
+        }
+        return new Response('bad', Response::HTTP_BAD_REQUEST);
+    }
+
+
 
 }

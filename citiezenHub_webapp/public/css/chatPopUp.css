@@ -3,13 +3,14 @@
     font-size: 16px;
     line-height: 1.25;
     font-family: "Roboto", sans-serif;
-    height: 600px;
+    height: 500px;
     width: 360px;
     position: fixed;
-    bottom: 32px;
+    bottom: 32px !important;
     right: 100px;
     color: #141e30;
-    z-index: 1000;
+    z-index: -1000;
+    opacity: 0;
 }
 .chat-app .title {
     font-size: 1.25em;
@@ -29,10 +30,10 @@
     position: absolute;
     bottom: 0.75em;
     right: 0.75em;
-    height: 64px;
-    width: 64px;
+    height: 50px;
+    width: 50px;
     transform: scale(0.83);
-    background: white;
+    background: rgb(255, 253, 253);
     border-radius: 100%;
     transition: all 0.3s;
     box-shadow: 0 10px 20px rgba(0, 198, 255, 0.4);
@@ -43,7 +44,7 @@
 }
 .chat-app_toggle .icon {
     z-index: 2;
-    color: #2899d8;
+    color: black;
     font-size: 1.5em;
     position: absolute;
     top: 0;
@@ -86,28 +87,28 @@
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     position: relative;
-    height: 600px;
+    height: 500px;
     display: flex;
     flex-direction: column;
-    background: white;
+    background: rgba(244, 244, 244, 0.83);
 }
 .chat-app_header {
     background: #2899d8;
-    color: white;
+    color: rgb(255, 255, 255) !important;
     position: relative;
 }
 .chat-app_header .branding {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    padding: 1.5em 1.5em;
+    padding: 1em 1em;
 }
 .chat-app_header .close {
     height: 1.5em;
     width: 1.5em;
     background: rgba(20, 30, 48, 1);
     position: absolute;
-    top: 1em;
+    top: 1.6em;
     right: 1em;
     border-radius: 100%;
     z-index: 2;
@@ -121,7 +122,7 @@
     position: absolute;
     left: 0.25em;
     top: calc(50% - 1px);
-    background: white;
+    background: rgb(255, 255, 255);
     transform: rotate(45deg);
 }
 .chat-app_header .close:before {
@@ -168,7 +169,9 @@
     bottom: 0;
     left: 0;
     right: 0;
-    overflow: auto;
+    /*overflow: hidden;*/
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
     margin: 0 0.5em;
 }
 .chat-app_content::-webkit-scrollbar {
@@ -177,22 +180,20 @@
 }
 .chat-app_content::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-color: #ededed;
+    background-color: rgba(244, 244, 244, 0.83);
 }
 .chat-app_content .messages {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    overflow: auto;
     padding: 0 1em;
     position: absolute;
-    padding-bottmo: 1em;
 }
 .chat-app_content .message {
-    width: calc(100% - 2em);
-    padding: 0.75em;
-    background: white;
-    margin-top: 0.25em;
+    width: 270px;
+    padding: 0.5em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
     border-radius: 16px;
     margin-left: 2em;
     background: #2899d8;
@@ -203,7 +204,9 @@
     transform-origin: 100% 100%;
     animation: message-pop cubic-bezier(0.71, 0.15, 0.46, 1.4) 0.5s;
     animation-fill-mode: forwards;
-    animation-delay: 1.2s;
+    /*animation-delay: 1.2s;*/
+    white-space: normal;
+    word-wrap: break-word;
 }
 .chat-app_content .message:after {
     content: "";
@@ -214,13 +217,13 @@
     bottom: 0.75em;
     right: -1em;
     clip-path: polygon(0 0, 0% 100%, 75% 100%);
-    background: #0072ff;
+    background: #2899d8;
     transform: skewY(15deg);
 }
 .chat-app_content .message.reply {
     margin-left: 0;
     margin-right: 2em;
-    background: #ededed;
+    background: white;
     color: #141e30;
     transform-origin: 0 100%;
 }
@@ -228,38 +231,30 @@
     right: unset;
     left: -1em;
     clip-path: polygon(100% 0, 25% 100%, 100% 100%);
-    background: #ededed;
+    background: rgba(244, 244, 244, 0.83);
     transform: skewY(-15deg);
 }
 .chat-app_footer {
-    background: white;
+    background: rgba(244, 244, 244, 0.83);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 1.5em;
-    padding-top: 0.75em;
+    padding: .5em;
     position: relative;
 }
-.chat-app_footer .tools {
-    display: flex;
-    margin-bottom: 0.75em;
-}
-.chat-app_footer .tools .copyright {
+.chat-app_footer .copyright {
     margin-left: auto;
     display: block;
     color: #a0a0a0;
     font-size: 0.75em;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 0.5em 1.5em;
+    padding: 0.5em 0.5em;
     text-align: right;
-    display: flex;
-    align-items: center;
-    justify-content: right;
 }
-.chat-app_footer .tools .button-icon {
+.chat-app_footer .button-icon {
     margin-right: 0.25em;
-    background: white;
-    width: 2em;
-    height: 2em;
+    background: rgba(244, 244, 244, 0.83);
+    width: 1em;
+    height: 1em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -268,10 +263,7 @@
     color: #a0a0a0;
     position: relative;
 }
-.chat-app_footer .tools .button-icon i {
-    position: relative;
-    z-index: 2;
-}
+
 .chat-app_footer .tools .button-icon:after {
     display: block;
     content: "";
@@ -289,28 +281,25 @@
 .chat-app_footer .tools .button-icon:hover, .chat-app_footer .tools .button-icon:focus {
     cursor: pointer;
     box-shadow: 0 5px 10px rgba(0, 198, 255, 0.4);
-    color: white;
+    color: rgba(244, 244, 244, 0.83);
     transform: scale(1.1);
 }
 .chat-app_footer .tools .button-icon:hover:after, .chat-app_footer .tools .button-icon:focus:after {
     opacity: 1;
 }
 .chat-input {
-    height: 2.5em;
-    width: 100%;
-    border: none;
-    background: #ededed;
+    height: 3em !important;
+    width: 80%;
+    background: rgba(244, 244, 244, 0.83);
     border: solid 1px #a0a0a0;
     border-radius: 1000px;
-    padding: 1em 1em;
+    padding: 0.2em 0.2em;
     font-size: 1em;
     transition: all 0.3s;
 }
 .chat-input:focus {
-    outline: none;
-    box-shadow: 0 10px 20px rgba(0, 205, 172, 0.4);
-    border-color: #2899d8;
-    background: white;
+    outline: none !important;
+    border: none !important;
 }
 .chat-app .chat-app_box {
     transition: all cubic-bezier(0.71, 0, 0.23, 1.38) 0.5s;
@@ -330,7 +319,7 @@
     transition: all 0.4s;
     opacity: 0;
     transform: scale(0.9);
-    transition-delay: 0.3s;
+    /*transition-delay: 0.3s;*/
 }
 .chat-app .icon.send {
     opacity: 0;
@@ -343,6 +332,10 @@
 .chat-app .chat-input {
     transition: all 0.4s;
     opacity: 0;
+}
+.specialHide {
+    opacity: 1 !important;
+    z-index: 1000 !important;
 }
 .chat-app.is-active .chat-app_box {
     opacity: 1;

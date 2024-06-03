@@ -55,13 +55,14 @@
                         </a>
                     </div>
                     {% if product.user != app.user %}
+
                     <div
                             class="quickview--box"
                             data-bs-toggle="tooltip"
                             data-bs-placement="right"
                             title="Contact Seller">
                         <a
-                                href="#"
+                                onclick="chatStart('{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}',{{ product.user.getId() }},'{{ product.user.getImage() }}')"
                                 class="yith-wcqv-button"
                                 data-product_id="793"
                         >

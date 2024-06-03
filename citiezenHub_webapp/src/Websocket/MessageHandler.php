@@ -7,27 +7,37 @@ use Ratchet\MessageComponentInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use function PHPUnit\Framework\throwException;
 
 class MessageHandler implements MessageComponentInterface
 {
-    private $userConnections = []; // User ID to Connection mapping
+    private static $userConnections = []; // User ID to Connection mapping
+
+    public static function testConnectivity($userId): bool
+    {
+        return array_key_exists($userId, self::$userConnections);
+    }
 
     public function onOpen(ConnectionInterface $conn): void
     {
-        // Extract user ID from query string (adjust as needed)
         $queryString = $conn->httpRequest->getUri()->getQuery();
         parse_str($queryString, $queryParameters);
         $userId = $queryParameters['userId'] ?? null;
 
         if ($userId) {
-            // Store the connection based on user ID
-            $this->userConnections[$userId] = $conn;
-            echo "New connection for user {$userId}! ({$conn->resourceId})\n";
-            echo "size " . sizeof($this->userConnections) . "\n";
+            if (array_key_exists($userId, self::$userConnections)) {
+                echo "Connection attempt for existing user {$userId} rejected.\n";
+                $conn->close();
+                throw new \Exception("User {$userId} is already connected.");
+            } else {
+                self::$userConnections[$userId] = $conn;
+                echo "New connection for user {$userId}! ({$conn->resourceId})\n";
+                echo "Current number of connections: " . sizeof(self::$userConnections) . "\n";
+            }
         } else {
-            // Handle cases where user ID is missing
             echo "User ID not provided. Connection rejected.\n";
             $conn->close();
+            throw new \Exception('User ID not provided in the connection request.');
         }
     }
 
@@ -51,6 +61,7 @@ class MessageHandler implements MessageComponentInterface
         }
     }
 
+
     private function handleChatMessage(ConnectionInterface $from, array $data): void
     {
         if (isset($data['senderId'], $data['recipientId'], $data['message'])) {
@@ -58,8 +69,8 @@ class MessageHandler implements MessageComponentInterface
             $recipientId = $data['recipientId'];
 
             // Look up recipient's connection based on recipient's ID
-            $recipientConnection = $this->userConnections[$recipientId] ?? null;
-            $senderConnection = $this->userConnections[$senderId] ?? null;
+            $recipientConnection = self::$userConnections[$recipientId] ?? null;
+            $senderConnection = self::$userConnections[$senderId] ?? null;
 
             if ($recipientConnection && $recipientConnection !== $from && $senderConnection === $from) {
                 $serializer = $this->createSerializer();
@@ -82,8 +93,8 @@ class MessageHandler implements MessageComponentInterface
         $json = $serializer->serialize($data, 'json');
 
         // Broadcast the message to all connected users
-        echo "size2 " . sizeof($this->userConnections) . "\n";
-        foreach ($this->userConnections as $userId => $connection) {
+        echo "size2 " . sizeof(self::$userConnections) . "\n";
+        foreach (self::$userConnections as $userId => $connection) {
             echo "omar from soket \n";
             echo "Broadcasting message to user {$userId}\n";
             $connection->send($json);
@@ -93,9 +104,9 @@ class MessageHandler implements MessageComponentInterface
     public function onClose(ConnectionInterface $conn): void
     {
         // Remove the connection when it's closed
-        foreach ($this->userConnections as $userId => $connection) {
+        foreach (self::$userConnections as $userId => $connection) {
             if ($connection === $conn) {
-                unset($this->userConnections[$userId]);
+                unset(self::$userConnections[$userId]);
                 break;
             }
         }

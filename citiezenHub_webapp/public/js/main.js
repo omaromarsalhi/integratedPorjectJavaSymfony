@@ -8,29 +8,27 @@ $(document).ready(function () {
 });
 
 
-if (currentUser !== -1) {
-    const socket = new WebSocket("ws://localhost:8091?userId=" + currentUser);
+const socket = new WebSocket("ws://localhost:8091?userId=" + currentUser);
 // const socket = new WebSocket("ws://192.168.1.7:8090?userId=" + currentUser);
-    socket.addEventListener("open", function () {
-        console.log("CONNECTED");
-    });
+socket.addEventListener("open", function () {
+    console.log("CONNECTED");
+});
 
-    socket.addEventListener('message', (event) => {
-        const messageData = JSON.parse(event.data);
-        if (messageData.action === 'chat') {
-            receiveMsg(messageData)
-        } else if (messageData.action === 'productEvent') {
-            if (messageData.subAction === 'ADD')
-                filterByPrice();
-            else if (messageData.subAction === 'UPDATE') {
-                updateProductOfOtherUser(messageData.Data.idProduct)
-            }
-            else if (messageData.subAction === 'DELETE') {
-                filterByPrice();
-            }
+socket.addEventListener('message', (event) => {
+    const messageData = JSON.parse(event.data);
+    console.log(messageData)
+    if (messageData.action === 'chat') {
+        receiveMsg(messageData)
+    } else if (messageData.action === 'productEvent') {
+        if (messageData.subAction === 'ADD')
+            filterByPrice();
+        else if (messageData.subAction === 'UPDATE') {
+            updateProductOfOtherUser(messageData.Data.idProduct)
+        } else if (messageData.subAction === 'DELETE') {
+            filterByPrice();
         }
-    });
-}
+    }
+});
 
 function updateProductOfOtherUser(idProduct) {
     $('#container_product_' + idProduct).addClass('blur')

@@ -2,24 +2,25 @@ function chatInit(selector) {
     document.addEventListener('DOMContentLoaded', () => {
         if (!window.LIVE_CHAT_UI) {
             let chat = document.querySelector(selector);
-            let toggles = chat.querySelectorAll('.toggle')
+            let toggle = chat.querySelector('.toggle')
             let close = chat.querySelector('.close')
 
-            window.setTimeout(() => {
-                chat.classList.add('is-active')
-            }, 1000)
+            // window.setTimeout(() => {
+            //     chat.classList.add('is-active')
+            // }, 1000)
 
-            toggles.forEach( toggle => {
-                toggle.addEventListener('click', () => {
-                    chat.classList.add('is-active')
-                })
-            })
+
+
 
             close.addEventListener('click', () => {
                 chat.classList.remove('is-active')
+                setTimeout(function (){
+                    chat.classList.remove('specialHide')
+                    toggle.classList.add('d-none')
+                },310)
             })
 
-            document.onkeydown = function(evt) {
+            document.onkeydown = function (evt) {
                 evt = evt || window.event;
                 var isEscape = false;
                 if ("key" in evt) {
@@ -29,6 +30,10 @@ function chatInit(selector) {
                 }
                 if (isEscape) {
                     chat.classList.remove('is-active')
+                    setTimeout(function (){
+                        chat.classList.remove('specialHide')
+                        toggle.classList.add('d-none')
+                    },310)
                 }
             };
 
@@ -38,3 +43,18 @@ function chatInit(selector) {
 }
 
 chatInit('#chat-app')
+
+function chatStart(userName,userId,userImg) {
+    $('#userImg').prop('src','/usersImg/'+userImg)
+    $('#userName').html(userName)
+    let chat = document.querySelector('#chat-app');
+    let toggle = chat.querySelector('.toggle')
+    chat.classList.add('is-active')
+    chat.classList.add('specialHide')
+    toggle.classList.remove('d-none')
+    $('#miniCurrentUserInChat').val(userId)
+    toggle.addEventListener('click', () => {
+        sendMsg()
+    })
+    loadChatInfoForMiniChat(userId)
+}
