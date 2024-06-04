@@ -1,16 +1,17 @@
 $(document).ready(function () {
-    setTimeout(function () {
-        // loadChatInfo()
-    }, 500)
 });
 
 
 function receiveMsg(messageData) {
     const {senderId, message, recipientId} = messageData;
     let reciverId = $('#currentUserInChat').attr('data-value');
+    let skip = true;
     // if (reciverId == senderId && recipientId == currentUser) {
     if (recipientId == currentUser) {
-        if(document.getElementById('chatContainer')) {
+        if (document.getElementById('chatContainer') && reciverId == senderId) {
+
+            changeView()
+
             $('#chatContainer').append('<div class="row no-gutters ">\n' +
                 '                        <div class="dynamic-resizing">\n' +
                 '                            <div class="chat-bubble chat-bubble--left">\n' +
@@ -19,20 +20,22 @@ function receiveMsg(messageData) {
                 '                        </div>\n' +
                 '                    </div>')
             $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
+            skip = false
+        }
+        if (document.getElementById('miniChatContainer')) {
 
             changeView()
-        }
-         if(document.getElementById('miniChatContainer')) {
+
             $('#miniChatContainer').append('<div class="message reply">\n' +
                 '                        <p class="text">' + message + ' ' +
                 '                        </p>' +
                 '                    </div>')
 
             $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
-
-             changeView()
+            skip = false
         }
-    } else {
+    }
+    if (skip) {
         let out = false
         let numberOfJumps = 0
         let count = 0
@@ -63,12 +66,13 @@ function receiveMsg(messageData) {
     }
 };
 
-function changeView(){
+function changeView() {
     $.ajax({
         url: "/chat/view",
         type: "POST",
         async: true,
         success: function (response) {
+            console.log(response)
         },
     });
 }
@@ -113,7 +117,7 @@ function sendMsg() {
     socket.send(JSON.stringify(msg));
 
     $.ajax({
-        url: "/chat/getData",
+        url: "/chat/new",
         type: "POST",
         data: {
             reciverId: reciverId,
@@ -181,6 +185,7 @@ function loadChatInfo() {
         },
         async: true,
         success: function (response) {
+            console.log(response)
             $('#chatContainer').html('')
             for (let i = 0; i < response.messages.length; i++) {
                 if (response.messages[i][2]) {

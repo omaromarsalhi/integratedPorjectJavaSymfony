@@ -35,10 +35,10 @@ class ChatController extends AbstractController
                 $chat = $chatRepository->selectLastMessage($user->getId());
                 if(sizeof($chat) > 0) {
                     $chat = $chat[0];
-                    $messages[] = [$chat->getSender()->getId(), $chat->getMessage(), $chat->getTimestamp()->format('Y-m-d H:i'), $chat->getMsgState()];
+                    $messages[$user->getId()] = [$chat->getMessage(), $chat->getTimestamp()->format('Y-m-d H:i'), $chat->getMsgState()];
                 }
                 else{
-                    $messages[] = [$user->getId(), '', '',-1];
+                    $messages[$user->getId()] = ['', '',-1];
                 }
             }
         }
@@ -63,7 +63,7 @@ class ChatController extends AbstractController
                 $messages[] = [$chat->getMessage(), $chat->getTimestamp()->format('Y-m-d H:i'), $chat->getSender() === $this->getUser()];
             }
 
-            $chatRepository->updateChatState($this->getUser());
+            $chatRepository->updateChatState($idReciver);
 
 
             return new JsonResponse(['messages' => $messages]);

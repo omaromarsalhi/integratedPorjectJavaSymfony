@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Municipalite;
 use App\Entity\User;
 use App\MyHelpers\AiVerification;
+use App\Repository\ChatRepository;
 use App\Repository\MunicipaliteRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
@@ -19,7 +20,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class WtfDudeController extends AbstractController
 {
     #[Route('/wtf/dude', name: 'app_wtf_dude')]
-    public function index(HttpClientInterface $client): Response
+    public function index(ChatRepository $chatRepository,UserRepository $userRepository): Response
     {
 //
 //        $filter = [
@@ -32,20 +33,36 @@ class WtfDudeController extends AbstractController
 
 //        $aiVerification = new AiVerification();
 //        $aiVerification->formatJsonFilesOfCin(md5('user_front' . ($this->getUser()->getId() * 1000 + 17)), md5('user_backCin' . ($this->getUser()->getId() * 1000 + 17)));
-        $geocoder=new GeocodingService($client);
-        $user=$this->getUser();
-        $path = '../../files/usersJsonFiles/' . md5('user' . ($user->getId() * 1000 + 17)) . '.json';
+//        $geocoder=new GeocodingService($client);
+//        $user=$this->getUser();
+//        $path = '../../files/usersJsonFiles/' . md5('user' . ($user->getId() * 1000 + 17)) . '.json';
+//
+//        $jsonString = file_get_contents($path);
+//        $jsonDataCin = json_decode($jsonString, true);
+//
+//        try {
+//            $data = $geocoder->geocode($jsonDataCin['العنوان']['data']);
+//        } catch (\Exception $e) {
+//        }
+//
+//        dump($data);
+//        dump($geocoder->isInMunicipality($jsonDataCin['العنوان']['data'],$user->getMunicipalite()->getName()));
+        $users = $userRepository->findAll();
 
-        $jsonString = file_get_contents($path);
-        $jsonDataCin = json_decode($jsonString, true);
-
-        try {
-            $data = $geocoder->geocode($jsonDataCin['العنوان']['data']);
-        } catch (\Exception $e) {
+        foreach ($users as $user) {
+            if ($user !== $this->getUser()) {
+                $chat = $chatRepository->selectLastMessage($user->getId());
+                if($user->getId()==195)
+                    dump($chat);
+                if(sizeof($chat) > 0) {
+                    $chat = $chat[0];
+                    $messages[$user->getId()] = [$chat->getMessage(), $chat->getTimestamp()->format('Y-m-d H:i'), $chat->getMsgState()];
+                }
+                else{
+                    $messages[$user->getId()] = ['', '',-1];
+                }
+            }
         }
-
-        dump($data);
-        dump($geocoder->isInMunicipality($jsonDataCin['العنوان']['data'],$user->getMunicipalite()->getName()));
         die();
         return new Response("done");
     }

@@ -8,8 +8,8 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://d890-35-239-120-73.ngrok-free.app'
-
+url='https://9d1d-34-139-236-64.ngrok-free.app'
+model='llava:13b'
 
 
 
@@ -23,7 +23,19 @@ def generate():
 def generate_desc_image():
     image_url=request.args.get('image_url')
     print("image url : "+image_url)
-    commands=f"set OLLAMA_HOST={url}&ollama run llava describe the image content only {image_url}"
+    commands=f"set OLLAMA_HOST={url}&ollama run {model} describe this image {image_url}"
+    text=ov.execute_cmd(commands)
+    tuned_response=ov.finetune_text(text)
+    return jsonify(tuned_response),200
+
+
+
+@app.route('/get-product_image_descreption_title',methods=['POST'])
+def generate_desc_image():
+    image_url=request.args.get('image_url')
+    title=request.args.get('title')
+    print("image url : "+image_url)
+    commands=f"set OLLAMA_HOST={url}&ollama run {model}  is this is an image of {title} {image_url}"
     text=ov.execute_cmd(commands)
     tuned_response=ov.finetune_text(text)
     return jsonify(tuned_response),200

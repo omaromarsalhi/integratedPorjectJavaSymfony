@@ -222,6 +222,7 @@ class AiVerification
             $result[] = $this->generateImageDescription($images_url[$i]);
         }
         $this->aiDataHolder->setDescriptions($result);
+        return;
     }
 
 

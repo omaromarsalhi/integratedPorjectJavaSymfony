@@ -1,4 +1,5 @@
 <div id="chat-css">
+
     <div class="container lg-product-wrapper">
         <div class="row no-gutters">
             <div class="col-md-4 border-right " >
@@ -13,7 +14,7 @@
                     </div>
                 </div>
                 <div id="usersContainer">
-                    {% set messagesIndex=0 %}
+
                     {% for index,user in users %}
                     {% if user!=app.user %}
                     <div class="friend-drawer friend-drawer--onhover" data-value="{{ index }}:{{ user.getId() }}"
@@ -23,22 +24,20 @@
                         <div class="text">
 
                             <h6 id="userFullName_{{ index }}">{{ user.firstName|capitalize~' '~user.lastName|capitalize }}</h6>
-                            {% if messages[messagesIndex][0]==user.getId() and messages[messagesIndex][3]==1 %}
+                            {% if messages[user.getId()][2]==1 or messages[user.getId()][2]==-1  %}
                             <p class="text-muted "
-                               id="userLastMessage_{{ index }}">{{ messages[messagesIndex][1] }}</p>
+                               id="userLastMessage_{{ index }}">{{ messages[user.getId()][0] }}</p>
                         </div>
                         <span class="time text-muted small"
-                              id="userLastMessageTime_{{ index }}">{{ messages[messagesIndex][2]|date('H:m') }}</span>
-                        {% elseif messages[messagesIndex][0]==user.getId() %}
-                        <p class="text-muted show" id="userLastMessage_{{ index }}">{{ messages[messagesIndex][1] }}</p>
+                              id="userLastMessageTime_{{ index }}">{{ messages[user.getId()][1]|date('H:i') }}</span>
+                        {% else %}
+                        <p class="text-muted show" id="userLastMessage_{{ index }}">{{ messages[user.getId()][0] }}</p>
                     </div>
                     <span class="time text-muted small show"
-                          id="userLastMessageTime_{{ index }}">{{ messages[messagesIndex][2]|date('H:m') }}</span>
+                          id="userLastMessageTime_{{ index }}">{{ messages[user.getId()][1]|date('H:i') }}</span>
                     {% endif %}
-
                 </div>
                         <hr>
-                            {% set messagesIndex=messagesIndex+1%}
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -55,7 +54,7 @@
                              src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg" alt="">
                         <div class="text">
                             <h6 id="currentUserInChatName">{{ users[i].firstName|capitalize~' '~users[i].lastName|capitalize }}</h6>
-                            <p class="text-muted">{{ messages[i][1] }}...</p>
+                            <p class="text-muted">{{ messages[users[i].getId()][0] }}...</p>
                         </div>
                     </div>
                 </div>

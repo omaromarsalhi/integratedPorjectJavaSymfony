@@ -80,7 +80,7 @@ class ChatRepository extends ServiceEntityRepository
             ->andWhere('c.sender = :val')
             ->setParameter('val', $sender)
             ->orderBy('c.idChat', 'DESC')
-            ->setMaxResults(2)
+            ->setMaxResults(1)
             ->getQuery()
             ->getResult()
         ;

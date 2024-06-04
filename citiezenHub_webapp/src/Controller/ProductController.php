@@ -55,7 +55,7 @@ class ProductController extends AbstractController
             $new_product->setQuantity(floatval($quantity));
             $new_product->setCategory($category);
             $new_product->setIsDeleted(0);
-            $new_product->setState('verified');
+            $new_product->setState('unverified');
             $new_product->setType('BIEN');
 
             $errors = $validator->validate($new_product);
@@ -87,7 +87,7 @@ class ProductController extends AbstractController
                 'mode' => 'add'
             ];
 
-//            $messageBus->dispatch(new AiVerificationMessage($obj));
+            $messageBus->dispatch(new AiVerificationMessage($obj));
 
             $product->getUser()->setMunicipalite(null);
 
@@ -147,7 +147,7 @@ class ProductController extends AbstractController
             $product->setPrice(floatval($price));
             $product->setQuantity(floatval($quantity));
             $product->setCategory($category);
-            $product->setState('verified');
+            $product->setState('unverified');
             /*   $errors = $validator->validate($updated_product);
 
                if (count($errors) > 0) {
@@ -183,7 +183,7 @@ class ProductController extends AbstractController
                 'mode' => 'edit'
             ];
 
-//            $messageBus->dispatch(new AiVerificationMessage($obj));
+            $messageBus->dispatch(new AiVerificationMessage($obj));
 
             $product->getUser()->setMunicipalite(null);
 

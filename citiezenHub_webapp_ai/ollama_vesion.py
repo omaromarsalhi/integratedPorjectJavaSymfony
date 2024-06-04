@@ -16,7 +16,7 @@ def generateBasedOnText(prompt,prompt2,url):
     r = requests.post(url+'/api/generate',
                     json={
                         'model': 'mistral',
-                        'prompt': 'is this paragraph "'+prompt+'" speaks about "'+prompt2+'" , please answer with yes or no',
+                        'prompt': 'is this paragraph "'+prompt+'" speaks or describe even in a vage way about   "'+prompt2+'"  , please answer with yes or no',
                     },
                     stream=True)
     r.raise_for_status()

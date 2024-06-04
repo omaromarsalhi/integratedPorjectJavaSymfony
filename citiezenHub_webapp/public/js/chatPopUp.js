@@ -55,6 +55,7 @@ function chatStart(userName,userId,userImg) {
     $('#miniCurrentUserInChat').val(userId)
     toggle.addEventListener('click', () => {
         sendMsg()
+        console.log(1)
     })
     loadChatInfoForMiniChat(userId)
 }
