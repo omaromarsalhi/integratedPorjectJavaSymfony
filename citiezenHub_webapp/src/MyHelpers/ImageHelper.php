@@ -20,6 +20,16 @@ class ImageHelper
     }
 
 
+    public static function saveSingleImage($file): string
+    {
+        $fileName = md5(uniqid()) . '.' . $file->guessClientExtension();
+        $file->move(
+            '../public/usersImg/',
+            $fileName
+        );
+        return $fileName;
+    }
+
     public function saveImages($files, Product $product): array
     {
         $newImagesPath = [];

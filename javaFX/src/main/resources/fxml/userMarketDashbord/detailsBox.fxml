@@ -7,10 +7,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<HBox fx:id="detailsBox" alignment="CENTER" prefHeight="247.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<HBox fx:id="detailsBox" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="284.0" prefWidth="555.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label fx:id="imageNumber" prefHeight="60.0" prefWidth="160.0">
+      <Label fx:id="imageNumber" prefHeight="41.0" prefWidth="160.0" text="image ">
          <font>
             <Font name="Candara Bold" size="24.0" />
          </font>
@@ -20,9 +19,9 @@
       </Label>
       <HBox prefHeight="180.0" prefWidth="306.0">
          <children>
-            <VBox fx:id="titleCat" alignment="CENTER" prefHeight="186.0" prefWidth="306.0">
+            <VBox fx:id="titleCat" alignment="TOP_CENTER" prefHeight="186.0" prefWidth="306.0">
                <children>
-                  <VBox fx:id="titleSection" alignment="BOTTOM_LEFT">
+                  <VBox fx:id="titleSection" alignment="BOTTOM_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="306.0">
                      <children>
                         <Label fx:id="title" prefHeight="27.0" prefWidth="82.0" text="Title :" textFill="#fdc847">
                            <font>
@@ -34,8 +33,11 @@
                         </Label>
                         <TextArea fx:id="titleDesc" editable="false" prefHeight="94.0" prefWidth="306.0" text="vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv" wrapText="true" />
                      </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
                   </VBox>
-                  <VBox fx:id="categorySection" alignment="CENTER_LEFT">
+                  <VBox fx:id="categorySection" alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="130.0" prefWidth="306.0">
                      <children>
                         <Label prefHeight="27.0" prefWidth="85.0" text="Category :" textFill="#fdc847">
                            <font>
@@ -51,6 +53,9 @@
                </children>
             </VBox>
          </children>
+         <HBox.margin>
+            <Insets top="7.0" />
+         </HBox.margin>
       </HBox>
    </children>
 </HBox>

@@ -21,12 +21,12 @@ class RealTimeUpdater
 
     private function serializer($data): string
     {
-        if($data['action']==='productEvent' && $data['Data'] instanceof Product){
-            $product=$data['Data'];
-            foreach ($product->getImages() as $image) {
-                $image->setProduct(null);
-            }
-        }
+//        if($data['action']==='productEvent' && $data['Data'] instanceof Product){
+//            $product=$data['Data'];
+//            foreach ($product->getImages() as $image) {
+//                $image->setProduct(null);
+//            }
+//        }
         return $this->serializer->serialize($data, 'json');
     }
 

@@ -34,16 +34,14 @@ public class ChatClient {
     }
 
 
-    public boolean
-    establishConnection() {
+    public boolean establishConnection() {
         try {
-            socket = new Socket( "localhost", 8001 );
+            int userID = UserController.getInstance().getCurrentUser().getId();
+
+            socket = new Socket( "localhost?userId="+userID, 8091 );
             reader = new BufferedReader( new InputStreamReader( socket.getInputStream() ) );
             writer = new PrintWriter( socket.getOutputStream(), true );
-
-            int userID = UserController.getInstance().getCurrentUser().getId();
             writer.println(userID);
-
         } catch (IOException ex) {
             throw new RuntimeException( ex );
         }

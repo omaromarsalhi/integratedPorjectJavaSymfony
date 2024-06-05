@@ -99,7 +99,7 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @return Product[] Returns an array of Product objects
      */
-    public function findByPriceTest($filterData): array
+    public function findByPriceTest($filterData, $idList): array
     {
         $qb = $this->createQueryBuilder('p');
 
@@ -143,13 +143,6 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('category', 'vehicle');
         }
 
-        if ($filterData['price']['asc'] === "true") {
-            $qb->orderBy('p.price', 'ASC');
-        }
-
-        if ($filterData['price']['desc'] === "true") {
-            $qb->orderBy('p.price', 'DESC');
-        }
 
         if ($filterData['datetime']['today'] === "true") {
             $today = new \DateTime('today');
@@ -169,7 +162,22 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('date', $lastMonth);
         }
 
-        $qb->orderBy('p.idProduct','DESC');
+        if ($idList[0] !== -1) {
+            $qb->andWhere($qb->expr()->in('p.idProduct', ':list'))
+                ->setParameter('list', $idList);
+        }
+
+        if ($filterData['price']['asc'] === "true") {
+            $qb->orderBy('p.price', 'ASC');
+        }
+        
+        if ($filterData['price']['desc'] === "true") {
+            $qb->orderBy('p.price', 'DESC');
+        }
+
+        if ($filterData['price']['desc'] === "false"&&$filterData['price']['asc'] === "false")
+            $qb->orderBy('p.idProduct', 'DESC');
+
 
         return $qb->getQuery()->getResult();
     }
@@ -197,7 +205,7 @@ class ProductRepository extends ServiceEntityRepository
 
         $formattedData = [];
         foreach ($data as $value) {
-            $formattedData[$value['category']] = ['verified' =>  0, 'unverified' =>  0];
+            $formattedData[$value['category']] = ['verified' => 0, 'unverified' => 0];
         }
         foreach ($data as $value) {
             $formattedData[$value['category']][$value['state']] = $value['count'];
@@ -221,7 +229,7 @@ class ProductRepository extends ServiceEntityRepository
 
         $formattedData = [];
         foreach ($data as $value) {
-            $formattedData[$value['category']] = ['verified' =>  0, 'unverified' =>  0];
+            $formattedData[$value['category']] = ['verified' => 0, 'unverified' => 0];
         }
         foreach ($data as $value) {
             $formattedData[$value['category']][$value['state']] = $value['count'];

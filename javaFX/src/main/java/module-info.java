@@ -28,6 +28,7 @@ module pidev.javafx{
     requires jbcrypt;
     requires json.simple;
     requires javafx.swing;
+    requires Java.WebSocket;
 
 
     opens pidev.javafx.controller.marketPlace to javafx.fxml;

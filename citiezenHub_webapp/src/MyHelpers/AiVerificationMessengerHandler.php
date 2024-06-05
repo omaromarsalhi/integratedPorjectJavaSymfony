@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class AiVerificationMessengerHandler
 {
 
-    public function __construct(private EntityManagerInterface $entityManager, private ProductRepository $productRepository, private AiResultRepository $aiResultRepository)
+    public function __construct(private RealTimeUpdater $realTimeUpdater,private EntityManagerInterface $entityManager, private ProductRepository $productRepository, private AiResultRepository $aiResultRepository)
     {
     }
 
@@ -31,7 +31,7 @@ class AiVerificationMessengerHandler
 
         $aiDataHolder = $aiVerification->run($obj);
 
-        ProductController::changeState($this->aiResultRepository, $this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
+        ProductController::changeState($obj['mode'],$obj['idUser'],$this->realTimeUpdater,$this->aiResultRepository, $this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
 
         $aiResultController = new AiResultController();
 
@@ -39,7 +39,6 @@ class AiVerificationMessengerHandler
         $serializedData = $serializer->serialize($aiDataHolder, 'json');
         $aiResult = new AiResult();
 
-        var_dump($obj);
 
         if ($obj['mode'] === 'edit') {
             $aiResultController->edit($serializedData,$obj['id'],$this->entityManager,$this->aiResultRepository);
@@ -49,6 +48,7 @@ class AiVerificationMessengerHandler
             $aiResult->setTerminationDate();
             $aiResultController->new($aiResult, $this->entityManager);
         }
+
 
 //        SendSms::send();
 

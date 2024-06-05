@@ -128,10 +128,11 @@ public class CrudBien implements CrudInterface<Bien> {
         try {
             prepare = connect.prepareStatement(sql);
             prepare.setInt( 1,id );
-            prepare.executeQuery();
+            prepare.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error deleting item: " + e.getMessage());
         }
+
     }
 
     public void deleteImages(int id) {

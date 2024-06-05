@@ -8,12 +8,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <VBox alignment="CENTER" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: white;" stylesheets="@../../style/marketPlace/Buttons.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.userMarketDashbord.AiResultController">
    <children>
       <ScrollPane fx:id="scrollobalArea" hbarPolicy="NEVER" maxHeight="418.0" maxWidth="800.0" prefHeight="418.0" prefWidth="564.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: transparent;" stylesheets="@../../style/scrollBarStlyle.css" vbarPolicy="NEVER">
          <content>
-            <VBox fx:id="formBox" alignment="CENTER" prefHeight="410.0" prefWidth="555.0" stylesheets="@../../style/marketPlace/formLayout.css" />
+            <VBox fx:id="formBox" alignment="CENTER" prefHeight="393.0" prefWidth="555.0" spacing="10.0" stylesheets="@../../style/marketPlace/formLayout.css" />
          </content>
          <padding>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />

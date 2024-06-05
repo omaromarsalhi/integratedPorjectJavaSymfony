@@ -36,7 +36,6 @@ class JavaRequestController extends AbstractController
         $product = $productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
         $mode = $request->get('mode');
 
-
         $newImagesPath = [];
         foreach ($product->getImages() as $image) {
             $newImagesPath[] = str_replace("usersImg/", '', $image->getPath());
@@ -46,7 +45,8 @@ class JavaRequestController extends AbstractController
             'category' => $product->getCategory(),
             'id' => $product->getIdProduct(),
             'images' => $newImagesPath,
-            'mode' => $mode
+            'mode' => $mode,
+            'idUser'=>$request->get('idUser'),
         ];
 
         $messageBus->dispatch(new AiVerificationMessage($obj));

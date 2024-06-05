@@ -271,6 +271,11 @@
       <artifactId>javafx-graphics</artifactId>
       <version>20.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.java-websocket</groupId>
+      <artifactId>Java-WebSocket</artifactId>
+      <version>1.5.2</version>
+    </dependency>
 
 
   </dependencies>

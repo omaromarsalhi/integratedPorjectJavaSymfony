@@ -35,7 +35,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
-    public function new(RealTimeUpdater $realTimeUpdater,MessageBusInterface $messageBus, Request $request, EntityManagerInterface $entityManager, ImageHelper $imageHelper, ProductRepository $productRepository, ValidatorInterface $validator): Response
+    public function new(MessageBusInterface $messageBus, Request $request, EntityManagerInterface $entityManager, ImageHelper $imageHelper, ProductRepository $productRepository, ValidatorInterface $validator): Response
     {
 
         if ($request->isXmlHttpRequest()) {
@@ -84,14 +84,15 @@ class ProductController extends AbstractController
                 'category' => $product->getCategory(),
                 'id' => $product->getIdProduct(),
                 'images' => $newImagesPath,
-                'mode' => 'add'
+                'mode' => 'add',
+                'idUser' => $this->getUser()->getId()
             ];
 
             $messageBus->dispatch(new AiVerificationMessage($obj));
 
             $product->getUser()->setMunicipalite(null);
 
-            $realTimeUpdater->notifyApp(['Data' => 'null', 'action' => 'productEvent','subAction'=>'ADD'], $this->getUser()->getId());
+//            $realTimeUpdater->notifyApp(['Data' => 'null', 'action' => 'productEvent','subAction'=>'ADD'], $this->getUser()->getId());
 
             return new JsonResponse(['state' => 'done'], Response::HTTP_OK);
         }
@@ -124,14 +125,13 @@ class ProductController extends AbstractController
 
 
     #[Route('/{index}/edit', name: '_edit', methods: ['POST'])]
-    public function edit(RealTimeUpdater $realTimeUpdater,AiResultRepository $aiResultRepository, MessageBusInterface $messageBus, ImageHelper $imageHelper, Request $request, ProductRepository $productRepository, EntityManagerInterface $entityManager, int $index): Response
+    public function edit(AiResultRepository $aiResultRepository, MessageBusInterface $messageBus, ImageHelper $imageHelper, Request $request, ProductRepository $productRepository, EntityManagerInterface $entityManager, int $index): Response
     {
 
         if ($request->isXmlHttpRequest()) {
 //            $aiResult = $aiResultRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
 //            if ($aiResult != null)
 //                AiResultController::delete($aiResult, $entityManager);
-
 
             $product = $productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
             $name = $request->get("name");
@@ -180,14 +180,15 @@ class ProductController extends AbstractController
                 'category' => $product->getCategory(),
                 'id' => $product->getIdProduct(),
                 'images' => $paths,
-                'mode' => 'edit'
+                'mode' => 'edit',
+                'idUser' => $this->getUser()->getId()
             ];
 
             $messageBus->dispatch(new AiVerificationMessage($obj));
 
             $product->getUser()->setMunicipalite(null);
 
-            $realTimeUpdater->notifyApp(['Data' => $product, 'action' => 'productEvent','subAction'=>'UPDATE'], $this->getUser()->getId());
+//            $realTimeUpdater->notifyApp(['Data' => $product, 'action' => 'productEvent','subAction'=>'UPDATE'], $this->getUser()->getId());
 
             return new JsonResponse(['state' => 'done'], Response::HTTP_OK);
         }
@@ -202,24 +203,28 @@ class ProductController extends AbstractController
 
 
     #[Route('/test', name: 'test', methods: ['POST', 'GET'])]
-    public static function changeState(AiResultRepository $aiResultRepository, ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
+    public static function changeState($mode, $idUser, RealTimeUpdater $realTimeUpdater, AiResultRepository $aiResultRepository, ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
     {
         for ($i = 0; $i < sizeof($aiDataHolder->getDescriptions()); $i++) {
-            if (str_starts_with(strtolower($aiDataHolder->getTitleValidation()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no"))
+            if (str_starts_with(strtolower($aiDataHolder->getDescriptions()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no"))
                 return new Response('done', Response::HTTP_OK);
         }
 
         $product = $productRepository->findOneBy(['idProduct' => $idProduct]);
         $product->setState('verified');
         $entityManager->flush();
-//        $aiResult = $aiResultRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
-//        if ($aiResult != null)
-//            AiResultController::delete($aiResult, $entityManager);
+
+        if ($mode == 'edit') {
+            $realTimeUpdater->notifyApp(['Data' => ['idProduct'=>$product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'UPDATE'], $idUser);
+        } else {
+            $realTimeUpdater->notifyApp(['Data' => '', 'action' => 'productEvent', 'subAction' => 'ADD'], $idUser);
+        }
+
         return new Response('done', Response::HTTP_OK);
     }
 
     #[Route('/delete', name: '_delete', methods: ['POST'])]
-    public function delete(RealTimeUpdater $realTimeUpdater,AiResultRepository $aiResultRepository, Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository): Response
+    public function delete(RealTimeUpdater $realTimeUpdater, AiResultRepository $aiResultRepository, Request $request, EntityManagerInterface $entityManager, ProductRepository $productRepository): Response
     {
         $session = $request->getSession();
         if ($request->isXmlHttpRequest()) {
@@ -245,7 +250,7 @@ class ProductController extends AbstractController
 
             $session->set('user_products_map', $map);
 
-//            $realTimeUpdater->notifyApp(['Data' => 'null', 'action' => 'productEvent','subAction'=>'DELETE'], $this->getUser()->getId());
+            $realTimeUpdater->notifyApp(['Data' => 'null', 'action' => 'productEvent', 'subAction' => 'DELETE'], $this->getUser()->getId());
 
             return new JsonResponse(['page' => $map[$page]->getCurrentPage()]);
         }

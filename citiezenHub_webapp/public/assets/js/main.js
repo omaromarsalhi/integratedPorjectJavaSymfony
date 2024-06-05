@@ -32,6 +32,7 @@ var uiValues
             imJs.searchClick();
             imJs.filterClickButton();
             imJs.unloadImage2();
+            imJs.seachImage();
             imJs.unloadImage();
             imJs.unloadImage3();
             imJs.unloadImage4();
@@ -627,11 +628,11 @@ var uiValues
                 values: [filterBy.priceIntervale.min, filterBy.priceIntervale.max],
                 slide: function (event, ui) {
                     $('#amount').val('$' + ui.values[0] + ' - $' + ui.values[1]);
-                    uiValues=ui
+                    uiValues = ui
                 },
             }).mouseup(function () {
-                filterBy.priceIntervale.min=uiValues.values[0];
-                filterBy.priceIntervale.max=uiValues.values[1];
+                filterBy.priceIntervale.min = uiValues.values[0];
+                filterBy.priceIntervale.max = uiValues.values[1];
                 filterByPrice()
             });
             $('#amount').val('$' + $('#slider-range').slider('values', 0) +
@@ -671,8 +672,39 @@ var uiValues
                 rbtPreview(this);
             });
         },
+        seachImage: function name() {
+            // $("#rbtinput2").click(function (e) {
+            //     $("#nipa").click();
+            // });
+            //
+            // function rbtPreview() {
+            //     const [file2] = nipa.files
+            //     if (file2) {
+            //         rbtinput2.src = URL.createObjectURL(file2)
+            //     }
+            // }
+            //
+            // $("#nipa").change(function () {
+            //     rbtPreview(this);
+            // });
 
+            $("#rbtinputForSearch").click(function (e) {
+                $("#nipaForSearch").click();
+            });
 
+            function rbtPreview() {
+                const [file2] = nipaForSearch.files
+                if (file2) {
+                    rbtinputForSearch.src = URL.createObjectURL(file2)
+                    startAiImageSearch(file2)
+                }
+            }
+
+            $("#nipaForSearch").change(function () {
+                    rbtPreview(this);
+            });
+            // }
+        },
         unloadImage3: function name() {
             $("#createfileImage").click(function (e) {
                 $("#createinputfile").click();

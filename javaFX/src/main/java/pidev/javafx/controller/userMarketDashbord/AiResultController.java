@@ -40,27 +40,40 @@ public class AiResultController implements Initializable {
     }
 
     public void setData(JSONObject jsonObject) {
+        System.out.println("omar");
+        System.out.println(jsonObject);
+
         if ((boolean) jsonObject.get( "doesItExist" )) {
             var data = jsonObject.getJSONArray( "data" );
             for (int i = 0; i < data.length(); i++) {
-                if (!(boolean) data.getJSONObject( i ).get( "title" ) && !(boolean) data.getJSONObject( i ).get( "category" )) {
-
+                if (!(boolean) data.getJSONObject( i ).get( "title" ) || !(boolean) data.getJSONObject( i ).get( "category" )) {
                     HBox detailsBox = deepCopy();
                     TextArea lookupTitle = (TextArea) detailsBox.lookup( "#titleDesc" );
                     TextArea lookupCategory = (TextArea) detailsBox.lookup( "#categoryDesc" );
 
                     if (!(boolean) data.getJSONObject( i ).get( "title" )) {
                         String titleData = (String) data.getJSONObject( i ).get( "titleData" );
+                        titleData=titleData.replace( "paragraph","image" );
+                        titleData=titleData.replace( "text","image" );
                         lookupTitle.setText( titleData );
-                    } else
-                        detailsBox.lookup( "#titleSection" ).setVisible( false );
-
+                    }else {
+                        VBox vBox=(VBox) detailsBox.lookup( "#titleSection" );
+                        vBox.setPrefHeight( 0 );
+                        vBox.setVisible( false );
+                        detailsBox.setPrefHeight( 140 );
+                    }
 
                     if (!(boolean) data.getJSONObject( i ).get( "category" )) {
                         String categoryData = (String) data.getJSONObject( i ).get( "categoryData" );
+                        categoryData=categoryData.replace( "paragraph","image" );
+                        categoryData=categoryData.replace( "text","image" );
                         lookupCategory.setText( categoryData );
-                    } else
-                        detailsBox.lookup( "#categorySection" ).setVisible( false );
+                    } else {
+                        VBox vBox=(VBox) detailsBox.lookup( "#categorySection" );
+                        vBox.setPrefHeight( 0 );
+                        vBox.setVisible( false );
+                        detailsBox.setPrefHeight( 140 );
+                    }
 
 
                     VBox vBox = (VBox) detailsBox.lookup( "#titleCat" );

@@ -34,6 +34,7 @@ class MessageHandler implements MessageComponentInterface
 
     public function onMessage(ConnectionInterface $from, $msg): void
     {
+        echo $msg . "\n";
         $data = json_decode($msg, true);
 
         if (isset($data['action'])) {

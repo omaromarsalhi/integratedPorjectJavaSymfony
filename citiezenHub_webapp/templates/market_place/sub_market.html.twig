@@ -12,32 +12,33 @@
     >
         <div class="product-style-one no-overlay with-placeBid " id="container_product_{{ product.idProduct }}">
             <div class="card-thumbnail">
-                <a href="../pages/product-details.html">
+                <a onclick="document.getElementById('form_details_{{ i }}').submit(); return false;" >
                     {% if product.images|length > 1 %}
-                    <!-- Swiper -->
-                    <div class="swiper effect-creative-swiper rounded">
-                        <div class="swiper-wrapper">
-                            {% for image in product.images %}
-                            <div class="swiper-slide">
-                                <a href="#">
-                                    <img src="{{ asset(image.path)|default("Not available") }}"
-                                         alt="NFT_portfolio"
-                                         class="fixedSubImages4MarketPlace"/>
-                                </a>
+                        <!-- Swiper -->
+                        <div class="swiper effect-creative-swiper rounded">
+                            <div class="swiper-wrapper">
+                                {% for image in product.images %}
+                                    <div class="swiper-slide">
+                                        <a href="#"
+                                           onclick="document.getElementById('form_details_{{ i }}').submit(); return false;">
+                                            <img src="{{ asset(image.path)|default("Not available") }}"
+                                                 alt="NFT_portfolio"
+                                                 class="fixedSubImages4MarketPlace"/>
+                                        </a>
+                                    </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
+                            <div class="swiper-pagination"></div>
                         </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
                     {% else %}
-                    <div>
-                        <a href="#">
-                            <img src="{{ asset(product.images[0].path) }}"
-                                 alt="NFT_portfolio"
-                                 class="fixedSubImages4MarketPlace"
-                            >
-                        </a>
-                    </div>
+                        <div>
+                            <a href="#" onclick="document.getElementById('form_details_{{ i }}').submit(); return false;">
+                                <img src="{{ asset(product.images[0].path) }}"
+                                     alt="NFT_portfolio"
+                                     class="fixedSubImages4MarketPlace"
+                                >
+                            </a>
+                        </div>
                     {% endif %}
                 </a>
 
@@ -57,54 +58,53 @@
                     </div>
                     {% if product.user != app.user %}
 
-                    <div
-                            class="quickview--box"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="right"
-                            title="Contact Seller">
-                        <a
-                                onclick="chatStart('{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}',{{ product.user.getId() }},'{{ product.user.getImage() }}')"
-                                class="yith-wcqv-button"
-                                data-product_id="793"
-                        >
-                            <i class="mt-2 fi fi-rr-comment-alt"></i>
-                        </a>
-                    </div>
-                    <div
-                            class="quickview--box"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="right"
-                            title="Buy"
+                        <div
+                                class="quickview--box"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Contact Seller">
+                            <a
+                                    onclick="chatStart('{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}',{{ product.user.getId() }},'{{ product.user.getImage() }}')"
+                                    class="yith-wcqv-button"
+                                    data-product_id="793"
+                            >
+                                <i class="mt-2 fi fi-rr-comment-alt"></i>
+                            </a>
+                        </div>
+                        <div
+                                class="quickview--box"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="right"
+                                title="Buy"
 
-                    >
-                        <a
-                                onclick="add2Card({{ product.idProduct }},{{ i+1 }})"
-                                class="yith-wcqv-button"
-                                id="product_{{ i+1 }}"
                         >
-                            <i class="mt-2 fi fi-rr-shopping-cart-add"></i>
-                        </a>
+                            <a
+                                    onclick="add2Card({{ product.idProduct }},{{ i+1 }})"
+                                    class="yith-wcqv-button"
+                                    id="product_{{ i+1 }}"
+                            >
+                                <i class="mt-2 fi fi-rr-shopping-cart-add"></i>
+                            </a>
 
-                    </div>
+                        </div>
                     {% endif %}
                 </div>
             </div>
             <div class="product-share-wrapper">
                 <div class="profile-share">
                     <a
-                            href="author.html"
                             class="avatar"
                             data-tooltip="Owener:Mr.{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}"
                     ><img
                                 src="{{ asset('/marketPlaceImages/omar.jpg') }}"
                                 alt="Nft_Profile"
-                    />
+                        />
                     </a>
                     <a class="more-author-text"
-                       href="#">{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}</a>
+                     >{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}</a>
                 </div>
             </div>
-            <a href="../pages/product-details.html">
+            <a href="#" onclick="document.getElementById('form_details_{{ i }}').submit(); return false;">
                 <h2 id="name_model" class="product-name"
                     style="margin: 4px 0 !important;font-size: 30px">{{ product.name|capitalize }}</h2>
             </a>
@@ -116,13 +116,13 @@
             </span>
             <div class="bid-react-area m-0 ">
                 {% if product.quantity > 0 %}
-                <div class="last-bid mt-3 " id="">
-                    In Stock
-                </div>
+                    <div class="last-bid mt-3 " id="">
+                        In Stock
+                    </div>
                 {% else %}
-                <div class="last-bid mt-3 " style="color: #a81515" id="">
-                    Out Of Stock
-                </div>
+                    <div class="last-bid mt-3 " style="color: #a81515" id="">
+                        Out Of Stock
+                    </div>
 
                 {% endif %}
                 <div class="last-bid mt-3 " id="price_model">{{ product.price }} DT</div>
@@ -133,8 +133,13 @@
     <!-- end single product -->
 
 {% endfor %}
-
-
+{% for i,product in products %}
+    <form id="form_details_{{ i }}" method="post"
+          action="{{ path('app_product_product_details',{'index': i }) }}">
+        <input type="hidden" name="_token_{{ i }}"
+               value="{{ product.idProduct }}">
+    </form>
+{% endfor %}
 
 
 

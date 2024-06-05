@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\MyHelpers\AiVerification;
+use App\MyHelpers\ImageHelper;
+use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,18 +24,27 @@ class MarketPlaceController extends AbstractController
         if ($request->isXmlHttpRequest()) {
 
             $movement_direction = $request->get("movement_direction");
+            if($movement_direction==-100){
+                $session->set('allProducts', $productRepository->findBy(['state'=>'verified'],['idProduct' => 'DESC']   ));
+                $prods = $session->get('allProducts');
+                $current_page = 1;
+                $previous_page = 2;
+                $session->set('idList', [-1]);
+            }else{
+                $prods = $session->get('allProducts');
+                $nbr_pages = $session->get('nbr_pages');
+                $current_page = $session->get('current_page');
+                $previous_page = $current_page;
 
-            $prods = $session->get('allProducts');
-            $nbr_pages = $session->get('nbr_pages');
-            $current_page = $session->get('current_page');
-            $previous_page = $current_page;
+                if ($current_page != $nbr_pages && $movement_direction == "next")
+                    $current_page++;
+                else if ($current_page != 1 && $movement_direction == "previous")
+                    $current_page--;
+                else
+                    $current_page = $movement_direction;
+            }
 
-            if ($current_page != $nbr_pages && $movement_direction == "next")
-                $current_page++;
-            else if ($current_page != 1 && $movement_direction == "previous")
-                $current_page--;
-            else
-                $current_page = $movement_direction;
+
 
             $session->set('current_page', $current_page);
 
@@ -49,18 +61,8 @@ class MarketPlaceController extends AbstractController
         $prods = $session->get('allProducts');
         $session->set('nbr_pages', ceil(sizeof($prods) / 12));
         $session->set('current_page', 1);
+        $session->set('idList', [-1]);
 
-
-//        $productimage=new ProductImages();
-//        $productimage->setPath('usersImg/f76c774e989a81e8ad43906570a26d48.png');
-//
-//        $prodss=new Product();
-//        $prodss=$prodss->addProductImage($productimage);
-
-//        dump($prods);
-//        for($i=0;$i<sizeof($prods);$i++)
-//            echo $prods[$i]->getImages()[0]->getPath();
-//        die();
 
         return $this->render('market_place/market.html.twig', [
             'products' => array_slice($prods, 0, 12),
@@ -77,10 +79,11 @@ class MarketPlaceController extends AbstractController
         $session = $request->getSession();
 
         if ($request->isXmlHttpRequest()) {
+            $session = $request->getSession();
 
             $filterBy=$request->get('filterBy');
-            dump($filterBy);
-            $prods=$productRepository->findByPriceTest($filterBy);
+            $idList=$session->get('idList');
+            $prods=$productRepository->findByPriceTest($filterBy,$idList);
             $session->set('allProducts',$prods);
             $session->set('nbr_pages', ceil(sizeof($prods) / 12));
             $session->set('current_page', 1);
@@ -96,6 +99,39 @@ class MarketPlaceController extends AbstractController
             ]);
 
             return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent()]);
+        }
+
+        return new Response('', Response::HTTP_BAD_REQUEST);
+    }
+
+    #[Route('/searChByImage', name: 'app_market_searChByImage', methods: ['GET', 'POST'])]
+    public function searChByImage(AiVerification $aiVerification,AiResultRepository $aiResultRepository,ProductRepository $productRepository, Request $request): Response
+    {
+        $session = $request->getSession();
+
+        if ($request->isXmlHttpRequest()) {
+
+            $image=$request->files->get('image');
+            $data=$aiResultRepository->findAll();
+            $fileName=ImageHelper::saveSingleImage($image);
+            $idList=$aiVerification->runImageSearch($fileName,$data);
+            $session->set('idList', $idList);
+            $products = $productRepository->findBy(['idProduct' => $idList,'state'=>'verified']);
+            $session->set('allProducts',$products);
+            $session->set('nbr_pages', ceil(sizeof($products) / 12));
+            $session->set('current_page', 1);
+
+
+            $subMarket=$this->render('market_place/sub_market.html.twig', [
+                'products' => array_slice($products, 0, 12),
+                'current_page' => 1,
+                'previous_page' => 2,
+            ]);
+            $nav=$this->render('market_place/nav.html.twig', [
+                'nbr_pages' => $session->get('nbr_pages'),
+            ]);
+
+            return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent(),'idlist'=>$idList]);
         }
 
         return new Response('', Response::HTTP_BAD_REQUEST);

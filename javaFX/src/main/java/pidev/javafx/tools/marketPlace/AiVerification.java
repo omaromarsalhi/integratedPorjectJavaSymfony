@@ -1,5 +1,7 @@
 package pidev.javafx.tools.marketPlace;
 
+import pidev.javafx.tools.UserController;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +18,6 @@ public class AiVerification {
     }
 
     private void Http(int idProduct,String mode){
-        System.out.println("mode:; "+mode);
         try {
             URL url = new URL("http://localhost:8000/java/request/verifyProduct"); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -24,7 +25,7 @@ public class AiVerification {
             connection.setDoOutput(true);
 
             OutputStream os = connection.getOutputStream();
-            os.write(("idProduct="+idProduct+"&mode="+mode).getBytes());
+            os.write(("idProduct="+idProduct+"&mode="+mode+"&idUser="+ UserController.getInstance().getCurrentUser().getId()).getBytes());
             os.flush();
             os.close();
 

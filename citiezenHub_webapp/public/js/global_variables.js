@@ -13,6 +13,6 @@ var filterBy = {
 function setPriceIntervale(min, max) {
     filterBy.priceIntervale = {
         min: min,
-        max: max,
+        max: max+1000,
     }
 }

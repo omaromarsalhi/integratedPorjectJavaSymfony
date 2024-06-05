@@ -2,10 +2,13 @@
 
 namespace App\MyHelpers;
 
+use App\Entity\AiResult;
 use Exception;
-use GuzzleHttp\Exception\RequestException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 
 class AiVerification
@@ -15,10 +18,29 @@ class AiVerification
 
     public function run($obj): AiDataHolder
     {
-        $this->aiDataHolder = new AiDataHolder();;
-        $this->getAllDesc($obj['images']);
+        $this->aiDataHolder = new AiDataHolder();
+        $this->getAllDesc($obj['images'], $obj['title']);
         $this->compareDescWithTitleAndCategory($this->aiDataHolder->getDescriptions(), $obj);
         return $this->aiDataHolder;
+    }
+
+
+    public function runImageSearch($fileName, $data): array
+    {
+        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
+        $imageDescription = $this->generateImageDescriptionWithNoTitle($fileName);
+        $result = [];
+        for ($i = 0; $i < count($data); $i++) {
+            if ($data[$i] instanceof AiResult) {
+                $aiDataHolder = $serializer->deserialize($data[$i]->getBody(), AiDataHolder::class, 'json');
+                $descriptions = $aiDataHolder->getDescriptions();
+                $rep = $this->looksForsemilairity($imageDescription, $descriptions[0]);
+                if (str_starts_with(strtolower($rep), " yes") || str_starts_with(strtolower($rep), "yes"))
+                    $result[] = $data[$i]->getIdProduct();
+
+            }
+        }
+        return $result;
     }
 
     /**
@@ -29,13 +51,13 @@ class AiVerification
         $this->getOcrResult($obj['pathFrontCin'], $obj['fileNameFront']);
         $this->getOcrResult($obj['pathBackCin'], $obj['fileNameBackCin']);
         try {
-            $this->formatJsonFilesOfCin($obj['fileNameFront'], $obj['fileNameBackCin'],$obj['path']);
-        }catch (Exception $e){
+            $this->formatJsonFilesOfCin($obj['fileNameFront'], $obj['fileNameBackCin'], $obj['path']);
+        } catch (Exception $e) {
             throw new \Exception('something went wrong');
         }
     }
 
-    public function formatJsonFilesOfCin($filePathFrontCin, $filePathBackCin,$path): void
+    public function formatJsonFilesOfCin($filePathFrontCin, $filePathBackCin, $path): void
     {
         try {
             $pathFrontCin = '../../files/usersJsonFiles/' . $filePathFrontCin . '.json';
@@ -201,7 +223,7 @@ class AiVerification
             $filesystem->remove($pathBackCin);
 
             $modifiedJsonString = json_encode($userCinData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            file_put_contents('../../files/usersJsonFiles/' .$path. '.json', $modifiedJsonString);
+            file_put_contents('../../files/usersJsonFiles/' . $path . '.json', $modifiedJsonString);
         } catch (Exception $e) {
             throw new \Exception('something went wrong');
         }
@@ -215,14 +237,13 @@ class AiVerification
 
 
     private
-    function getAllDesc($images_url): void
+    function getAllDesc($images_url, $title): void
     {
         $result = [];
         for ($i = 0; $i < sizeof($images_url); $i++) {
-            $result[] = $this->generateImageDescription($images_url[$i]);
+            $result[] = $this->generateImageDescription($images_url[$i], $title);
         }
         $this->aiDataHolder->setDescriptions($result);
-        return;
     }
 
 
@@ -241,23 +262,31 @@ class AiVerification
     }
 
 
-    private
-    function getTitleValidation($desc, $title): string
+    private function getTitleValidation($desc, $title): string
     {
         return $this->Http('get-title_validation?desc=' . $desc . '&title=' . $title);
     }
 
-    private
-    function getCategoryValidation($desc, $category): string
+    private function getCategoryValidation($desc, $category): string
     {
         return $this->Http('get-category_validation?desc=' . $desc . '&category=' . $category);
     }
 
-    private
-    function generateImageDescription($image_url): string
+    private function generateImageDescription($image_url, $title): string
+    {
+        $absolute_path = 'C:\Users\omar salhi\Desktop\integratedPorjectJavaSymfony\citiezenHub_webapp\public\usersImg\\' . $image_url;
+        return $this->Http('get-product_image_descreption_title?image_url=' . $absolute_path . '&fileName=' . $title);
+    }
+
+    public function generateImageDescriptionWithNoTitle($image_url): string
     {
         $absolute_path = 'C:\Users\omar salhi\Desktop\integratedPorjectJavaSymfony\citiezenHub_webapp\public\usersImg\\' . $image_url;
         return $this->Http('get-product_image_descreption?image_url=' . $absolute_path);
+    }
+
+    public function looksForsemilairity($p1, $p2): string
+    {
+        return $this->Http('looksForsemilairity?p1=' . $p1 . '&p2=' . $p2);
     }
 
 

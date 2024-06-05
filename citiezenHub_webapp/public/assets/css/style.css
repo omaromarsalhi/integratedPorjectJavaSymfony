@@ -20857,7 +20857,7 @@ button .small-image {
 
 .nuron-expo-filter-widget {
   background: var(--background-color-1);
-  padding: 20px 30px 30px;
+  /*padding: 20px 30px 30px;*/
   border-radius: 5px;
   border: 1px solid var(--color-border);
 }

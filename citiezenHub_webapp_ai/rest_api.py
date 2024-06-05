@@ -8,7 +8,7 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://9d1d-34-139-236-64.ngrok-free.app'
+url='https://8c69-34-133-93-101.ngrok-free.app'
 model='llava:13b'
 
 
@@ -31,7 +31,7 @@ def generate_desc_image():
 
 
 @app.route('/get-product_image_descreption_title',methods=['POST'])
-def generate_desc_image():
+def generate_title_image():
     image_url=request.args.get('image_url')
     title=request.args.get('title')
     print("image url : "+image_url)
@@ -54,6 +54,15 @@ def generate_category_validation():
     desc=request.args.get('desc')
     title=request.args.get('category')
     text=ov.generateBasedOnCategory(desc,title,url)
+    tuned_response=ov.finetune_resp(text)
+    return jsonify(tuned_response),200
+
+
+@app.route('/looksForsemilairity',methods=['POST'])
+def look():
+    p1=request.args.get('p1')
+    p2=request.args.get('p2')
+    text=ov.lookFroSemilarData(p1,p2,url)
     tuned_response=ov.finetune_resp(text)
     return jsonify(tuned_response),200
 

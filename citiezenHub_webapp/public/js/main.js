@@ -31,41 +31,44 @@ socket.addEventListener('message', (event) => {
 });
 
 function updateProductOfOtherUser(idProduct) {
-    $('#container_product_' + idProduct).addClass('blur')
-    $.ajax({
-        url: '/market/place/renderSingleProduct',
-        type: "POST",
-        data: {
-            idProduct: idProduct,
-            index: 100
-        },
-        async: true,
-        success: function (response) {
-            $('#container_product_' + idProduct).removeClass('blur')
-            $('#container_product_' + idProduct).html(response)
-            launchSwiper()
+    if (document.getElementById('container_product_' + idProduct)) {
+        $('#container_product_' + idProduct).addClass('blur')
+        $.ajax({
+            url: '/market/place/renderSingleProduct',
+            type: "POST",
+            data: {
+                idProduct: idProduct,
+                index: 100
+            },
+            async: true,
+            success: function (response) {
+                $('#container_product_' + idProduct).removeClass('blur')
+                $('#container_product_' + idProduct).html(response)
+                launchSwiper()
 
-            let out = false
-            let count = 1
-            while (!out) {
-                let product = document.getElementById("product_" + count)
-                if (!product) {
-                    let product2Update = document.getElementById("product_100")
-                    product2Update.setAttribute('id', 'product_' + count)
-                    product2Update.setAttribute('onclick', 'add2Card(' + idProduct + ',' + count + ')')
-                    out = true;
-                    console.log('count ' + count)
+                let out = false
+                let count = 1
+                while (!out) {
+                    let product = document.getElementById("product_" + count)
+                    if (!product) {
+                        let product2Update = document.getElementById("product_100")
+                        product2Update.setAttribute('id', 'product_' + count)
+                        product2Update.setAttribute('onclick', 'add2Card(' + idProduct + ',' + count + ')')
+                        out = true;
+                        console.log('count ' + count)
+                    }
+                    if (count > 12)
+                        out = true;
+                    count++
                 }
-                if (count > 12)
-                    out = true;
-                count++
-            }
-        },
-        error: function (response) {
-            alert(response)
-        },
-    })
-    launchSwiper()
+            },
+            error: function (response) {
+                alert(response)
+            },
+        })
+        launchSwiper()
+    }
+
 }
 
 
