@@ -15,7 +15,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Circle;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import pidev.javafx.tools.UserController;
@@ -91,40 +90,49 @@ public class CinController implements Initializable {
             @Override
             protected String call() throws Exception {
                 Thread.sleep( 2000 );
+                int id = UserController.getInstance().getCurrentUser().getId();
                 String frontPath = MyTools.getInstance().getPathAndSaveIMG( files[0].getAbsolutePath() );
                 String backPath = MyTools.getInstance().getPathAndSaveIMG( files[1].getAbsolutePath() );
-                return AiVerification.HttpCinVerification( UserController.getInstance().getCurrentUser().getId(), frontPath, backPath );
+                String cinTest=AiVerification.HttpCinVerification( id, frontPath, backPath );
+                if(cinTest.equals( "please insure that you added the right images" ))
+                    return cinTest;
+                return AiVerification.analyseEditedData( id );
             }
         };
 
+
         task.setOnSucceeded( event -> {
             Platform.runLater( () -> {
-                MyTools.getInstance().getTextNotif().setText( task.getValue() );
                 idInfoInterface.setOpacity( 1 );
                 loadingPage.setVisible( false );
                 if (task.getValue().equals( "please insure that you added the right images" )) {
+                    MyTools.getInstance().getTextNotif().setText( "please insure that you added the right images" );
                     MyTools.getInstance().showErrorNotif();
                     frontCin.setImage( new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/driver-license.png" ) ) ) );
                     backCin.setImage( new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/driver-license.png" ) ) ) );
                     files[0] = null;
                     files[1] = null;
                 } else {
-                    MyTools.getInstance().showNotif();
+                    if(task.getValue().equals( "success" )) {
+                        MyTools.getInstance().getTextNotif().setText( "data has been successfully updated" );
+                        MyTools.getInstance().showNotif();
+                    }
+                    else{
+                        MyTools.getInstance().getTextNotif().setText( task.getValue() );
+                        MyTools.getInstance().showErrorNotif();
+                    }
                 }
             } );
         } );
         return new Thread( task );
     }
 
-    
-
-
 
     @FXML
     private void onStateMouseEntered(MouseEvent event) throws ParseException {
         Label mainContainer;
 
-        if(UserController.getInstance().getCurrentUser().getIsVerified()==0) {
+        if (UserController.getInstance().getCurrentUser().getIsVerified() == 0) {
             String date = UserController.getInstance().getCurrentUser().getDate();
             SimpleDateFormat format = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
             Date date1 = format.parse( date );
@@ -138,8 +146,7 @@ public class CinController implements Initializable {
 
             mainContainer = new Label( "you need to add your cin images (front and back) so that we can verify you info " +
                     "otherwise your account will be deleted within: " + hours + "H and " + minutes + "m" );
-        }
-        else{
+        } else {
             mainContainer = new Label( "your account is verified" );
         }
         mainContainer.setMaxWidth( 400 );
@@ -153,7 +160,7 @@ public class CinController implements Initializable {
 
         popup.getContent().clear();
         popup.getContent().addAll( mainContainer );
-        popup.show( Stage.getWindows().get( 0 ), event.getScreenX() +20, event.getScreenY() + 20 );
+        popup.show( Stage.getWindows().get( 0 ), event.getScreenX() + 20, event.getScreenY() + 20 );
     }
 
 

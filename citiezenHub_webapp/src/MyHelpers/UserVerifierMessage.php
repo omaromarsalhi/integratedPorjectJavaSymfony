@@ -16,4 +16,9 @@ class UserVerifierMessage
         return $this->obj;
     }
 
+    public function getId()
+    {
+        return $this->obj->getId(); // Assuming $obj has a getId method
+    }
+
 }

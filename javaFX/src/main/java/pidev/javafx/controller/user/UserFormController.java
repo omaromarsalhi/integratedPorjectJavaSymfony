@@ -24,6 +24,7 @@ import pidev.javafx.model.MarketPlace.Product;
 import pidev.javafx.model.user.User;
 import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
+import pidev.javafx.tools.marketPlace.AiVerification;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyTools;
 
@@ -95,7 +96,7 @@ public class UserFormController implements Initializable {
     private String formLayoutAfterRegexCheck;
     Popup popup4Regex = MyTools.getInstance().createPopUp();
     private boolean[] isAllInpulValid;
-    private User user;
+
     String regexAge = "^(?:1[8-9]|[2-9][0-9])$";
     String regexLastName = "[a-zA-Z\\s]{3,}+";
     String regexTelephone = "^[0-9]{8,8}$";
@@ -181,10 +182,8 @@ public class UserFormController implements Initializable {
 
 
             updateUser.setOnMouseClicked( event -> {
-                System.out.println( "I m here" );
                 if (modifierData()) {
-
-                    Task<Void> task = new Task() {
+                    Task<String> task = new Task() {
                         @Override
                         protected Object call() throws Exception {
                             Platform.runLater( () -> {
@@ -192,8 +191,7 @@ public class UserFormController implements Initializable {
                                 loadinPage.setOpacity( 0.4 );
                                 loadinPage.setVisible( true );
                             } );
-                            Thread.sleep( 3000 );
-                            return null;
+                            return AiVerification.analyseEditedData( UserController.getInstance().getCurrentUser().getId() );
                         }
                     };
                     task.setOnSucceeded( workerStateEvent -> {
@@ -201,8 +199,13 @@ public class UserFormController implements Initializable {
                             loadinPage.setOpacity( 0 );
                             EventBus.getInstance().publish( "exitFormUser", event );
                             EventBus.getInstance().publish( "setUserImage", event );
-                            MyTools.getInstance().getTextNotif().setText( "User Has Been Modified Successfully" );
-                            MyTools.getInstance().showNotif();
+                            if (task.getValue().equals( "success" )) {
+                                MyTools.getInstance().getTextNotif().setText( "data has been successfully updated" );
+                                MyTools.getInstance().showNotif();
+                            } else {
+                                MyTools.getInstance().getTextNotif().setText( task.getValue() );
+                                MyTools.getInstance().showErrorNotif();
+                            }
                         } );
                     } );
                     new Thread( task ).start();
@@ -212,27 +215,16 @@ public class UserFormController implements Initializable {
         }
 
 
-//        cancel.setPrefWidth( 35 );
-//
-//        cancel.setPrefHeight( 32 );
-//        cancel.setStyle( "-fx-background-color: transpatent;" );
-//
-//        Image img3 = new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/paper.png" ) ) );
-//
-//        cancel.setGraphic( new ImageView( img3 ) );
-//
-//        cancel.setOnMouseClicked( event -> EventBus.getInstance().publish( "exitFormUser", event ) );
-
         if (usageOfThisForm.equals( "editDetails" ))
             itemInfo.getChildren().addAll( updateUser, clearProd );
-//        else
-//            itemInfo.getChildren().addAll( cancel );
+
 
         itemInfo.setSpacing( 15 );
         itemInfo.setAlignment( Pos.BOTTOM_RIGHT );
         itemInfo.getStylesheets().add( String.valueOf( getClass().getResource( "/style/marketPlace/Buttons.css" ) ) );
         itemInfo.setPadding( new Insets( 0, 10, 17, 0 ) );
     }
+
 
 
     public void setDataUser(User user) {
@@ -272,12 +264,9 @@ public class UserFormController implements Initializable {
         user.setPhotos( UserController.getInstance().getCurrentUser().getPhotos() );
         user.setGender( gender.getText() );
         user.setAdresse( adresse.getText() );
-        System.out.println( user );
-        System.out.println( UserController.getInstance().getCurrentUser() );
         ServiceUser service = new ServiceUser();
         service.modifier( user );
-        UserController.setUser( user );
-        System.out.println( UserController.getInstance().getCurrentUser() );
+        UserController.setUser( service.findParEmail(user.getEmail() ) );
         return true;
     }
 
@@ -288,7 +277,6 @@ public class UserFormController implements Initializable {
         name.setOnKeyTyped( event -> {
             isAllInpulValid[0] = name.getText().matches( regexLastName );
             String color = (isAllInpulValid[0]) ? "green" : "red";
-            System.out.println( isAllInpulValid[0] );
             if (name.getText().isEmpty()) {
                 formBox.setStyle( formLayoutBeforRegexCheck );
                 name.setStyle( "" );
@@ -308,7 +296,7 @@ public class UserFormController implements Initializable {
         lastName.setOnKeyTyped( event -> {
             isAllInpulValid[1] = lastName.getText().matches( regexLastName );
             String color = (isAllInpulValid[1]) ? "green" : "red";
-            System.out.println( isAllInpulValid[1] );
+
             if (lastName.getText().isEmpty()) {
                 formBox.setStyle( formLayoutBeforRegexCheck );
                 lastName.setStyle( "" );
@@ -327,7 +315,6 @@ public class UserFormController implements Initializable {
             if (age.getText().matches( regexAge ))
                 isAllInpulValid[2] = true;
             String color = (isAllInpulValid[2]) ? "green" : "red";
-            System.out.println( isAllInpulValid[2] );
             if (age.getText().isEmpty()) {
                 formBox.setStyle( formLayoutBeforRegexCheck );
                 age.setStyle( "" );
@@ -343,7 +330,6 @@ public class UserFormController implements Initializable {
         cin.setOnKeyTyped( event -> {
             isAllInpulValid[3] = cin.getText().matches( regexCIN );
             String color = (isAllInpulValid[3]) ? "green" : "red";
-            System.out.println( isAllInpulValid[3] );
             if (cin.getText().isEmpty()) {
                 formBox.setStyle( formLayoutBeforRegexCheck );
                 cin.setStyle( "" );
@@ -360,7 +346,6 @@ public class UserFormController implements Initializable {
         phone.setOnKeyTyped( event -> {
             isAllInpulValid[4] = phone.getText().matches( regexTelephone );
             String color = (isAllInpulValid[4]) ? "green" : "red";
-            System.out.println( isAllInpulValid[4] );
             if (phone.getText().isEmpty()) {
                 formBox.setStyle( formLayoutBeforRegexCheck );
                 phone.setStyle( "" );
@@ -378,7 +363,6 @@ public class UserFormController implements Initializable {
 
             isAllInpulValid[5] = status.getText().matches( regexLastName );
             String color = (isAllInpulValid[5]) ? "green" : "red";
-            System.out.println( isAllInpulValid[5] );
             if (status.getText().isEmpty()) {
                 formBox.setStyle( formLayoutBeforRegexCheck );
                 status.setStyle( "" );
@@ -395,7 +379,6 @@ public class UserFormController implements Initializable {
         gender.setOnKeyTyped( event -> {
             isAllInpulValid[6] = gender.getText().matches( regexLastName );
             String color = (isAllInpulValid[6]) ? "green" : "red";
-            System.out.println( isAllInpulValid[6] );
             if (gender.getText().isEmpty()) {
                 formBox.setStyle( formLayoutBeforRegexCheck );
                 gender.setStyle( "" );
@@ -411,10 +394,8 @@ public class UserFormController implements Initializable {
         } );
         dob.setOnKeyTyped( event -> {
 
-            System.out.println( "lplkojjjh" );
             Period period = Period.between( dob.getValue(), LocalDate.now() );
             int agerel = period.getYears();
-            System.out.println( agerel );
 
         } );
 
@@ -532,10 +513,8 @@ public class UserFormController implements Initializable {
     }
 
     void testChampsBeforRegex() {
-        System.out.println( "hiuhgytfrdesaw" );
-        System.out.println( dob.getValue() );
+
         if (!name.getText().isEmpty() && name.getText().matches( regexLastName )) {
-            System.out.println( name.getText() );
             isAllInpulValid[0] = true;
         }
 
@@ -569,7 +548,7 @@ public class UserFormController implements Initializable {
     public void imageDragDropped(DragEvent dragEvent) {
         for (File file : dragEvent.getDragboard().getFiles()) {
             img.setImage( new Image( "file:" + file.getAbsolutePath() ) );
-            String path=MyTools.getInstance().getPathAndSaveIMG( file.getAbsolutePath() );
+            String path = MyTools.getInstance().getPathAndSaveIMG( file.getAbsolutePath() );
             UserController.getInstance().getCurrentUser().setPhotos( path );
         }
     }

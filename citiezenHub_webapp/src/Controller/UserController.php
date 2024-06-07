@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\MyHelpers\UserVerifierMessage;
 use App\Service\GeocodingService;
+use Carbon\Traits\Timestamp;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Component\Translation\Translator;
 use App\Entity\Municipalite;
 use App\MyHelpers\AiVerification;
@@ -19,6 +24,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -28,11 +34,12 @@ class UserController extends AbstractController
     #[Route('/user', name: 'app_user', methods: ['GET', 'POST'])]
     public function index(): Response
     {
-
         return $this->render('user/index.html.twig', [
             'controller_name' => 'UserController',
         ]);
     }
+
+
 
 
     #[Route('/cinTimeInfo', name: 'app_cinTimeInfo', methods: ['GET', 'POST'])]
@@ -40,44 +47,77 @@ class UserController extends AbstractController
     {
         if ($request->isXmlHttpRequest()) {
             $user = $this->getUser();
-            if($user->getIsVerified()==0) {
+            if ($user->getIsVerified() == 0) {
                 $dateString = $user->getDate()->format('Y-m-d H:i:s');
                 $userDate = \DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
                 $now = new \DateTime();
                 $timeDifferenceMillis = 48 * 3600 * 1000 - ($now->getTimestamp() * 1000 - $userDate->getTimestamp() * 1000);
                 $hours = intdiv($timeDifferenceMillis, 3600 * 1000);
                 $minutes = intdiv($timeDifferenceMillis % (3600 * 1000), 60 * 1000);
-                return new JsonResponse(['state'=>'notVerified','hours' => $hours, 'minutes' => $minutes], Response::HTTP_OK);
-            }
-            else
-                return new JsonResponse(['state'=>'verified'], Response::HTTP_OK);
+                return new JsonResponse(['state' => 'notVerified', 'hours' => $hours, 'minutes' => $minutes], Response::HTTP_OK);
+            } else
+                return new JsonResponse(['state' => 'verified'], Response::HTTP_OK);
         }
         return new Response('error', Response::HTTP_FORBIDDEN);
     }
 
 
     #[Route('/verifyInfoCinWithOtherInfo', name: 'app_verifyInfoCinWithOtherInfo', methods: ['GET', 'POST'])]
-    public function verifyInfoCinWithOtherInfo(HttpClientInterface $client,EntityManagerInterface $entityManager): string
+    public function verifyInfoCinWithOtherInfo(HttpClientInterface $client,$user): string
     {
         $geocoder = new GeocodingService($client);
-        $user = $this->getUser();
         $path = '../../files/usersJsonFiles/' . md5('user' . ($user->getId() * 1000 + 17)) . '.json';
+        $filesystem = new Filesystem();
+        if (!$filesystem->exists([$path]))
+            return 'none';
 
         $jsonString = file_get_contents($path);
         $jsonDataCin = json_decode($jsonString, true);
-        $returnedData = 'error';
-        if ($geocoder->isInMunicipality($jsonDataCin['العنوان']['data'], $user->getMunicipalite()->getName())) {
-            $user->setIsVerified(1);
-            $entityManager->flush();
-            $returnedData = 'success';
-        }
 
-        return $returnedData;
+        if (trim($jsonDataCin['الولادة']['data']) !== $user->getDob()->format('m-d-Y'))
+            return 'error_dob';
+
+        if (trim($jsonDataCin['cart id']['data']) !== $user->getCin())
+            return 'error_cin';
+
+        if (!$geocoder->isInMunicipality($jsonDataCin['العنوان']['data'], $user->getMunicipalite()->getName()))
+            return 'error_location';
+
+        return 'success';
+    }
+
+
+    private function updateState(MessageBusInterface $messageBus, EntityManagerInterface $entityManager, $state,$user)
+    {
+        $user->setIsVerified($state);
+        $user->setState($state);
+        $user->setUMID(Uuid::v4()->toBase32());
+        $entityManager->flush();
+
+        if ($state == 0) {
+            $obj = [
+                'idUser' => $user->getId(),
+                'UMID' => $user->getUMID()
+            ];
+            $delayInSeconds = 2*60;
+            $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
+        }
+    }
+
+    #[Route('/java/testForJava', name: 'app_user_testForJava', methods: ['GET', 'POST'])]
+    public function testForJava(Request $request,HttpClientInterface $client,MessageBusInterface $messageBus,EntityManagerInterface $entityManager,UserRepository $userRepository): Response
+    {
+        $user=$userRepository->findOneBy(['idUser'=>$request->get('idUser')]);
+
+        $returnedData = $this->verifyInfoCinWithOtherInfo($client,$user);
+        $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0,$user);
+
+        return new Response($returnedData, Response::HTTP_OK);
     }
 
 
     #[Route('/cinUpdate', name: 'app_user_cinUpdate', methods: ['GET', 'POST'])]
-    public function cinUpdate(HttpClientInterface $client, AiVerification $aiVerification, Request $request, EntityManagerInterface $entityManager, ImageHelperUser $imageHelperUser): Response
+    public function cinUpdate(MessageBusInterface $messageBus, HttpClientInterface $client, AiVerification $aiVerification, Request $request, EntityManagerInterface $entityManager, ImageHelperUser $imageHelperUser): Response
     {
         if ($request->isXmlHttpRequest()) {
 
@@ -98,17 +138,21 @@ class UserController extends AbstractController
             try {
                 $aiVerification->runOcr($obj);
             } catch (\Exception $exception) {
+                $this->updateState($messageBus, $entityManager, 0);
                 return new Response('error', Response::HTTP_OK);
             }
 
-            return new Response($this->verifyInfoCinWithOtherInfo($client,$entityManager), Response::HTTP_OK);
+            $returnedData = $this->verifyInfoCinWithOtherInfo($client,$this->getUser());
+            $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0,$this->getUser());
+
+            return new Response($returnedData, Response::HTTP_OK);
         }
         return new Response('error', Response::HTTP_FORBIDDEN);
     }
 
 
     #[Route('/updateAddress', name: 'app_user_updateAddress', methods: ['GET', 'POST'])]
-    public function updateAddress(Request $request, EntityManagerInterface $entityManager, MunicipaliteRepository $municipalityRepository): Response
+    public function updateAddress(MessageBusInterface $messageBus, HttpClientInterface $client,Request $request, EntityManagerInterface $entityManager, MunicipaliteRepository $municipalityRepository): Response
     {
 //        $address=$this->userDate();
         if ($request->isXmlHttpRequest()) {
@@ -133,102 +177,70 @@ class UserController extends AbstractController
             $user->setMunicipalite($municipality);
             $entityManager->persist($municipality);
             $entityManager->flush();
-            return new Response('done', Response::HTTP_OK);
+
+            $returnedData = $this->verifyInfoCinWithOtherInfo($client,$this->getUser());
+            $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0,$this->getUser());
+
+            return new Response($returnedData, Response::HTTP_OK);
         }
         return new Response('error', Response::HTTP_FORBIDDEN);
     }
 
 
     #[Route('/editProfile', name: 'editProfile', methods: ['GET', 'POST'])]
-    public function editUser(ImageHelperUser $imageHelperUser, UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelperUser $imageHelper, SessionInterface $session): Response
+    public function editUser(MessageBusInterface $messageBus, HttpClientInterface $client,ImageHelperUser $imageHelperUser, UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelperUser $imageHelper, SessionInterface $session): Response
     {
         $user = $rep->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
-//        $filePathFrontCin = md5('user_front' . ($user->getId() * 1000 + 17));
-//        $filePathBackCin = md5('user_backCin' . ($user->getId() * 1000 + 17));
-//        $file = '../../files/usersJsonFiles/' . $filePathFrontCin . $filePathBackCin . '.json';
-//        if (file_exists($file)) {
-//            $jsonStringFrontCin = file_get_contents($file);
-//            $jsonDataFrontCin = json_decode($jsonStringFrontCin, true);
-//            if (isset($jsonDataFrontCin['الولادة'])) {
-//                $dataUser['dob'] = $jsonDataFrontCin['الولادة']['data'];
-//            }
-//            if (isset($jsonDataFrontCin['cart id'])) {
-//                $dataUser['cin'] = $jsonDataFrontCin['cart id']['data'];
-//            }
-//        }
+
         $routePrecedente = $req->headers->get('referer');
         $parsedUrl = parse_url($routePrecedente);
         $path = $parsedUrl['path'];
         $alertMessage = "Votre profil a été modifié avec succès !";
         $session->set('profile_alert_message', $alertMessage);
-//        $currentDate = $user->getDate();
-        $expiryTime = $user->getDate()->modify('+5 minutes');
-        $session->set('profile_alert_expiry', $expiryTime);
         $errorMessages = [];
-        $current = new \DateTime('now', new \DateTimeZone('Africa/Tunis'));
         if ($req->isXmlHttpRequest()) {
-            if ($current->format('Y-m-d H:i:s') < $expiryTime->format('Y-m-d H:i:s') || $user->getState()) {
 //              $emailService->envoyerEmail($mailer);
-                $email = $req->get('email');
-                $name = $req->get('name');
-                $lastname = $req->get('lastname');
-                $age = $req->get('age');
-                $gender = $req->get('gender');
-                $status = $req->get('status');
-                $cin = $req->get('cin');
-                $phoneNumber = $req->get('phoneNumber');
-                $date = $req->get('date');
-                $fichierImage = $req->files->get('image');
-                $user->setFirstName($name);
-                $user->setLastName($lastname);
-                $user->setAge($age);
-                $user->setPhoneNumber($phoneNumber);
-                $user->setCin($cin);
-                $user->setStatus($status);
-                $user->setGender($gender);
-                $user->setState(1);
-                if ($fichierImage != null)
-                    $user->setImage($imageHelper->saveImages($fichierImage));
-                $datee = date_create($date);
-                $user->setDob($datee);
-                $errors = $validator->validate($user, null, 'creation');
-                foreach ($errors as $error) {
-                    $field = $error->getPropertyPath();
-                    $errorMessages[$field] = $error->getMessage();
-                }
-// if (count($errors) === 0 && $dataUser['cin']== $user->getCin() && $dataUser['dob'] == $user->getDob()->format('Y-m-d')) {
-                if (count($errors) === 0) {
-                    $em = $doc->getManager();
-                    $em->persist($user);
-                    $em->flush();
-                    return new JsonResponse([
-                        'success' => true,
-                        'user' => [
-                            'name' => $user->getFirstName(),
-                            'lastname' => $user->getLastName(),
-                            'email' => $user->getEmail(),
-                            'address' => $user->getAddress(),
-                            'cin' => $user->getCin(),
-                            'phoneNumber' => $user->getPhoneNumber(),
-                            'age' => $user->getAge(),
-                            'status' => $user->getStatus(),
-                            'image' => $user->getImage(),
-                            'gender' => $user->getGender(),
-                            'dob' => $user->getDob(),
-                        ]
-                    ]);
-                }
-//                $errorMessages['other'] = 'llll';
-                return new JsonResponse([
-                    'success' => false,
-                    'errors' => $errorMessages,
-                ], 422);
+            $email = $req->get('email');
+            $name = $req->get('name');
+            $lastname = $req->get('lastname');
+            $age = $req->get('age');
+            $gender = $req->get('gender');
+            $status = $req->get('status');
+            $cin = $req->get('cin');
+            $phoneNumber = $req->get('phoneNumber');
+            $date = $req->get('date');
+            $fichierImage = $req->files->get('image');
+            $user->setFirstName($name);
+            $user->setLastName($lastname);
+            $user->setAge($age);
+            $user->setPhoneNumber($phoneNumber);
+            $user->setCin($cin);
+            $user->setStatus($status);
+            $user->setGender($gender);
+            if ($fichierImage != null)
+                $user->setImage($imageHelper->saveImages($fichierImage));
+            $datee = date_create($date);
+            $user->setDob($datee);
+            $errors = $validator->validate($user, null, 'creation');
+            foreach ($errors as $error) {
+                $field = $error->getPropertyPath();
+                $errorMessages[$field] = $error->getMessage();
+            }
 
-            } else
-                return new JsonResponse([
-                    'redirect' => $this->generateUrl('page404')
-                ]);
+            if (count($errors) === 0) {
+                $em = $doc->getManager();
+                $em->persist($user);
+                $em->flush();
 
+                $returnedData = $this->verifyInfoCinWithOtherInfo($client,$this->getUser());
+                $this->updateState($messageBus, $em, $returnedData == 'success' ? 1 : 0,$this->getUser());
+
+                return new Response($returnedData, Response::HTTP_OK);
+            }
+            return new JsonResponse([
+                'success' => false,
+                'errors' => $errorMessages,
+            ], 422);
         }
 
         $map = new Map();
@@ -247,7 +259,6 @@ class UserController extends AbstractController
             'dob' => $user->getDob(),
             'errors' => $errorMessages,
             'routePrecedente' => $path,
-            'expiry_time' => $expiryTime,
             'date' => $user->getDate(),
             'map' => $map,
         ]);
@@ -338,46 +349,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    function translateText($textToTranslate, $sourceLanguage, $targetLanguage)
-    {
-        $apiKey = "db017c40fad98dc5b9fc";
-        $url = "https://api.mymemory.translated.net/get?q=" . urlencode($textToTranslate) . "&langpair=" . $sourceLanguage . "|" . $targetLanguage . "&key=" . $apiKey;
-
-        $response = file_get_contents($url);
-        if ($response === false) {
-            throw new Exception("Erreur lors de la requête à l'API MyMemory");
-        }
-        $data = json_decode($response, true);
-        if (isset($data['responseData']['translatedText'])) {
-            return $data['responseData']['translatedText'];
-        } else {
-            throw new Exception("Erreur : champ 'translatedText' manquant dans responseData");
-        }
-    }
-
-
-
-//    function userDate()
-//    {
-//        $user=$this->getUser();
-//        $filePathFrontCin = md5('user_front' . ($user->getId() * 1000 + 17));
-//        $filePathBackCin = md5('user_backCin' . ($user->getId() * 1000 + 17));
-//        $file = '../../files/usersJsonFiles/' . $filePathFrontCin . $filePathBackCin . '.json';
-//        if (file_exists($file)) {
-//            $jsonStringFrontCin = file_get_contents($file);
-//            $jsonDataFrontCin = json_decode($jsonStringFrontCin, true);
-//            if (isset($jsonDataFrontCin['الولادة'])) {
-//                $dataUser['dob'] = $jsonDataFrontCin['الولادة']['data'];
-//            }
-//            if (isset($jsonDataFrontCin['cart id'])) {
-//                $dataUser['cin'] = $jsonDataFrontCin['cart id']['data'];
-//            }
-//            if (isset($jsonDataFrontCin['العنوان'])) {
-//                $dataUser['address'] = $jsonDataFrontCin['العنوان']['data'];
-//            }
-//        }
-//        return $dataUser;
-//    }
 
     #[Route('/GovrGet', name: 'GovrGet', methods: ['GET'])]
     public function getGovermentsMuni(MunicipaliteRepository $municipaliteRepository): Response

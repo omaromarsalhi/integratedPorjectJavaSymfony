@@ -147,6 +147,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(name:'cin_images',length: 1000, nullable: true)]
     private ?string $cin_images = null;
 
+    #[ORM\Column(length: 1000, nullable: true)]
+    private ?string $UMID = null;
+
 
 
 
@@ -428,5 +431,17 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setIsVerified(?int $isVerified): void
     {
         $this->isVerified = $isVerified;
+    }
+
+    public function getUMID(): ?string
+    {
+        return $this->UMID;
+    }
+
+    public function setUMID(?string $UMID): static
+    {
+        $this->UMID = $UMID;
+
+        return $this;
     }
 }

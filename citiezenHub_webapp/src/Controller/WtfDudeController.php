@@ -5,23 +5,28 @@ namespace App\Controller;
 use App\Entity\Municipalite;
 use App\Entity\User;
 use App\MyHelpers\AiVerification;
+use App\MyHelpers\UserVerifierMessage;
 use App\Repository\ChatRepository;
 use App\Repository\MunicipaliteRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Service\GeocodingService;
+use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\ByteString;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class WtfDudeController extends AbstractController
 {
     #[Route('/wtf/dude', name: 'app_wtf_dude')]
-    public function index(ChatRepository $chatRepository,UserRepository $userRepository): Response
+    public function index(EntityManagerInterface $entityManager,MessageBusInterface $messageBus,ChatRepository $chatRepository,UserRepository $userRepository): Response
     {
 //
 //        $filter = [
@@ -48,22 +53,34 @@ class WtfDudeController extends AbstractController
 //
 //        dump($data);
 //        dump($geocoder->isInMunicipality($jsonDataCin['العنوان']['data'],$user->getMunicipalite()->getName()));
-        $users = $userRepository->findAll();
+//        $users = $userRepository->findAll();
+//
+//        foreach ($users as $user) {
+//            if ($user !== $this->getUser()) {
+//                $chat = $chatRepository->selectLastMessage($user->getId());
+//                if($user->getId()==195)
+//                    dump($chat);
+//                if(sizeof($chat) > 0) {
+//                    $chat = $chat[0];
+//                    $messages[$user->getId()] = [$chat->getMessage(), $chat->getTimestamp()->format('Y-m-d H:i'), $chat->getMsgState()];
+//                }
+//                else{
+//                    $messages[$user->getId()] = ['', '',-1];
+//                }
+//            }
+//        }
 
-        foreach ($users as $user) {
-            if ($user !== $this->getUser()) {
-                $chat = $chatRepository->selectLastMessage($user->getId());
-                if($user->getId()==195)
-                    dump($chat);
-                if(sizeof($chat) > 0) {
-                    $chat = $chat[0];
-                    $messages[$user->getId()] = [$chat->getMessage(), $chat->getTimestamp()->format('Y-m-d H:i'), $chat->getMsgState()];
-                }
-                else{
-                    $messages[$user->getId()] = ['', '',-1];
-                }
-            }
-        }
+//        $obj=[
+//            'idUser' => 100,
+//            'UMID'=>Uuid::v4()->toBase32()
+//        ];
+//        $delayInSeconds = 180;
+//        $userVerifierMessage=new UserVerifierMessage($obj);
+//        $messageBus->dispatch($userVerifierMessage, [new DelayStamp($delayInSeconds * 1000),]);
+//        dump($userVerifierMessage);
+
+        $returnedData =$this->forward('app.user_controller')->give();
+        dump($returnedData);
         die();
         return new Response("done");
     }

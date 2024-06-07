@@ -22,7 +22,9 @@ use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class RegistrationController extends AbstractController
@@ -66,14 +68,18 @@ class RegistrationController extends AbstractController
                         $user->setPassword($hashedPassword);
                         $user->setRole("Citoyen");
                         $user->setDate(new \DateTime('now', new \DateTimeZone('Africa/Tunis')));
+                        $user->setUMID(Uuid::v4()->toBase32());
                         $entityManager->persist($user);
                         $entityManager->flush();
 
-                        $obj=[
+
+                        $obj = [
                             'idUser' => $user->getId(),
+                            'UMID' => $user->getUMID()
                         ];
-                        $delayInSeconds = 30;
+                        $delayInSeconds = 5*60;
                         $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
+
 
                         return $userAuthenticator->authenticateUser(
                             $user,
@@ -95,6 +101,21 @@ class RegistrationController extends AbstractController
             'errors' => $errorMessages,
         ]);
 
+    }
+
+    #[Route('/java/launchCounter', name: 'java_launchCounter', methods: ['GET', 'POST'])]
+    public function launchCounter(Request $request,MessageBusInterface $messageBus,UserRepository $userRepository): Response
+    {
+        $user=$userRepository->findOneBy(['idUser'=>$request->get('idUser')]);
+        $user->setUMID(Uuid::v4()->toBase32());
+        $obj = [
+            'idUser' => $user->getId(),
+            'UMID' => $user->getUMID()
+        ];
+        $delayInSeconds = 3*60;
+        $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
+
+        return new Response("done", Response::HTTP_OK);
     }
 
 }

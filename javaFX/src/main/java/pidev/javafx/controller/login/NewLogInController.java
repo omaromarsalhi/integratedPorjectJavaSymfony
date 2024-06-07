@@ -27,6 +27,7 @@ import pidev.javafx.model.user.Role;
 import pidev.javafx.model.user.User;
 import pidev.javafx.test.Main;
 import pidev.javafx.tools.UserController;
+import pidev.javafx.tools.marketPlace.AiVerification;
 import pidev.javafx.tools.marketPlace.MyTools;
 import pidev.javafx.tools.user.EmailController;
 import pidev.javafx.tools.user.GoogleApi;
@@ -156,8 +157,8 @@ public class NewLogInController implements Initializable {
 //        lastName.setText( "salhi" );
 //        passwordSignUp.setText( "Latifa123@l" );
 //
-        email.setText( "salhiomar362@gmail.com" );
-        password.setText( "Latifa123@l" );
+//        email.setText( "salhiomar362@gmail.com" );
+//        password.setText( "Latifa123@l" );
 
         layoutCode.setVisible( false );
         signinBtn.setVisible( false );
@@ -393,7 +394,8 @@ public class NewLogInController implements Initializable {
                             ServiceUser serviceUser = new ServiceUser();
                             setDataUser( user );
                             serviceUser.ajouter( user );
-                            UserController.setUser( user );
+                            UserController.setUser( serviceUser.findParEmail( user.getEmail() ) );
+                            AiVerification.counter( UserController.getInstance().getCurrentUser().getId());
                             loginThread( "reset" ).start();
                             timer.cancel();
                         } else {

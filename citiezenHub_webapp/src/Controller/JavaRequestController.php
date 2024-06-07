@@ -19,6 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class JavaRequestController extends AbstractController
 {
@@ -103,4 +104,5 @@ class JavaRequestController extends AbstractController
         }
         return new Response('image has been treated successfully', Response::HTTP_OK);
     }
+
 }

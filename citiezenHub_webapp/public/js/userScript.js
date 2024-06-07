@@ -5,7 +5,7 @@ function getCinTimeInfo() {
         async: true,
         success: function (response) {
             if (response.state === 'verified') {
-                $('#cinInfoTime').html("you are verified put another image if you have updated your location or id card" )
+                $('#cinInfoTime').html("you are verified put another image if you have updated your location or id card")
                 $('#cinInfoModel').modal('show')
             } else {
                 $('#cinInfoTime').html("you need to add your cin images ( front and back ) so that we can verify you info" +
@@ -41,9 +41,17 @@ function saveCin() {
             $('#cinLoading').html('Save')
             $('#cinLoading').removeClass('btnTransparent');
             $('#cinLoading').prop('disabled', false)
-            if (response === 'error' || response === 'false')
+            let splittedResponse = response.split('_')
+            if (splittedResponse[0] === 'error' || splittedResponse[0] === 'false') {
+                if (splittedResponse[1] === 'dob')
+                    afficherMessage('the date of birth does not match with the id card')
+                else if (splittedResponse[1] === 'cin')
+                    afficherMessage('the cin id does not match with the id card')
+                else
+                    afficherMessage('the given location does not match with the id card location')
+
                 showInvalidPop('please do input the right data')
-            else
+            } else
                 showValidPop('now your are verified')
         }, error: function (response) {
             console.log("error");
@@ -54,6 +62,11 @@ function saveCin() {
 
 
 function saveUserLocation() {
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#locationBtn').html('<img src="' + value + '" width="30"/>')
+    $('#locationBtn').addClass('btnTransparent');
+    $('#locationBtn').prop('disabled', true)
+
     let mapAddress = $('#mapAddress').val()
     let municipality = $('#municipality').val()
     let municipalityAddressNew = $('#municipalityAddressNew').val()
@@ -74,9 +87,26 @@ function saveUserLocation() {
         },
         async: true,
         success: function (response) {
-            showValidPop("Address updated successfully");
+            $('#locationBtn').html('Save')
+            $('#locationBtn').removeClass('btnTransparent');
+            $('#locationBtn').prop('disabled', false)
+            let splittedResponse = response.split('_')
+            if (splittedResponse[0] === 'error' || splittedResponse[0] === 'false') {
+                if (splittedResponse[1] === 'dob')
+                    afficherMessage('the date of birth does not match with the id card')
+                else if (splittedResponse[1] === 'cin')
+                    afficherMessage('the cin id does not match with the id card')
+                else
+                    afficherMessage('the given location does not match with the id card location')
+
+                showInvalidPop('please do input the right data')
+            } else
+                showValidPop("Address updated successfully")
         },
         error: function (response) {
+            $('#locationBtn').html('Save')
+            $('#locationBtn').removeClass('btnTransparent');
+            $('#locationBtn').prop('disabled', false)
             showValidPop("Address not updated successfully");
         },
     });
@@ -84,13 +114,13 @@ function saveUserLocation() {
 }
 
 
-function afficherMessage() {
+function afficherMessage(msg) {
     $('#notification_box').html('<div class="woocommerce-message" id="notifDiv" role="alert">\n' +
-        '<i class="notifIcon mt-6 pb-0 fa-solid fa-circle-check"></i>  removed.\n' +
-        '<a href=""\n' +
-        '   class="restore-item">Undo?</a>\n' +
+        '<i class="notifIcon mt-6 pb-0 fa-solid fa-circle-check"></i> '+ msg+ '<a href=""\n' +
         '</div>')
-
+    $('#notifDiv').on('click', function () {
+        $('#notifDiv').remove()
+    });
 }
 
 function parserMessagesErreur(reponseTexte) {
@@ -143,6 +173,10 @@ function removeInputs() {
 }
 
 function editProfile(event) {
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#submit_button').html('<img src="' + value + '" width="30"/>')
+    $('#submit_button').addClass('btnTransparent');
+    $('#submit_button').prop('disabled', true)
     event.preventDefault();
     let formData = new FormData();
     let name = $('#firstnamee').val();
@@ -164,7 +198,6 @@ function editProfile(event) {
     formData.append('cin', cin);
     formData.append('phoneNumber', phoneNumber);
     formData.append('date', date);
-    loader_start()
     $.ajax({
         url: '/editProfile',
         type: "POST",
@@ -173,25 +206,26 @@ function editProfile(event) {
         processData: false,
         contentType: false,
         success: function (response) {
-            loader_stop(3000)
-            setTimeout(function () {
-                if (response.success) {
-                    showValidPop("Data updated successfully");
-                    removeInputs();
-                }
-                if (response.redirect) {
-                    console.log(response.redirect);
-                    window.location.href = response.redirect;
-                }
+            $('#submit_button').html('Save')
+            $('#submit_button').removeClass('btnTransparent');
+            $('#submit_button').prop('disabled', false)
+            let splittedResponse = response.split('_')
+            if (splittedResponse[0] === 'error' || splittedResponse[0] === 'false') {
+                if (splittedResponse[1] === 'dob')
+                    afficherMessage('the date of birth does not match with the id card')
+                else if (splittedResponse[1] === 'cin')
+                    afficherMessage('the cin id does not match with the id card')
+                else
+                    afficherMessage('the given location does not match with the id card location')
 
-                // else if((response.errors)) {
-                //     let errors = response.errors;
-                //     showInvalidPop("Data not updated successfully");
-                // }
-            }, 3000)
+                showInvalidPop('please do input the right data')
+            } else
+                showValidPop("updated updated successfully")
         },
         error: function (response) {
-            loader_stop(3000)
+            $('#submit_button').html('Save')
+            $('#submit_button').removeClass('btnTransparent');
+            $('#submit_button').prop('disabled', false)
             setTimeout(function () {
                 const messagesErreur = parserMessagesErreur(response.responseText);
                 afficherMessagesErreur(messagesErreur);
