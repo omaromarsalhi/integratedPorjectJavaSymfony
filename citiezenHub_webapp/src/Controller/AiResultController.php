@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\AiResult;
 use App\Form\AiResult2Type;
 use App\MyHelpers\AiDataHolder;
-use App\MyHelpers\AiVerificationMessage;
+use App\MyHelpers\UserMessage;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,8 +60,6 @@ class AiResultController extends AbstractController
     public function reverify(MessageBusInterface $messageBus, ProductRepository $productRepository, AiResultRepository $aiResultRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         if ($request->isXmlHttpRequest()) {
-//            $aiResult = $aiResultRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
-//            $this->delete($aiResult, $entityManager);
 
             $product = $productRepository->findOneBy(['idProduct' => $request->get('idProduct')]);
 
@@ -75,10 +73,12 @@ class AiResultController extends AbstractController
                 'category' => $product->getCategory(),
                 'id' => $product->getIdProduct(),
                 'images' => $paths,
-                'mode' => 'edit'
+                'mode' => 'edit',
+                'idUser' => $this->getUser()->getId(),
+                'initiator'=>'symfony',
             ];
 
-            $messageBus->dispatch(new AiVerificationMessage($obj));
+            $messageBus->dispatch(new UserMessage($obj));
 
             return new JsonResponse(['resp' => 'done'], Response::HTTP_OK);
         }

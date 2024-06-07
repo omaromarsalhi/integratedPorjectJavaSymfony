@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class AiVerificationMessengerHandler
 {
 
-    public function __construct(private RealTimeUpdater $realTimeUpdater,private EntityManagerInterface $entityManager, private ProductRepository $productRepository, private AiResultRepository $aiResultRepository)
+    public function __construct(private RealTimeUpdater $realTimeUpdater, private EntityManagerInterface $entityManager, private ProductRepository $productRepository, private AiResultRepository $aiResultRepository)
     {
     }
 
@@ -31,7 +31,11 @@ class AiVerificationMessengerHandler
 
         $aiDataHolder = $aiVerification->run($obj);
 
-        ProductController::changeState($obj['mode'],$obj['idUser'],$this->realTimeUpdater,$this->aiResultRepository, $this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
+        ProductController::changeState($obj['initiator'],$obj['mode'], $obj['idUser'], $this->realTimeUpdater, $this->aiResultRepository, $this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
+
+        if ($obj['initiator'] === 'java')
+            $this->realTimeUpdater->notifyFromSystem(['action' => 'aiTermination', 'senderId' => -100, 'recipientId' => $obj['idUser'],'idProduct'=>strval($obj['id']),'message'=>'done']);
+
 
         $aiResultController = new AiResultController();
 
@@ -41,13 +45,16 @@ class AiVerificationMessengerHandler
 
 
         if ($obj['mode'] === 'edit') {
-            $aiResultController->edit($serializedData,$obj['id'],$this->entityManager,$this->aiResultRepository);
+            $aiResultController->edit($serializedData, $obj['id'], $this->entityManager, $this->aiResultRepository);
+
         } else {
             $aiResult->setBody($serializedData);
             $aiResult->setIdProduct($obj['id']);
             $aiResult->setTerminationDate();
             $aiResultController->new($aiResult, $this->entityManager);
+
         }
+
 
 
 //        SendSms::send();

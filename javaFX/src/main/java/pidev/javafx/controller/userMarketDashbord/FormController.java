@@ -22,6 +22,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import pidev.javafx.controller.login.GlobalSocketConnection;
 import pidev.javafx.crud.marketplace.CrudBien;
 import pidev.javafx.model.MarketPlace.Bien;
 import pidev.javafx.model.MarketPlace.Categorie;
@@ -30,6 +31,9 @@ import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.*;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.io.File;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -202,7 +206,7 @@ public class FormController implements Initializable {
     @FXML
     public void handelDrag(DragEvent dragEvent) {
         for (File file : dragEvent.getDragboard().getFiles()) {
-            relativeImageVieur.setImage( new Image("file:"+ file.getAbsolutePath() ) );
+            relativeImageVieur.setImage( new Image( "file:" + file.getAbsolutePath() ) );
             product.addFromImagesSources( MyTools.getInstance().getPathAndSaveIMG( file.getAbsolutePath() ) );
         }
     }
@@ -378,8 +382,6 @@ public class FormController implements Initializable {
                     "unverified",
                     Timestamp.valueOf( LocalDateTime.now() ),
                     Pcategory.getValue() );
-//            if(isImageUpdated)
-//                bien.setAllImagesSources( product.getAllImagesSources() );
             if (chosenFiles != null) {
                 List<String> imagesList = new ArrayList<>();
                 for (File file : chosenFiles)
@@ -393,10 +395,9 @@ public class FormController implements Initializable {
                 bien = CrudBien.getInstance().selectLastItem();
                 MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             } else if (usageOfThisForm.equals( "update_prod" )) {
-                System.out.println("idOmar: "+bien.getId());
-                bien.setState("unverified" );
+                bien.setState( "unverified" );
                 CrudBien.getInstance().updateItem( bien );
-                MyTools.getInstance().notifyUser4NewAddedProduct( bien );
+//                MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             }
             product = bien;
             aiVerifyThread().start();
@@ -428,8 +429,11 @@ public class FormController implements Initializable {
         myTask.setOnSucceeded( e -> {
             if (usageOfThisForm.equals( "add_prod" ))
                 EventBus.getInstance().publish( "updateTabProds", new CustomMouseEvent<>( product ) );
-            else
+            else {
                 EventBus.getInstance().publish( "refreshProdContainer", event );
+                var customMouseEvent = new CustomMouseEvent<>( product);
+                EventBus.getInstance().publish( "doUpdateTabprodAfterAIverif", customMouseEvent );
+            }
 
             EventBus.getInstance().publish( "onExitForm", event );
             loadinPage.setVisible( false );
@@ -443,8 +447,8 @@ public class FormController implements Initializable {
         Task<Void> myTask = new Task<>() {
             @Override
             protected Void call() {
-                var aiVerification=new AiVerification();
-                aiVerification.run(product.getId(),usageOfThisForm.equals( "add_prod" )?"add":"edit");
+                var aiVerification = new AiVerification();
+                aiVerification.run( product.getId(), usageOfThisForm.equals( "add_prod" ) ? "add" : "edit" );
                 return null;
             }
         };
@@ -507,11 +511,8 @@ public class FormController implements Initializable {
         buttonsBox.setPadding( new Insets( 0, 0, 10, 0 ) );
     }
 
-//    public void setExitFunction(MyListener listener) {
-//        this.listener=listener;
-//    }
 
-    public void setInformaton(Product product) {
+    public  void setInformaton(Product product) {
         if (product != null) {
             this.product = (Bien) product;
             Pname.setText( product.getName() );
@@ -525,8 +526,16 @@ public class FormController implements Initializable {
             isAllInpulValid[0] = true;
             isAllInpulValid[1] = true;
             isAllInpulValid[2] = true;
-            System.out.println("idddddd:"+product.getId());
         }
+    }
+
+    public static String createMessage(int idProduct) {
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
+                .add( "Data", Json.createObjectBuilder().add( "idProduct",idProduct ) )
+                .add( "action", "productEvent" )
+                .add( "subAction", usageOfThisForm.equals( "update_prod" ) ? "UPDATE" : "ADD" );
+        JsonObject jsonMessage = jsonObjectBuilder.build();
+        return jsonMessage.toString();
     }
 
 }

@@ -39,7 +39,7 @@ class MessageHandler implements MessageComponentInterface
 
         if (isset($data['action'])) {
             switch ($data['action']) {
-                case 'chat':
+                case 'aiTermination' || 'chat':
                     $this->handleChatMessage($from, $data);
                     break;
                 case 'productEvent':
@@ -67,7 +67,6 @@ class MessageHandler implements MessageComponentInterface
             if ($recipientConnection && $recipientConnection !== $from && $senderConnection === $from) {
                 $serializer = $this->createSerializer();
                 $json = $serializer->serialize($data, 'json');
-
                 // Send the message to the recipient
                 echo "Message sent from {$senderId} to {$recipientId}\n";
                 $recipientConnection->send($json);
@@ -79,15 +78,11 @@ class MessageHandler implements MessageComponentInterface
 
     public function handleBroadcastMessage(array $data): void
     {
-        echo "salhi from soket \n";
         // Serialize broadcast data
         $serializer = $this->createSerializer();
         $json = $serializer->serialize($data, 'json');
-
         // Broadcast the message to all connected users
-        echo "size2 " . sizeof($this->userConnections) . "\n";
         foreach ($this->userConnections as $userId => $connection) {
-            echo "omar from soket \n";
             echo "Broadcasting message to user {$userId}\n";
             $connection->send($json);
         }

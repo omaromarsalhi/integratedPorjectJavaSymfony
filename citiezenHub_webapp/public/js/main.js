@@ -7,6 +7,8 @@ $(document).ready(function () {
 
 });
 
+let myFunction=null;
+
 
 const socket = new WebSocket("ws://localhost:8091?userId=" + currentUser);
 // const socket = new WebSocket("ws://192.168.1.7:8090?userId=" + currentUser);
@@ -26,6 +28,14 @@ socket.addEventListener('message', (event) => {
             updateProductOfOtherUser(messageData.Data.idProduct)
         } else if (messageData.subAction === 'DELETE') {
             filterByPrice();
+        }
+    }
+    else if(messageData.action === 'accountDeletion'){
+        if(currentUser===messageData.recipientId){
+            $('#btnPopUp').attr('href','/logout')
+            $('#btnPopUp').removeAttr('data-bs-dismiss')
+            $('#error-message').html(messageData.message);
+            $('#statusErrorsModal').modal('show')
         }
     }
 });
@@ -100,6 +110,7 @@ function showValidPop(msg) {
     $('#success-message').html(msg);
     $('#statusSuccessModal').modal('show')
 }
+
 
 function hideValidPop() {
     $('#statusSuccessModal').modal('hide')

@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\MyHelpers\UserMessage;
+use App\MyHelpers\UserVerifierMessage;
 use App\Repository\MunicipaliteRepository;
 use App\Repository\UserRepository;
 use App\Security\UserAuthanticatorAuthenticator;
@@ -27,10 +29,8 @@ class RegistrationController extends AbstractController
 {
 
     #[Route('/register', name: 'app_register')]
-    public function register(UserRepository $userRepository, Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserAuthanticatorAuthenticator $authenticator, EntityManagerInterface $entityManager, SessionInterface $session, ValidatorInterface $validator, TranslatorInterface $translator, MunicipaliteRepository $municipaliteRepository): Response
+    public function register(MessageBusInterface $messageBus, UserRepository $userRepository, Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, UserAuthanticatorAuthenticator $authenticator, EntityManagerInterface $entityManager, SessionInterface $session, ValidatorInterface $validator, TranslatorInterface $translator, MunicipaliteRepository $municipaliteRepository): Response
     {
-
-        $geo = new GeocodingService();
         $email = $request->query->get('email');
         $name = $request->query->get('name');
         $parts = explode(" ", $name);
@@ -46,10 +46,12 @@ class RegistrationController extends AbstractController
                 $user->setPassword($userData['password']);
                 $user->setState(0);
                 $errors = $validator->validate($user, null, 'add');
+
                 foreach ($errors as $error) {
                     $field = $error->getPropertyPath();
                     $errorMessages[$field] = $error->getMessage();
                 }
+
                 if ($userRepository->count(['email' => $userData['email']]) !== 0) {
                     $field = 'Email';
                     $errorMessages[$field] = 'Mail already exists';
@@ -67,6 +69,12 @@ class RegistrationController extends AbstractController
                         $entityManager->persist($user);
                         $entityManager->flush();
 
+                        $obj=[
+                            'idUser' => $user->getId(),
+                        ];
+                        $delayInSeconds = 30;
+                        $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
+
                         return $userAuthenticator->authenticateUser(
                             $user,
                             $authenticator,
@@ -77,8 +85,6 @@ class RegistrationController extends AbstractController
             }
 
         }
-
-
 
 
         return $this->render('user/signup.html.twig', [

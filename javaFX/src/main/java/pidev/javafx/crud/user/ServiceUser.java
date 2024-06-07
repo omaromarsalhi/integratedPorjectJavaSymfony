@@ -3,8 +3,12 @@ package pidev.javafx.crud.user;
 import pidev.javafx.crud.ConnectionDB;
 import pidev.javafx.model.user.Role;
 import pidev.javafx.model.user.User;
+import pidev.javafx.tools.UserController;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,37 +183,26 @@ public class ServiceUser implements IserviceUser<User> {
     public List<User> getAll() {
         Connection cnx = ConnectionDB.getInstance().getCnx();
         List<User> users = new ArrayList<>();
-        String req = "SELECT * FROM `user`";
+        int userId = UserController.getInstance().getCurrentUser().getId();
+        String req = "SELECT * FROM `user` where idUser in (select idSender from chat where idReciver=? )";
         try {
-            Statement stmt = cnx.createStatement();
-            ResultSet rs = stmt.executeQuery( req );
-            while (((ResultSet) rs).next()) {
+            PreparedStatement ps = cnx.prepareStatement( req );
+            ps.setInt( 1, userId );
+            var result = ps.executeQuery();
+            while (result.next()) {
                 User user = new User();
-                user.setId( rs.getInt( "idUser" ) );
-                user.setFirstname( rs.getString( "firstName" ) );
-                user.setLastname( rs.getString( "lastname" ) );
-                user.setEmail( rs.getString( "email" ) );
-                user.setRole( Role.valueOf( rs.getString( "role" ) ) );
-                user.setIdMunicipalite( (rs.getInt( "idMunicipalite" )) );
-                user.setAge( rs.getInt( "age" ) );
-                user.setCin( rs.getString( "cin" ) );
-                user.setPhotos( rs.getString( "image" ) );
-                user.setAdresse( rs.getString( "address" ) );
-                user.setStatus( rs.getString( "status" ) );
-                user.setNum( rs.getInt( "phoneNumber" ) );
-                user.setDate( rs.getString( "date" ) );
-                user.setDob( rs.getString( "dob" ) );
+                user.setId( result.getInt( "idUser" ) );
+                user.setFirstname( result.getString( "firstName" ) );
+                user.setLastname( result.getString( "lastname" ) );
+                user.setEmail( result.getString( "email" ) );
+                user.setPhotos( result.getString( "image" ) );
                 users.add( user );
             }
         } catch (SQLException e) {
             System.out.println( e.getMessage() );
         }
-        System.out.println( users );
         return users;
-
     }
-
-
 
 
     public User findParEmail(String email) {

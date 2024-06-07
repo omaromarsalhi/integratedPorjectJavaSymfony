@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import pidev.javafx.controller.login.GlobalSocketConnection;
 import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
@@ -168,6 +169,7 @@ public class MainWindowController implements Initializable {
     @FXML
     public void onMarketPlaceBtnClicked(ActionEvent event) {
         btns();
+        GlobalSocketConnection.setMarketInterface( true );
         marketplacebtn.setStyle( " -fx-border-color: #fdc847;" +
                 "    -fx-border-width: 0 0 0 2px ;" +
                 "    -fx-border-radius: 0;" );

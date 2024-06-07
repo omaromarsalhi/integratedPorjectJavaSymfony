@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import pidev.javafx.crud.ConnectionDB;
 import pidev.javafx.crud.CrudInterface;
+import pidev.javafx.model.MarketPlace.Bien;
 import pidev.javafx.model.chat.Chat;
 import pidev.javafx.model.user.User;
 import pidev.javafx.tools.UserController;
@@ -109,6 +110,24 @@ public class CrudChat implements CrudInterface<Chat> {
     }
 
 
+    public int count(int id)  {
+        int count=0;
+        String sql = "SELECT count('*')  FROM chat  where idSender = ? and msgState= ?";
+        connect = ConnectionDB.getInstance().getCnx();
+        try {
+            prepare = connect.prepareStatement(sql);
+            prepare.setInt(1, id );
+            prepare.setInt(2, 0 );
+            result = prepare.executeQuery();
+            if(result.next()) {
+                count=result.getInt( 1 );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error selecting items: " + e.getMessage());
+        }
+        return count;
+    }
+
 
     @Override
     public Chat findById(int id) {
@@ -120,20 +139,18 @@ public class CrudChat implements CrudInterface<Chat> {
         return  null;
     }
 
-
-    private  String getPathAndSaveIMG(String chosenFilePath){
-
-        String path ="/usersImg/"+ UUID.randomUUID()+".png";
-
-        Path src = Paths.get(chosenFilePath);
-        Path dest = Paths.get( "src/main/resources"+path);
-
+    public void updateMsgState(int idUser) {
+        String sql = "UPDATE chat SET msgState = ? WHERE idSender = ? and msgState= ?";
+        connect = ConnectionDB.getInstance().getCnx();
         try {
-            Files.copy(src,dest);
-        } catch (IOException e) {
-            throw new RuntimeException( e );
+            int i=2;
+            prepare = connect.prepareStatement(sql);
+            prepare.setInt(1, 1);
+            prepare.setInt(2, idUser);
+            prepare.setInt(3, 0);
+            prepare.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error updating item: " + e.getMessage());
         }
-
-        return path;
     }
 }

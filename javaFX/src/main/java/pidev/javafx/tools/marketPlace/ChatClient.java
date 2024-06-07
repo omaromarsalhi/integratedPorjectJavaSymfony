@@ -61,12 +61,7 @@ public class ChatClient {
                         resultHolder.setResult(parts[1]);
                     }
                     else {
-                        Platform.runLater( () -> {
-                            if(recivedMessage.startsWith( "/usersImg/" )&&recivedMessage.contains( ".png" ))
-                                chatContainer.getChildren().add( ChatController.createImageChatBox( recivedMessage, true, "" ) );
-                            else
-                                chatContainer.getChildren().add( ChatController.createTextChatBox( recivedMessage, true,"" ) );
-                        } );
+
                     }
                 }
             } catch (IOException e) {

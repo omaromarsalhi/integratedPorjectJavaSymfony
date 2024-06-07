@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\MyHelpers\AiDataHolder;
 use App\MyHelpers\AiVerification;
-use App\MyHelpers\AiVerificationMessage;
+use App\MyHelpers\UserMessage;
 use App\MyHelpers\ImageHelperUser;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
@@ -47,9 +47,10 @@ class JavaRequestController extends AbstractController
             'images' => $newImagesPath,
             'mode' => $mode,
             'idUser'=>$request->get('idUser'),
+            'initiator'=>'java'
         ];
 
-        $messageBus->dispatch(new AiVerificationMessage($obj));
+        $messageBus->dispatch(new UserMessage($obj));
         return new Response('done', Response::HTTP_OK);
     }
 

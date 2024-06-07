@@ -133,14 +133,23 @@ public class CrudBien implements CrudInterface<Bien> {
             System.out.println("Error deleting item: " + e.getMessage());
         }
 
+        String sql2 = "DELETE from ai_result WHERE idProduct = ?";
+        connect = ConnectionDB.getInstance().getCnx();
+
+        try {
+            prepare = connect.prepareStatement(sql2);
+            prepare.setInt( 1,id );
+            prepare.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error deleting item: " + e.getMessage());
+        }
+
     }
 
     public void deleteImages(int id) {
 
         String sql = "DELETE FROM product_images WHERE idProduct = ?";
-
         connect4Images = ConnectionDB.getInstance().getCnx();
-
         try {
             prepare4Images = connect4Images.prepareStatement(sql);
             prepare4Images.setInt(1, id);
@@ -148,6 +157,7 @@ public class CrudBien implements CrudInterface<Bien> {
         } catch (SQLException e) {
             System.out.println("Error deleting item: " + e.getMessage());
         }
+
     }
 
     public void updateItem(Bien bien) {
@@ -222,12 +232,13 @@ public class CrudBien implements CrudInterface<Bien> {
     @Override
     public ObservableList<Bien> selectItems() {
         Bien bien = null;
-        String sql = "SELECT * FROM product  order by idProduct desc"; // Retrieve all items
+        String sql = "SELECT * FROM product where state = ?  order by idProduct desc"; // Retrieve all items
 
         connect = ConnectionDB.getInstance().getCnx();
         ObservableList<Bien> BienList = FXCollections.observableArrayList();
         try {
             prepare = connect.prepareStatement(sql);
+            prepare.setString( 1,"verified" );
             result = prepare.executeQuery();
             while (result.next()) {
                 bien=new Bien(result.getInt("idProduct"),

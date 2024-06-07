@@ -8,7 +8,7 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://8c69-34-133-93-101.ngrok-free.app'
+url='https://dd9c-34-135-200-240.ngrok-free.app'
 model='llava:13b'
 
 
@@ -35,7 +35,7 @@ def generate_title_image():
     image_url=request.args.get('image_url')
     title=request.args.get('title')
     print("image url : "+image_url)
-    commands=f"set OLLAMA_HOST={url}&ollama run {model}  is this is an image of {title} {image_url}"
+    commands=f"set OLLAMA_HOST={url}&ollama run {model}  is this is an {image_url} image of {title} ? "
     text=ov.execute_cmd(commands)
     tuned_response=ov.finetune_text(text)
     return jsonify(tuned_response),200

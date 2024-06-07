@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use App\Service\GeocodingService;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\ByteString;
@@ -65,5 +66,12 @@ class WtfDudeController extends AbstractController
         }
         die();
         return new Response("done");
+    }
+
+
+    #[Route('/test/page', name: 'test_page', methods: ['GET', 'POST'])]
+    public function page(): Response
+    {
+        return $this->render('index.html.twig');
     }
 }

@@ -61,9 +61,8 @@ class ImageHelper
         for ($i = 0; $i < sizeof($images); $i++) {
             if (array_search(strval($images[$i]->getIdImage()), $imagesNotToDelete) === false) {
                 $this->entityManager->remove($images[$i]);
-                $this->entityManager->flush();
             }
         }
-
+        $this->entityManager->flush();
     }
 }

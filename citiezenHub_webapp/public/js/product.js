@@ -114,6 +114,7 @@ function updateProduct(id) {
         }
         str = str.replace(/_$/, '')
     }
+    console.log(str)
 
     form_data.append('name', name);
     form_data.append('description', description);
@@ -132,7 +133,8 @@ function updateProduct(id) {
         processData: false,
         contentType: false,
         success: function (response) {
-            loader_stop(3000)
+            console.log(response)
+            loader_stop(2000)
         },
         error: function (xhr) {
             loader_stop(1000)

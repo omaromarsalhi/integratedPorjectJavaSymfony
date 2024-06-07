@@ -29,6 +29,7 @@ module pidev.javafx{
     requires json.simple;
     requires javafx.swing;
     requires Java.WebSocket;
+    requires javax.json;
 
 
     opens pidev.javafx.controller.marketPlace to javafx.fxml;

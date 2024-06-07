@@ -29,6 +29,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.json.JSONObject;
 import pidev.javafx.controller.chat.ChatController;
+import pidev.javafx.controller.login.GlobalSocketConnection;
 import pidev.javafx.controller.marketPlace.ItemController;
 import pidev.javafx.controller.marketPlace.ItemInfoController;
 import pidev.javafx.crud.marketplace.CrudBien;
@@ -187,7 +188,6 @@ public class MainDashbordController implements Initializable {
                 loadingAllProductsThread( CrudBien.getInstance().searchItems( parts[0], parts[1] ) ).start();
             }
         } else if (!data.isEmpty()) {
-            System.out.println( data );
             scroll.removeEventFilter( MouseEvent.MOUSE_PRESSED, eventHandler4ScrollPane );
             showAllProdsInfo.getChildren().clear();
             loadingAllProductsThread( CrudBien.getInstance().searchItems( "name", data ) ).start();
@@ -196,10 +196,10 @@ public class MainDashbordController implements Initializable {
 
 
     public void setMenueBar() {
-        var addProduct = new MenuItem( "Add Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/delivery.png" ),20,20,true,true ) ) );
-        var showAllProduct = new MenuItem( "Show  My Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/received.png" ),20,20,true,true ) ) );
-        var showForPushasedProduct = new MenuItem( "Show Purshased Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/brand-identity.png" ),20,20,true,true ) ) );
-        var showForSelledProduct = new MenuItem( "Show Selled Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/trade.png" ),20,20,true,true ) ) );
+        var addProduct = new MenuItem( "Add Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/delivery.png" ), 20, 20, true, true ) ) );
+        var showAllProduct = new MenuItem( "Show  My Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/received.png" ), 20, 20, true, true ) ) );
+        var showForPushasedProduct = new MenuItem( "Show Purshased Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/brand-identity.png" ), 20, 20, true, true ) ) );
+        var showForSelledProduct = new MenuItem( "Show Selled Prod", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/trade.png" ), 20, 20, true, true ) ) );
         addProduct.setOnAction( event -> {
             secondInterface.setVisible( true );
             firstInterface.setOpacity( 0.4 );
@@ -216,7 +216,7 @@ public class MainDashbordController implements Initializable {
 
         menuBar.getMenus().get( 0 ).getItems().addAll( addProduct, showAllProduct, showForPushasedProduct, showForSelledProduct );
 
-        var add2Favorite = new MenuItem( "Manage", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/favourite.png" ),20,20,true,true ) ) );
+        var add2Favorite = new MenuItem( "Manage", new ImageView( new Image( getClass().getResourceAsStream( "/icons/newicons/favourite.png" ), 20, 20, true, true ) ) );
         menuBar.getMenus().get( 1 ).getItems().add( add2Favorite );
 
         add2Favorite.setOnAction( event -> {
@@ -243,8 +243,8 @@ public class MainDashbordController implements Initializable {
             throw new RuntimeException( e );
         }
         ChatController controller = fxmlLoader.getController();
-        controller.initliazeData();
         controller.getExitBtn().setOnMouseClicked( event -> {
+            GlobalSocketConnection.setChatInterface( false );
             newStage.close();
         } );
         controller.getContainer().setOnMousePressed( event -> {
@@ -264,6 +264,7 @@ public class MainDashbordController implements Initializable {
         newStage.setScene( scene );
         MyTools.getInstance().showAnimation( vBox );
         newStage.show();
+        GlobalVariables.chatController = controller;
     }
 
 
@@ -427,7 +428,8 @@ public class MainDashbordController implements Initializable {
             ItemController itemController = fxmlLoader2.getController();
             transactionDetailsController.setData( localWrapperList.get( i ).getTransaction(), localWrapperList.get( i ).getContract() );
             itemController.setData( (Bien) localWrapperList.get( i ).getProduct() );
-            itemController.animateImages( fiveSecondsWonder, (Bien) localWrapperList.get( i ).getProduct() );
+//            itemController.animateImages( fiveSecondsWonder, (Bien) localWrapperList.get( i ).getProduct(),false );
+            itemController.animateImages( fiveSecondsWonder, false );
 
             AnchorPane finalAnchorPane = anchorPane;
             animateProdBox( 1, transactionDetailsController.getDownloadBtn(), 0.1f );
@@ -487,9 +489,6 @@ public class MainDashbordController implements Initializable {
         firstInterface.setOpacity( 1 );
         secondIHbox.getChildren().clear();
     }
-
-
-
 
 
     public void loadInfoTemplate() {
@@ -554,7 +553,7 @@ public class MainDashbordController implements Initializable {
     }
 
 
-    public void refreshGridPane(GridPane gridPane, Node node2Delete, int row, int column, int nbrColumns) {
+    public static void refreshGridPane(GridPane gridPane, Node node2Delete, int row, int column, int nbrColumns) {
         for (Node node : gridPane.getChildren()) {
             Integer rowIndex = GridPane.getRowIndex( node );
             Integer columnIndex = GridPane.getColumnIndex( node );
@@ -601,7 +600,6 @@ public class MainDashbordController implements Initializable {
                 myTask.getValue().getSecond().setData( (Bien) prod );
 
                 myTask.getValue().getFirst().lookup( "#deleteBtn" ).setOnMouseClicked( event -> {
-                    System.out.println( "ali" );
                     MyTools.getInstance().deleteAnimation( myTask.getValue().getFirst(), showAllProdsInfo );
                     CrudBien.getInstance().deleteItem( prod.getId() );
                     MyTools.getInstance().getTextNotif().setText( "Prod Has Been Deleted Successfully" );
@@ -619,12 +617,21 @@ public class MainDashbordController implements Initializable {
                     );
                 } );
 
+                EventBus.getInstance().subscribe( "refreshProdContainerAi_"+prod.getId(), event1 -> {
+                            CustomMouseEvent customMouseEvent = (CustomMouseEvent<Integer>) event1;
+                            myTask.getValue().getSecond().setData( CrudBien.getInstance().selectItemById((Integer)customMouseEvent.getEventData()) );
+                            MyTools.getInstance().getTextNotif().setText( "Product Has Been Modified" );
+                            MyTools.getInstance().showNotif();
+                        }
+                );
+
 
                 if (myTask.getValue().getSecond().getVerificationState().equals( "half-verified" )) {
                     myTask.getValue().getFirst().lookup( "#aiResultBtn" ).setOnMouseClicked( event -> {
                         doShowDetails( myTask.getValue().getSecond().getJsonObject(), prod.getId() );
                     } );
                 }
+
 
                 myTask.getValue().getFirst().setOnMouseClicked( event -> loadInfoItem( prod ) );
                 showAllProdsInfo.getChildren().add( myTask.getValue().getFirst() );
@@ -637,13 +644,18 @@ public class MainDashbordController implements Initializable {
     public void doUpdateTabprodAfterAIverif(CustomMouseEvent<Bien> bienCustomMouseEvent) {
         for (Node node : showAllProdsInfo.getChildren()) {
             if (Integer.parseInt( ((Label) ((HBox) node).getChildren().get( 0 )).getText() ) == bienCustomMouseEvent.getEventData().getId()) {
-                if (bienCustomMouseEvent.getEventData().getState().equals( "verified" )) {
-                    ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/icons/marketPlace/approve24C.png", 24, 24, true, true ) );
-                    ((Label) ((HBox) node).getChildren().get( 6 )).setText( "verified" );
-                } else {
-                    MyTools.getInstance().deleteAnimation( node, showAllProdsInfo );
-                    CrudBien.getInstance().deleteItem( bienCustomMouseEvent.getEventData().getId() );
-                }
+//                if (bienCustomMouseEvent.getEventData().getState().equals( "verified" )) {
+//                    ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/icons/marketPlace/approve24C.png", 24, 24, true, true ) );
+//                    ((Label) ((HBox) node).getChildren().get( 6 )).setText( "verified" );
+//                } else
+//                if (bienCustomMouseEvent.getEventData().getState().equals( "unverified" )){
+                    ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/img/marketPlace/Dual Ball-1s-398px.gif", 24, 24, true, true ) );
+                    ((Label) ((HBox) node).getChildren().get( 6 )).setText( "unverified" );
+//                }
+//                else{
+//                    ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/icons/marketPlace/mark.png", 24, 24, true, true ) );
+//                    ((Label) ((HBox) node).getChildren().get( 6 )).setText( "unverified" );
+//                }
             }
         }
     }

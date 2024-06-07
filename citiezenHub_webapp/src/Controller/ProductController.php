@@ -5,8 +5,9 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\MyHelpers\AiDataHolder;
-use App\MyHelpers\ImageHelper;
 use App\MyHelpers\AiVerificationMessage;
+use App\MyHelpers\ImageHelper;
+use App\MyHelpers\UserMessage;
 use App\MyHelpers\RealTimeUpdater;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -35,7 +37,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
-    public function new(MessageBusInterface $messageBus, Request $request, EntityManagerInterface $entityManager, ImageHelper $imageHelper, ProductRepository $productRepository, ValidatorInterface $validator): Response
+    public function new(RealTimeUpdater $realTimeUpdater, MessageBusInterface $messageBus, Request $request, EntityManagerInterface $entityManager, ImageHelper $imageHelper, ProductRepository $productRepository, ValidatorInterface $validator): Response
     {
 
         if ($request->isXmlHttpRequest()) {
@@ -53,7 +55,7 @@ class ProductController extends AbstractController
             $new_product->setDescription($description);
             $new_product->setPrice(floatval($price));
             $new_product->setQuantity(floatval($quantity));
-            $new_product->setCategory($category);
+            $new_product->setCategory("food");
             $new_product->setIsDeleted(0);
             $new_product->setState('unverified');
             $new_product->setType('BIEN');
@@ -85,14 +87,15 @@ class ProductController extends AbstractController
                 'id' => $product->getIdProduct(),
                 'images' => $newImagesPath,
                 'mode' => 'add',
-                'idUser' => $this->getUser()->getId()
+                'idUser' => $this->getUser()->getId(),
+                'initiator' => 'symfony',
             ];
 
             $messageBus->dispatch(new AiVerificationMessage($obj));
 
             $product->getUser()->setMunicipalite(null);
 
-//            $realTimeUpdater->notifyApp(['Data' => 'null', 'action' => 'productEvent','subAction'=>'ADD'], $this->getUser()->getId());
+//            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'ADD'], $this->getUser()->getId());
 
             return new JsonResponse(['state' => 'done'], Response::HTTP_OK);
         }
@@ -125,7 +128,7 @@ class ProductController extends AbstractController
 
 
     #[Route('/{index}/edit', name: '_edit', methods: ['POST'])]
-    public function edit(AiResultRepository $aiResultRepository, MessageBusInterface $messageBus, ImageHelper $imageHelper, Request $request, ProductRepository $productRepository, EntityManagerInterface $entityManager, int $index): Response
+    public function edit(RealTimeUpdater $realTimeUpdater, AiResultRepository $aiResultRepository, MessageBusInterface $messageBus, ImageHelper $imageHelper, Request $request, ProductRepository $productRepository, EntityManagerInterface $entityManager, int $index): Response
     {
 
         if ($request->isXmlHttpRequest()) {
@@ -148,31 +151,25 @@ class ProductController extends AbstractController
             $product->setQuantity(floatval($quantity));
             $product->setCategory($category);
             $product->setState('unverified');
-            /*   $errors = $validator->validate($updated_product);
 
-               if (count($errors) > 0) {
-                   $errorMessages = [];
-                   foreach ($errors as $error) {
-                       $field = $error->getPropertyPath();
-                       $errorMessages[] = $field;
-                   }
-                   if (sizeof($request->files->all()) == 0)
-                       $errorMessages[] = 'image';
-                   return new JsonResponse(['error' => $errorMessages], Response::HTTP_BAD_REQUEST);
-               }*/
 
             $entityManager->flush();
 
             $images = $request->files->all();
             $imageHelper->saveImages($images, $product);
+            dump($imagesNotToDelete);
             $imageHelper->deleteImages($imagesNotToDelete, $product->getImages());
-
-            $product = $productRepository->findOneBy(['idProduct' => $product->getIdProduct()]);
 
 
             $paths = [];
+            $s = 0;
             for ($i = 0; $i < sizeof($product->getImages()); $i++) {
-                $paths[] = str_replace('usersImg/', '', $product->getImages()[$i]->getPath());
+                if ($product->getImages()[$i] != null) {
+                    if ($product->getImages()[$i]->getIdImage() == $imagesNotToDelete[$s]) {
+                        $paths[] = str_replace('usersImg/', '', $product->getImages()[$i]->getPath());
+                        $s++;
+                    }
+                }
             }
 
             $obj = [
@@ -181,14 +178,15 @@ class ProductController extends AbstractController
                 'id' => $product->getIdProduct(),
                 'images' => $paths,
                 'mode' => 'edit',
-                'idUser' => $this->getUser()->getId()
+                'idUser' => $this->getUser()->getId(),
+                'initiator' => 'symfony',
             ];
 
             $messageBus->dispatch(new AiVerificationMessage($obj));
 
             $product->getUser()->setMunicipalite(null);
 
-//            $realTimeUpdater->notifyApp(['Data' => $product, 'action' => 'productEvent','subAction'=>'UPDATE'], $this->getUser()->getId());
+//            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'UPDATE'], $this->getUser()->getId());
 
             return new JsonResponse(['state' => 'done'], Response::HTTP_OK);
         }
@@ -203,10 +201,10 @@ class ProductController extends AbstractController
 
 
     #[Route('/test', name: 'test', methods: ['POST', 'GET'])]
-    public static function changeState($mode, $idUser, RealTimeUpdater $realTimeUpdater, AiResultRepository $aiResultRepository, ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
+    public static function changeState($initiator, $mode, $idUser, RealTimeUpdater $realTimeUpdater, AiResultRepository $aiResultRepository, ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
     {
         for ($i = 0; $i < sizeof($aiDataHolder->getDescriptions()); $i++) {
-            if (str_starts_with(strtolower($aiDataHolder->getDescriptions()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no"))
+            if (str_starts_with(strtolower($aiDataHolder->getTitleValidation()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no"))
                 return new Response('done', Response::HTTP_OK);
         }
 
@@ -214,10 +212,10 @@ class ProductController extends AbstractController
         $product->setState('verified');
         $entityManager->flush();
 
-        if ($mode == 'edit') {
-            $realTimeUpdater->notifyApp(['Data' => ['idProduct'=>$product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'UPDATE'], $idUser);
-        } else {
-            $realTimeUpdater->notifyApp(['Data' => '', 'action' => 'productEvent', 'subAction' => 'ADD'], $idUser);
+        if ($mode === 'edit' && $initiator !== 'java') {
+            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'UPDATE'], $idUser);
+        } else if ($initiator !== 'java') {
+            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'ADD'], $idUser);
         }
 
         return new Response('done', Response::HTTP_OK);
@@ -248,9 +246,9 @@ class ProductController extends AbstractController
 
             $map[$page]->setProducts($productRepository->findBy(['isDeleted' => false, 'state' => $state]));
 
-            $session->set('user_products_map', $map);
+//            $session->set('user_products_map', $map);
 
-            $realTimeUpdater->notifyApp(['Data' => 'null', 'action' => 'productEvent', 'subAction' => 'DELETE'], $this->getUser()->getId());
+//            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $request->get('id')], 'action' => 'productEvent', 'subAction' => 'DELETE'], $this->getUser()->getId());
 
             return new JsonResponse(['page' => $map[$page]->getCurrentPage()]);
         }

@@ -174,7 +174,6 @@ public class MyTools {
     public static String sendImage(byte[] imageData, String targetUrl) {
         URL url = null;
         try {
-            ;
             url = new URL( targetUrl );
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setDoOutput( true );
@@ -329,6 +328,7 @@ public class MyTools {
         this.imageNotif = imageNotif;
     }
 
+
     public void showNotif() {
         textNotif.setStyle( "-fx-background-color: #fdc847" );
         imageNotif.setStyle( "-fx-background-color: #fdc847" );
@@ -351,6 +351,8 @@ public class MyTools {
         timeline.setCycleCount( Animation.INDEFINITE );
         timeline.play();
     }
+
+
 
 
 }

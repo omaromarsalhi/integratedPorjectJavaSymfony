@@ -45,5 +45,20 @@ class RealTimeUpdater
         $loop->run();
     }
 
+    public function notifyFromSystem($data): void
+    {
+        $localData = $this->serializer($data);
+        $loop = Factory::create();
+        $connector = new Connector($loop);
+        $connector('ws://localhost:8091?userId=' . -100)->then(function (WebSocket $connection) use ($localData) {
+            $productData = $localData;
+            $connection->send($productData);
+            $connection->close();
+        }, function (\Exception $e) {
+            echo "Could not connect: {$e->getMessage()}\n";
+        });
+        $loop->run();
+    }
+
 }
 

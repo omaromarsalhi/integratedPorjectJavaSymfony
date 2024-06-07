@@ -2,6 +2,7 @@ package pidev.javafx.controller.chat;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+
 import java.net.URI;
 import java.util.function.Consumer;
 
@@ -15,19 +16,16 @@ public class MyWebSocketClient extends WebSocketClient {
     }
 
     public void setMessageHandler(Consumer<String> messageHandler) {
-        System.out.println("waaa");
         this.messageHandler = messageHandler;
     }
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        System.out.println("Connected to the server");
         isConnected = true;
     }
 
     @Override
     public void onMessage(String message) {
-        System.out.println("Received message: " + message);
         if (messageHandler != null) {
             messageHandler.accept(message);
         }
@@ -35,7 +33,6 @@ public class MyWebSocketClient extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        System.out.println("Connection closed: " + reason);
         isConnected = false;
     }
 
@@ -47,9 +44,8 @@ public class MyWebSocketClient extends WebSocketClient {
     @Override
     public void send(String text) {
         if (isConnected) {
+            System.out.println(text);
             super.send(text);
-        } else {
-            // You might want to handle this case, e.g., queue messages
         }
     }
 

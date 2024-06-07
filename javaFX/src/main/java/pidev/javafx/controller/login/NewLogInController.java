@@ -431,6 +431,7 @@ public class NewLogInController implements Initializable {
         stage.close();
         stage.setScene( scene );
         stage.show();
+        GlobalSocketConnection.initiateConnection();
     }
 
 

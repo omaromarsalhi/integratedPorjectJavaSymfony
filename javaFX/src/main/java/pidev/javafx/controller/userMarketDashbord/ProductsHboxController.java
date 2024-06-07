@@ -92,6 +92,7 @@ public class ProductsHboxController implements Initializable {
             if (product.getState().equals( "verified" )) {
                 stateImage.setImage( new Image( "file:src/main/resources/icons/marketPlace/approve24C.png", 24, 24, true, true ) );
                 verificationState = "verified";
+                aiResultBtn.setVisible( false );
             } else if (testStateAiVerification()) {
                 verificationState = "half-verified";
                 stateImage.setImage( new Image( "file:src/main/resources/icons/marketPlace/mark.png" ) );
