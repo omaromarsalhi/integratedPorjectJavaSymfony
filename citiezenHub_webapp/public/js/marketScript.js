@@ -129,7 +129,10 @@ function DisplayListProducts(movement_direction) {
         },
         async: true,
         success: function (response) {
-            $("#sub-market-block").html(response);
+
+            $("#sub-market-block").html(response.subMarket);
+            $("#navPages").html(response.nav);
+            $("#formsPages").html(response.forms);
 
             setTimeout(function () {
                 showProducts();

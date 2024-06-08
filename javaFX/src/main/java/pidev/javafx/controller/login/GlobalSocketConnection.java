@@ -5,8 +5,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.json.JSONObject;
 import pidev.javafx.controller.chat.MyWebSocketClient;
-import pidev.javafx.controller.userMarketDashbord.FormController;
-import pidev.javafx.crud.marketplace.CrudBien;
 import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
@@ -26,7 +24,7 @@ public class GlobalSocketConnection {
         int userID = UserController.getInstance().getCurrentUser().getId();
         URI uri = null;
         try {
-            uri = new URI( "ws://localhost:8091?userId=" + userID );
+            uri = new URI( "ws://localhost:8091?userId=" + userID+"&app=java" );
         } catch (URISyntaxException e) {
             throw new RuntimeException( e );
         }
@@ -38,13 +36,16 @@ public class GlobalSocketConnection {
     private static void handleMessage(String message) {
         JSONObject jsonObject = new JSONObject( message );
         String action = (String) jsonObject.get( "action" );
+
         if (action.equals( "chat" ) && chatInterface)
             dealWithChat( message );
         else if (action.equals( "chat" ) && !chatInterface) {
             Platform.runLater( () -> {
-                MyTools.getInstance().getImageNotif().setGraphic( new ImageView( new Image( "file:src/main/resources/namedIcons/new-message.png", 16, 16, false, false ) ) );
-                MyTools.getInstance().getTextNotif().setText( "New message is received" );
-                MyTools.getInstance().showNotif();
+                if((Integer) jsonObject.get( "senderId" )!=UserController.getInstance().getCurrentUser().getId()) {
+                    MyTools.getInstance().getImageNotif().setGraphic( new ImageView( new Image( "file:src/main/resources/namedIcons/new-message.png", 16, 16, false, false ) ) );
+                    MyTools.getInstance().getTextNotif().setText( "New message is received" );
+                    MyTools.getInstance().showNotif();
+                }
             } );
         }
         if (action.equals( "productEvent" ) && marketInterface)
@@ -54,6 +55,21 @@ public class GlobalSocketConnection {
             dealWithSystemMessage( jsonObject );
         }
 
+        if (action.equals( "accountDeletion" )) {
+            dealWithSystemMessageForClosingAccount( jsonObject );
+        }
+
+
+    }
+
+
+    private static void dealWithSystemMessageForClosingAccount(JSONObject jsonObject) {
+        Platform.runLater( () -> {
+            var customMouseEvent = new CustomMouseEvent<>( 10 );
+            EventBus.getInstance().publish( "accountDeleted", customMouseEvent );
+            MyTools.getInstance().getTextNotif().setText( "Account deleted" );
+            MyTools.getInstance().showErrorNotif2(120*1000);
+        } );
     }
 
 
@@ -61,7 +77,7 @@ public class GlobalSocketConnection {
         Platform.runLater( () -> {
             int idProduct = Integer.parseInt( (String) jsonObject.get( "idProduct" ) );
             var customMouseEvent = new CustomMouseEvent<>( idProduct );
-            EventBus.getInstance().publish( "refreshProdContainerAi_"+idProduct, customMouseEvent );
+            EventBus.getInstance().publish( "refreshProdContainerAi_" + idProduct, customMouseEvent );
         } );
     }
 

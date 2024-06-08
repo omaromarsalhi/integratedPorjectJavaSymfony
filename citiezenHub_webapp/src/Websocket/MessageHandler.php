@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Websocket;
 
 
@@ -19,11 +20,12 @@ class MessageHandler implements MessageComponentInterface
         $queryString = $conn->httpRequest->getUri()->getQuery();
         parse_str($queryString, $queryParameters);
         $userId = $queryParameters['userId'] ?? null;
+        $app = $queryParameters['app'] ?? null;
 
-        if ($userId) {
+        if ($userId && $app) {
             // Store the connection based on user ID
-            $this->userConnections[$userId] = $conn;
-            echo "New connection for user {$userId}! ({$conn->resourceId})\n";
+            $this->userConnections[$userId][$app] = $conn;
+            echo "New connection for user {$userId}!{$app}! ({$conn->resourceId})\n";
             echo "size " . sizeof($this->userConnections) . "\n";
         } else {
             // Handle cases where user ID is missing
@@ -39,7 +41,8 @@ class MessageHandler implements MessageComponentInterface
 
         if (isset($data['action'])) {
             switch ($data['action']) {
-                case 'aiTermination' || 'chat':
+                case 'aiTermination':
+                case 'chat':
                     $this->handleChatMessage($from, $data);
                     break;
                 case 'productEvent':
@@ -61,16 +64,36 @@ class MessageHandler implements MessageComponentInterface
             $recipientId = $data['recipientId'];
 
             // Look up recipient's connection based on recipient's ID
-            $recipientConnection = $this->userConnections[$recipientId] ?? null;
-            $senderConnection = $this->userConnections[$senderId] ?? null;
+            $recipientConnectionJava = $this->userConnections[$recipientId]['java'] ?? null;
+            $recipientConnectionSymfony = $this->userConnections[$recipientId]['symfony'] ?? null;
+            $senderConnectionJava = $this->userConnections[$senderId]['java'] ?? null;
+            $senderConnectionSymfony = $this->userConnections[$senderId]['symfony'] ?? null;
 
-            if ($recipientConnection && $recipientConnection !== $from && $senderConnection === $from) {
-                $serializer = $this->createSerializer();
-                $json = $serializer->serialize($data, 'json');
-                // Send the message to the recipient
-                echo "Message sent from {$senderId} to {$recipientId}\n";
-                $recipientConnection->send($json);
+
+            $serializer = $this->createSerializer();
+            $json = $serializer->serialize($data, 'json');
+
+            if ((($recipientConnectionJava && $recipientConnectionJava !== $from) || ($recipientConnectionSymfony && $recipientConnectionSymfony !== $from)) && $senderConnectionJava === $from) {
+                echo "Message sent from {$senderId} (java) to {$recipientId}\n";
+                if ($recipientConnectionJava)
+                    $recipientConnectionJava->send($json);
+                if ($recipientConnectionSymfony)
+                    $recipientConnectionSymfony->send($json);
+                if ($senderConnectionSymfony)
+                    $senderConnectionSymfony->send($json);
             }
+
+            if ((($recipientConnectionJava && $recipientConnectionJava !== $from) || ($recipientConnectionSymfony && $recipientConnectionSymfony !== $from)) && $senderConnectionSymfony === $from) {
+                echo "Message sent from {$senderId} (symfony) to {$recipientId}\n";
+                if ($recipientConnectionSymfony)
+                    $recipientConnectionSymfony->send($json);
+                if ($recipientConnectionJava)
+                    $recipientConnectionJava->send($json);
+                if ($senderConnectionJava)
+                    $senderConnectionJava->send($json);
+            }
+
+
         } else {
             echo "Incomplete message data.\n";
         }
@@ -78,23 +101,29 @@ class MessageHandler implements MessageComponentInterface
 
     public function handleBroadcastMessage(array $data): void
     {
+        echo "opaaaaaaaaaaaaaa\n";
         // Serialize broadcast data
         $serializer = $this->createSerializer();
         $json = $serializer->serialize($data, 'json');
         // Broadcast the message to all connected users
-        foreach ($this->userConnections as $userId => $connection) {
-            echo "Broadcasting message to user {$userId}\n";
-            $connection->send($json);
+        foreach ($this->userConnections as $userId => $connections) {
+            foreach ($connections as $app => $connection) {
+                echo "Broadcasting message to user {$userId} ({$app})\n";
+                $connection->send($json);
+            }
         }
     }
+
 
     public function onClose(ConnectionInterface $conn): void
     {
         // Remove the connection when it's closed
-        foreach ($this->userConnections as $userId => $connection) {
-            if ($connection === $conn) {
-                unset($this->userConnections[$userId]);
-                break;
+        foreach ($this->userConnections as $userId => $connections) {
+            foreach ($connections as $app => $connection) {
+                if ($connection === $conn) {
+                    unset($this->userConnections[$userId]);
+                    break;
+                }
             }
         }
         echo "Connection {$conn->resourceId} has disconnected\n";

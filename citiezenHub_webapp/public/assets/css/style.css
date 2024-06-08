@@ -8139,6 +8139,16 @@ a:hover {
   padding-left: 10px;
 }
 
+.nice-input {
+  margin-top: 1px;
+  margin-right: 0;
+  border: none;
+  background: var(--color-primary-alta);
+  padding-left: 10px;
+  height: 40px !important;
+  width: 250px !important;
+}
+
 @media only screen and (max-width: 479px) {
   .nice-select {
     margin-bottom: 0;

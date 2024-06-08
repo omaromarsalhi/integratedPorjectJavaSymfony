@@ -1,0 +1,9 @@
+
+
+{% for i,product in products %}
+    <form id="form_details_{{ i }}" method="post" type="hidden"
+          action="{{ path('app_product_product_details',{'index': i }) }}">
+        <input type="hidden" name="_token_{{ i }}"
+               value="{{ product.idProduct }}">
+    </form>
+{% endfor %}

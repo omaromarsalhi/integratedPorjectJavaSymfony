@@ -11,6 +11,16 @@ def execute_cmd(command):
     except Exception as e:
         print(f"Error executing command: {e}")
 
+def generate_produxt_description(title,url):
+    r = requests.post(url+'/api/generate',
+                    json={
+                        'model': 'mistral',
+                        'prompt': 'I have a "'+title+'" witch is a product  title for sale.give me a descreption that i can put on that product to get peaple to buy it. give me only the paragraph i asked for no more data and keep it short' ,
+                    },
+                    stream=True)
+    r.raise_for_status()
+    return r.content.decode('utf-8');
+
 
 def generateBasedOnText(prompt,prompt2,url):
     r = requests.post(url+'/api/generate',
@@ -37,7 +47,7 @@ def lookFroSemilarData(prompt,prompt2,url):
     r = requests.post(url+'/api/generate',
                     json={
                         'model': 'mistral',
-                        'prompt': 'does this paragraph "'+prompt+'" looks similar or describe the same thing or object in general or falls under the category  compared to this one "'+prompt2+'" , please answer with yes or no ',
+                        'prompt': 'does this paragraph "'+prompt+'"  describe the same thing or object or falls under the same category or speaks about a "'+prompt2+'" , please answer with yes or no ',
                     },
                     stream=True)
     r.raise_for_status()

@@ -92,7 +92,6 @@ class RegistrationController extends AbstractController
 
         }
 
-
         return $this->render('user/signup.html.twig', [
             'name' => $parts[0] ?: ($user ? $user->getFirstName() : ''),
             'lastName' => $user ? $user->getLastName() : '',
@@ -100,19 +99,19 @@ class RegistrationController extends AbstractController
             'role' => $user ? $user->getRole() : '',
             'errors' => $errorMessages,
         ]);
-
     }
 
     #[Route('/java/launchCounter', name: 'java_launchCounter', methods: ['GET', 'POST'])]
-    public function launchCounter(Request $request,MessageBusInterface $messageBus,UserRepository $userRepository): Response
+    public function launchCounter(EntityManagerInterface $entityManager,Request $request,MessageBusInterface $messageBus,UserRepository $userRepository): Response
     {
         $user=$userRepository->findOneBy(['idUser'=>$request->get('idUser')]);
         $user->setUMID(Uuid::v4()->toBase32());
+        $entityManager->flush();
         $obj = [
             'idUser' => $user->getId(),
             'UMID' => $user->getUMID()
         ];
-        $delayInSeconds = 3*60;
+        $delayInSeconds = 1*60;
         $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
 
         return new Response("done", Response::HTTP_OK);

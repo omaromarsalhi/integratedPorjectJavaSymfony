@@ -7,10 +7,9 @@ $(document).ready(function () {
 
 });
 
-let myFunction=null;
 
 
-const socket = new WebSocket("ws://localhost:8091?userId=" + currentUser);
+const socket = new WebSocket("ws://localhost:8091?userId=" + currentUser+"&app=symfony");
 // const socket = new WebSocket("ws://192.168.1.7:8090?userId=" + currentUser);
 socket.addEventListener("open", function () {
     console.log("CONNECTED");
@@ -18,7 +17,6 @@ socket.addEventListener("open", function () {
 
 socket.addEventListener('message', (event) => {
     const messageData = JSON.parse(event.data);
-    console.log(messageData)
     if (messageData.action === 'chat') {
         receiveMsg(messageData)
     } else if (messageData.action === 'productEvent') {
@@ -114,4 +112,13 @@ function showValidPop(msg) {
 
 function hideValidPop() {
     $('#statusSuccessModal').modal('hide')
+}
+
+function webNotif(message){
+    $('#notification_box').html('<div class="woocommerce-message notifDiv" id="notifDiv" role="alert">\n' +
+        '<i class="notifIcon mt-6 pb-0 fa-solid fa-circle-check"></i>  “ '+message+' ”\n' +
+        '</div>')
+    $('#notifDiv').on('click', function () {
+        $('#notifDiv').remove()
+    });
 }

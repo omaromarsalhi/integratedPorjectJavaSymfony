@@ -161,8 +161,6 @@ function deleteProduct(id, index, type) {
 
             $('#notification_box').html('<div class="woocommerce-message notifDiv" id="notifDiv" role="alert">\n' +
                 '<i class="notifIcon mt-6 pb-0 fa-solid fa-circle-check"></i>  “ Product has been Deleted ”\n' +
-                '<a href=""\n' +
-                '   class="restore-item">Undo?</a>\n' +
                 '</div>')
 
             $('#notifDiv').on('click', function () {

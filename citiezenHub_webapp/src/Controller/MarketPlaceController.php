@@ -45,15 +45,22 @@ class MarketPlaceController extends AbstractController
             }
 
 
-
             $session->set('current_page', $current_page);
-
-
-            return $this->render('market_place/sub_market.html.twig', [
-                'products' => array_slice($prods, ($current_page - 1) * 12, 12),
+            $productsToShow=array_slice($prods, ($current_page - 1) * 12, 12);
+            $subMarket=$this->render('market_place/sub_market.html.twig', [
+                'products' => $productsToShow,
                 'current_page' => $current_page,
                 'previous_page' => $previous_page,
             ]);
+            $nav=$this->render('market_place/nav.html.twig', [
+                'nbr_pages' => $session->get('nbr_pages'),
+            ]);
+
+            $forms=$this->render('market_place/forms.html.twig', [
+                'products' => $productsToShow,
+            ]);
+
+            return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent(),'forms'=>$forms]);
 
         }
 
@@ -83,14 +90,17 @@ class MarketPlaceController extends AbstractController
 
             $filterBy=$request->get('filterBy');
             $idList=$session->get('idList');
+            dump($filterBy);
+            dump($idList);
             $prods=$productRepository->findByPriceTest($filterBy,$idList);
             $session->set('allProducts',$prods);
             $session->set('nbr_pages', ceil(sizeof($prods) / 12));
             $session->set('current_page', 1);
 
 
+            $productsToShow=array_slice($prods, 0, 12);
             $subMarket=$this->render('market_place/sub_market.html.twig', [
-                'products' => array_slice($prods, 0, 12),
+                'products' => $productsToShow,
                 'current_page' => 1,
                 'previous_page' => 2,
             ]);
@@ -98,21 +108,25 @@ class MarketPlaceController extends AbstractController
                 'nbr_pages' => $session->get('nbr_pages'),
             ]);
 
-            return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent()]);
+            $forms=$this->render('market_place/forms.html.twig', [
+                'products' => $productsToShow,
+            ]);
+
+            return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent(),'forms'=>$forms]);
         }
 
         return new Response('', Response::HTTP_BAD_REQUEST);
     }
 
     #[Route('/searChByImage', name: 'app_market_searChByImage', methods: ['GET', 'POST'])]
-    public function searChByImage(AiVerification $aiVerification,AiResultRepository $aiResultRepository,ProductRepository $productRepository, Request $request): Response
+    public function searChByImage(AiVerification $aiVerification,ProductRepository $productRepository, Request $request): Response
     {
         $session = $request->getSession();
 
         if ($request->isXmlHttpRequest()) {
 
             $image=$request->files->get('image');
-            $data=$aiResultRepository->findAll();
+            $data=$productRepository->findAll();
             $fileName=ImageHelper::saveSingleImage($image);
             $idList=$aiVerification->runImageSearch($fileName,$data);
             $session->set('idList', $idList);
@@ -122,8 +136,9 @@ class MarketPlaceController extends AbstractController
             $session->set('current_page', 1);
 
 
+            $productsToShow=array_slice($products, 0, 12);
             $subMarket=$this->render('market_place/sub_market.html.twig', [
-                'products' => array_slice($products, 0, 12),
+                'products' => $productsToShow,
                 'current_page' => 1,
                 'previous_page' => 2,
             ]);
@@ -131,7 +146,11 @@ class MarketPlaceController extends AbstractController
                 'nbr_pages' => $session->get('nbr_pages'),
             ]);
 
-            return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent(),'idlist'=>$idList]);
+            $forms=$this->render('market_place/forms.html.twig', [
+                'products' => $productsToShow,
+            ]);
+
+            return new JsonResponse(['subMarket'=>$subMarket->getContent(),'nav'=>$nav->getContent(),'forms'=>$forms]);
         }
 
         return new Response('', Response::HTTP_BAD_REQUEST);

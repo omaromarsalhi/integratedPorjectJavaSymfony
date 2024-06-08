@@ -144,19 +144,22 @@ public class ChatController implements Initializable {
         Platform.runLater( () -> {
             JSONObject jsonObject = new JSONObject( message );
             int othersenderId = (Integer) jsonObject.get( "senderId" );
-            HBox hBox = (HBox) usersBox.lookup( "#" + othersenderId );
-            if (hBox == null) {
-                var crud = new ServiceUser();
-                hBox = createUserForAdd( crud.getUserById( othersenderId ) );
-                usersBox.getChildren().addFirst( hBox );
-            }
-            if (othersenderId != reciver.getId()) {
-                Label label = (Label) hBox.getChildren().get( 2 );
-                label.setText( "+" + (CrudChat.getInstance().count( othersenderId ) + 1) );
-            } else {
-                System.out.println( "waaa" );
-                String message2 = (String) jsonObject.get( "message" );
-                chatContainer.getChildren().add( createTextChatBox( message2, true, "" ) );
+            if(othersenderId==UserController.getInstance().getCurrentUser().getId()){
+                chatContainer.getChildren().add( createTextChatBox( (String) jsonObject.get( "message" ), false, "" ) );
+            }else {
+                HBox hBox = (HBox) usersBox.lookup( "#" + othersenderId );
+                if (hBox == null) {
+                    var crud = new ServiceUser();
+                    hBox = createUserForAdd( crud.getUserById( othersenderId ) );
+                    usersBox.getChildren().addFirst( hBox );
+                }
+                if (othersenderId != reciver.getId()) {
+                    Label label = (Label) hBox.getChildren().get( 2 );
+                    label.setText( "+" + (CrudChat.getInstance().count( othersenderId ) + 1) );
+                } else {
+                    String message2 = (String) jsonObject.get( "message" );
+                    chatContainer.getChildren().add( createTextChatBox( message2, true, "" ) );
+                }
             }
         } );
     }

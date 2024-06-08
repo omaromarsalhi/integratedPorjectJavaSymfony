@@ -237,8 +237,8 @@ public class MyTools {
                         checkIfProductIsValid = false;
                 } else
                     checkIfProductIsValid = false;
-//                if (checkIfProductIsValid)
-//                    PhoneSMS.getInstance().sendSMS( "+21629624921", "A New Product Was Added" );
+                if (checkIfProductIsValid)
+                    PhoneSMS.getInstance().sendSMS( "+21629624921", "A New Product Was Added" );
                 checkIfProductIsValid = true;
             }
         }
@@ -353,6 +353,16 @@ public class MyTools {
     }
 
 
-
+    public void showErrorNotif2(int time) {
+        textNotif.setStyle( "-fx-background-color: rgba(224,55,55,0.48)" );
+        imageNotif.setStyle( "-fx-background-color: rgba(224,55,55,0.48)" );
+        imageNotif.setGraphic( new ImageView( new Image( String.valueOf( getClass().getResource( "/icons/marketPlace/cancel.png" ) ), 16, 16, false, false ) ) );
+        showAndHideAnimation( notifHbox, 1, 500 );
+        Timeline timeline = new Timeline( new KeyFrame( Duration.millis( time ), event1 -> {
+            showAndHideAnimation( notifHbox, 0, 0 );
+        } ) );
+        timeline.setCycleCount( Animation.INDEFINITE );
+        timeline.play();
+    }
 
 }

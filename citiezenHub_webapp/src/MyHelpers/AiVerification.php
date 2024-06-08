@@ -3,6 +3,7 @@
 namespace App\MyHelpers;
 
 use App\Entity\AiResult;
+use App\Entity\Product;
 use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\HttpClient;
@@ -25,23 +26,38 @@ class AiVerification
     }
 
 
+
     public function runImageSearch($fileName, $data): array
     {
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
         $imageDescription = $this->generateImageDescriptionWithNoTitle($fileName);
         $result = [];
         for ($i = 0; $i < count($data); $i++) {
-            if ($data[$i] instanceof AiResult) {
-                $aiDataHolder = $serializer->deserialize($data[$i]->getBody(), AiDataHolder::class, 'json');
-                $descriptions = $aiDataHolder->getDescriptions();
-                $rep = $this->looksForsemilairity($imageDescription, $descriptions[0]);
+            if ($data[$i] instanceof Product) {
+                $rep = $this->looksForsemilairity($imageDescription, $data[$i]->getName());
                 if (str_starts_with(strtolower($rep), " yes") || str_starts_with(strtolower($rep), "yes"))
                     $result[] = $data[$i]->getIdProduct();
-
             }
         }
         return $result;
     }
+
+//    public function runImageSearch($fileName, $data): array
+//    {
+//        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
+//        $imageDescription = $this->generateImageDescriptionWithNoTitle($fileName);
+//        $result = [];
+//        for ($i = 0; $i < count($data); $i++) {
+//            if ($data[$i] instanceof AiResult) {
+//                $aiDataHolder = $serializer->deserialize($data[$i]->getBody(), AiDataHolder::class, 'json');
+//                $descriptions = $aiDataHolder->getDescriptions();
+//                $rep = $this->looksForsemilairity($imageDescription, $descriptions[0]);
+//                if (str_starts_with(strtolower($rep), " yes") || str_starts_with(strtolower($rep), "yes"))
+//                    $result[] = $data[$i]->getIdProduct();
+//
+//            }
+//        }
+//        return $result;
+//    }
 
     /**
      * @throws Exception

@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Municipalite;
 use App\Entity\User;
 use App\MyHelpers\AiVerification;
+use App\MyHelpers\SendSms;
 use App\MyHelpers\UserVerifierMessage;
 use App\Repository\ChatRepository;
+use App\Repository\FavoriteRepository;
 use App\Repository\MunicipaliteRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
@@ -26,61 +28,39 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class WtfDudeController extends AbstractController
 {
     #[Route('/wtf/dude', name: 'app_wtf_dude')]
-    public function index(EntityManagerInterface $entityManager,MessageBusInterface $messageBus,ChatRepository $chatRepository,UserRepository $userRepository): Response
+    public function index(FavoriteRepository $favoriteRepository,ProductRepository $productRepository): Response
     {
-//
-//        $filter = [
-//        'datetime'=>['today'=> 'false', 'lastWeek'=> 'false', 'lastMonth'=> 'false'],
-//        'category'=>['food'=> 'true', 'sports'=> 'false', 'entertainment'=> 'false', 'realEstate'=> 'false', 'vehicle'=> 'false'],
-//        'price'=>['allPrices'=> 'true', 'asc'=> 'false', 'desc'=> 'false']
-//        ];
-//
-//        dump($productRepository->findByPriceTest($filter));
+        $favorites = $favoriteRepository->findAll();
+        $product=$productRepository->findOneBy(['idProduct'=>783]);
+        foreach ($favorites as $favorite) {
+            $checkIfProductIsValid = true;
+            $parts = explode('__', $favorite->getSpecifications());
+            $today = (new \DateTime())->format('Y-m-d');
+            if ($today >= $parts[0] && ($parts[1] == '' || $today <= $parts[1])) {
+                if ($parts[2] != '' && intval($parts[2]) >= $product->getPrice()) {
+                    $checkIfProductIsValid = false;
+                    dump (1);
+                }
+                else if ($parts[3] != '' && intval($parts[3]) <= $product->getPrice()) {
+                    $checkIfProductIsValid = false;
+                    dump (2);
+                }
+                else if ($parts[4] != '' && intval($parts[4]) != $product->getQuantity()) {
+                    $checkIfProductIsValid = false;
+                    dump (3);
+                }
+                else if ($parts[5] != '' && $parts[5] != $product->getCategory() && $parts[5] != 'All') {
+                    $checkIfProductIsValid = false;
+                    dump (4);
+                }
+            } else
+                $checkIfProductIsValid = false;
 
-//        $aiVerification = new AiVerification();
-//        $aiVerification->formatJsonFilesOfCin(md5('user_front' . ($this->getUser()->getId() * 1000 + 17)), md5('user_backCin' . ($this->getUser()->getId() * 1000 + 17)));
-//        $geocoder=new GeocodingService($client);
-//        $user=$this->getUser();
-//        $path = '../../files/usersJsonFiles/' . md5('user' . ($user->getId() * 1000 + 17)) . '.json';
-//
-//        $jsonString = file_get_contents($path);
-//        $jsonDataCin = json_decode($jsonString, true);
-//
-//        try {
-//            $data = $geocoder->geocode($jsonDataCin['العنوان']['data']);
-//        } catch (\Exception $e) {
-//        }
-//
-//        dump($data);
-//        dump($geocoder->isInMunicipality($jsonDataCin['العنوان']['data'],$user->getMunicipalite()->getName()));
-//        $users = $userRepository->findAll();
-//
-//        foreach ($users as $user) {
-//            if ($user !== $this->getUser()) {
-//                $chat = $chatRepository->selectLastMessage($user->getId());
-//                if($user->getId()==195)
-//                    dump($chat);
-//                if(sizeof($chat) > 0) {
-//                    $chat = $chat[0];
-//                    $messages[$user->getId()] = [$chat->getMessage(), $chat->getTimestamp()->format('Y-m-d H:i'), $chat->getMsgState()];
-//                }
-//                else{
-//                    $messages[$user->getId()] = ['', '',-1];
-//                }
-//            }
-//        }
-
-//        $obj=[
-//            'idUser' => 100,
-//            'UMID'=>Uuid::v4()->toBase32()
-//        ];
-//        $delayInSeconds = 180;
-//        $userVerifierMessage=new UserVerifierMessage($obj);
-//        $messageBus->dispatch($userVerifierMessage, [new DelayStamp($delayInSeconds * 1000),]);
-//        dump($userVerifierMessage);
-
-        $returnedData =$this->forward('app.user_controller')->give();
-        dump($returnedData);
+//            if ($checkIfProductIsValid)
+//                SendSms::send('new '.$product->getName().' has been added');
+//                SendSms::send('new product has been added');
+            dump($checkIfProductIsValid);
+        }
         die();
         return new Response("done");
     }

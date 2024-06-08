@@ -1,0 +1,61 @@
+
+
+
+
+
+{% for i,favorite in favorites %}
+    {% set tags = favorite.specifications|split("__") %}
+
+    <!-- start single product -->
+    <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800"
+         class="col-5 col-lg-5 col-md-6 col-sm-6 col-12 sal-animate" id="favorite_"{{ favorite.id }}>
+        <div class="product-style-one no-overlay">
+            <a href="" class="d-flex justify-content-center mb--10 mt--0">
+                <span class="product-name" style="font-size: 20px !important;">Fav<img class="mb-2" src="{{ asset('marketPlaceImages/favourite.png') }}" alt="">rite #{{ i+1 }}</span>
+            </a>
+
+            <span class="latest-bid " style="font-size: 15px !important;font-weight: 500 !important;">
+                <span class="latest-bid d-flex flex-column justify-content-center  align-items-center mt--2">
+                    <span style="color: #2899d8; font-size: 18px !important;">Period : </span>
+                    <span> {{ tags[0] }}<span style="color: #2899d8"> / </span>{{ tags[1]|default(" - ") }} </span>
+                </span>
+
+                <span class="latest-bid d-flex flex-column justify-content-center  align-items-center mt--2">
+                    <span style="color: #2899d8; font-size: 18px !important;">Price : </span>
+                    <span> {{ tags[2]|default("Unlimited ") }}<span style="color: #2899d8"> / </span>{{ tags[3]|default("Unlimited ") }} </span>
+                </span>
+
+                <span class="latest-bid d-flex flex-column justify-content-center  align-items-center mt--2">
+                    <span style="color: #2899d8; font-size: 18px !important;">Quantity : </span>
+                    <span> {{ tags[4]|default("Unlimited ") }} </span>
+                </span>
+
+                <span class="latest-bid d-flex flex-column justify-content-center  align-items-center mt--2">
+                    <span style="color: #2899d8; font-size: 18px !important;">Category : </span>
+                    <span> {{ tags[5] }} </span>
+                </span>
+            </span>
+
+            <div class="bid-react-area">
+                <div class="last-bid"></div>
+                <div class="react-area">
+                    <span class="number" onclick="deleteFavorite({{ favorite.id }})"><i class="fa-solid fa-trash-can"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end single product -->
+
+
+
+
+{% endfor %}
+
+
+
+
+
+
+
+
+

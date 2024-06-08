@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AiResult;
 use App\Form\AiResult2Type;
 use App\MyHelpers\AiDataHolder;
+use App\MyHelpers\AiVerificationMessage;
 use App\MyHelpers\UserMessage;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
@@ -78,7 +79,7 @@ class AiResultController extends AbstractController
                 'initiator'=>'symfony',
             ];
 
-            $messageBus->dispatch(new UserMessage($obj));
+            $messageBus->dispatch(new AiVerificationMessage($obj));
 
             return new JsonResponse(['resp' => 'done'], Response::HTTP_OK);
         }

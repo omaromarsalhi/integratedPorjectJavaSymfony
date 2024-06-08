@@ -7,11 +7,12 @@ use App\Entity\Product;
 use App\MyHelpers\AiDataHolder;
 use App\MyHelpers\AiVerificationMessage;
 use App\MyHelpers\ImageHelper;
-use App\MyHelpers\UserMessage;
 use App\MyHelpers\RealTimeUpdater;
 use App\Repository\AiResultRepository;
+use App\Repository\FavoriteRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpClient\HttpClient;
@@ -55,7 +56,7 @@ class ProductController extends AbstractController
             $new_product->setDescription($description);
             $new_product->setPrice(floatval($price));
             $new_product->setQuantity(floatval($quantity));
-            $new_product->setCategory("food");
+            $new_product->setCategory($category);
             $new_product->setIsDeleted(0);
             $new_product->setState('unverified');
             $new_product->setType('BIEN');
@@ -110,7 +111,7 @@ class ProductController extends AbstractController
             $title = $request->get("title");
             $client = HttpClient::create();
             $response = $client->request('POST', 'http://127.0.0.1:5000/get-descreption?title=' . $title);
-            $substringsToRemove = ['\"', '""\\', '"\n', '"', '\n'];
+            $substringsToRemove = ['\"', '""\\', '"\n', '"', '\n',' \u'];
             $content = str_replace($substringsToRemove, "", $response->getContent());
             return new JsonResponse(['description' => $content]);
         }
@@ -201,10 +202,10 @@ class ProductController extends AbstractController
 
 
     #[Route('/test', name: 'test', methods: ['POST', 'GET'])]
-    public static function changeState($initiator, $mode, $idUser, RealTimeUpdater $realTimeUpdater, AiResultRepository $aiResultRepository, ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
+    public static function changeState($initiator, $mode, $idUser, RealTimeUpdater $realTimeUpdater, ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
     {
         for ($i = 0; $i < sizeof($aiDataHolder->getDescriptions()); $i++) {
-            if (str_starts_with(strtolower($aiDataHolder->getTitleValidation()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no"))
+            if (!str_starts_with(strtolower($aiDataHolder->getDescriptions()[$i]), " yes")&&(str_starts_with(strtolower($aiDataHolder->getTitleValidation()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no")))
                 return new Response('done', Response::HTTP_OK);
         }
 
@@ -217,6 +218,7 @@ class ProductController extends AbstractController
         } else if ($initiator !== 'java') {
             $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'ADD'], $idUser);
         }
+
 
         return new Response('done', Response::HTTP_OK);
     }

@@ -3,9 +3,11 @@
 namespace App\MyHelpers;
 
 use App\Controller\AiResultController;
+use App\Controller\FavoriteController;
 use App\Controller\ProductController;
 use App\Entity\AiResult;
 use App\Repository\AiResultRepository;
+use App\Repository\FavoriteRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -18,7 +20,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class AiVerificationMessengerHandler
 {
 
-    public function __construct(private RealTimeUpdater $realTimeUpdater, private EntityManagerInterface $entityManager, private ProductRepository $productRepository, private AiResultRepository $aiResultRepository)
+    public function __construct(private FavoriteRepository $favoriteRepository, private RealTimeUpdater $realTimeUpdater, private EntityManagerInterface $entityManager, private ProductRepository $productRepository, private AiResultRepository $aiResultRepository)
     {
     }
 
@@ -31,10 +33,16 @@ class AiVerificationMessengerHandler
 
         $aiDataHolder = $aiVerification->run($obj);
 
-        ProductController::changeState($obj['initiator'],$obj['mode'], $obj['idUser'], $this->realTimeUpdater, $this->aiResultRepository, $this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
+        ProductController::changeState( $obj['initiator'], $obj['mode'], $obj['idUser'], $this->realTimeUpdater, $this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
 
         if ($obj['initiator'] === 'java')
-            $this->realTimeUpdater->notifyFromSystem(['action' => 'aiTermination', 'senderId' => -100, 'recipientId' => $obj['idUser'],'idProduct'=>strval($obj['id']),'message'=>'done']);
+            $this->realTimeUpdater->notifyFromSystem(['action' => 'aiTermination', 'senderId' => -100, 'recipientId' => $obj['idUser'], 'idProduct' => strval($obj['id']), 'message' => 'done']);
+
+
+        $product = $this->productRepository->findOneBy(['idProduct' => $obj['id']]);
+        $favorites = $this->favoriteRepository->findAll();
+        if ($product->getState() == 'verified')
+            FavoriteController::filterProductForFavorite($favorites, $product);
 
 
         $aiResultController = new AiResultController();
@@ -55,9 +63,6 @@ class AiVerificationMessengerHandler
 
         }
 
-
-
 //        SendSms::send();
-
     }
 }

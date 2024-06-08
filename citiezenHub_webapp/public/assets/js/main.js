@@ -633,7 +633,8 @@ var uiValues
             }).mouseup(function () {
                 filterBy.priceIntervale.min = uiValues.values[0];
                 filterBy.priceIntervale.max = uiValues.values[1];
-                filterByPrice()
+                if($(this).data('value')!=='favorite')
+                    filterByPrice()
             });
             $('#amount').val('$' + $('#slider-range').slider('values', 0) +
                 " - $" + $('#slider-range').slider('values', 1));

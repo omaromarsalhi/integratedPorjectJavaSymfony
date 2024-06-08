@@ -35,7 +35,7 @@ class RealTimeUpdater
         $localData = $this->serializer($data);
         $loop = Factory::create();
         $connector = new Connector($loop);
-        $connector('ws://localhost:8091?userId=' . $userId)->then(function (WebSocket $connection) use ($localData) {
+        $connector('ws://localhost:8091?userId=' . $userId."&app=symfony")->then(function (WebSocket $connection) use ($localData) {
             $productData = $localData;
             $connection->send($productData);
             $connection->close();
@@ -50,7 +50,7 @@ class RealTimeUpdater
         $localData = $this->serializer($data);
         $loop = Factory::create();
         $connector = new Connector($loop);
-        $connector('ws://localhost:8091?userId=' . -100)->then(function (WebSocket $connection) use ($localData) {
+        $connector('ws://localhost:8091?userId=' . (-100)."&app=symfony")->then(function (WebSocket $connection) use ($localData) {
             $productData = $localData;
             $connection->send($productData);
             $connection->close();

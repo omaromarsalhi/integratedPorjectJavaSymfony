@@ -27,7 +27,7 @@ class ChatController extends AbstractController
     #[Route('/show', name: '_show')]
     public function show(UserRepository $userRepository, ChatRepository $chatRepository): Response
     {
-        $users = $userRepository->findAll();
+        $users = $userRepository->findByChat($this->getUser());
         $messages = [];
 
         foreach ($users as $user) {
@@ -88,7 +88,7 @@ class ChatController extends AbstractController
             return new Response('done', Response::HTTP_OK);
         }
         return $this->render('chat/chat.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $userRepository->findByChat($this->getUser()),
         ]);
     }
 

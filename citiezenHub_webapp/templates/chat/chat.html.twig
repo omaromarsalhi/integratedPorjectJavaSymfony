@@ -20,7 +20,7 @@
                     <div class="friend-drawer friend-drawer--onhover" data-value="{{ index }}:{{ user.getId() }}"
                          id="list_user_{{ index }}">
                         <img class="profile-image" id="userImg_{{ index }}"
-                             src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg" alt="">
+                             src="{{ asset('usersImg/'~user.getImage()) }}" alt="">
                         <div class="text">
 
                             <h6 id="userFullName_{{ index }}">{{ user.firstName|capitalize~' '~user.lastName|capitalize }}</h6>

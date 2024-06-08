@@ -1,7 +1,6 @@
 <input type="hidden" id="currentPage" value={{ current_page }}>
 <input type="hidden" id="previousPage" value={{ previous_page }}>
 
-
 {% for i,product in products %}
     <!-- start single product -->
     <div
@@ -133,13 +132,7 @@
     <!-- end single product -->
 
 {% endfor %}
-{% for i,product in products %}
-    <form id="form_details_{{ i }}" method="post"
-          action="{{ path('app_product_product_details',{'index': i }) }}">
-        <input type="hidden" name="_token_{{ i }}"
-               value="{{ product.idProduct }}">
-    </form>
-{% endfor %}
+
 
 
 

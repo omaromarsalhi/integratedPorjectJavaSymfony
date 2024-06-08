@@ -206,9 +206,7 @@
                             {% include 'market_place/sub_market.html.twig' with { 'products': products} %}
                         </div>
                         <div id="navPages">
-
                             {% include 'market_place/nav.html.twig' with { 'nbr_pages': nbr_pages} %}
-
                         </div>
                     </div>
                 </div>
@@ -218,7 +216,9 @@
     </div>
     <!-- explore section with left side filter End -->
 
-
+    <div id="formsPages">
+        {% include 'market_place/forms.html.twig' with { 'products': products} %}
+    </div>
     <!-- End Footer Area  -->
     <!-- Modal -->
     <div

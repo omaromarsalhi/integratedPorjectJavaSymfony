@@ -1,5 +1,4 @@
 from flask import Flask,request,jsonify
-from langchain_helper import generate_produxt_description
 import ollama_vesion as ov
 import OCRID
 
@@ -8,15 +7,16 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://dd9c-34-135-200-240.ngrok-free.app'
+url='https://1185-130-211-197-217.ngrok-free.app'
 model='llava:13b'
 
 
 
 @app.route('/get-descreption',methods=['POST'])
 def generate():
-    text=generate_produxt_description(request.args.get('title'))
-    return jsonify(text),200
+    text=ov.generate_produxt_description(request.args.get('title'),url)
+    tuned_response=ov.finetune_resp(text)
+    return jsonify(tuned_response),200
 
 
 @app.route('/get-product_image_descreption',methods=['POST'])

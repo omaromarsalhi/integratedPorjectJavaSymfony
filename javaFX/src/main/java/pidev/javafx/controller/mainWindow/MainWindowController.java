@@ -1,5 +1,7 @@
 package pidev.javafx.controller.mainWindow;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -60,6 +62,8 @@ public class MainWindowController implements Initializable {
     private Label imageNotif;
     @FXML
     private Label textNotif;
+    @FXML
+    private AnchorPane accountDeleted;
 
 
     @Override
@@ -71,7 +75,7 @@ public class MainWindowController implements Initializable {
         MyTools.getInstance().setTextNotif( textNotif );
         MyTools.getInstance().showAndHideAnimation( MyTools.getInstance().getNotifHbox(), 0, 0 );
         notifHbox.setVisible( true );
-
+        accountDeleted.setVisible( false );
 
         StackPane dashbord = null;
 
@@ -87,10 +91,32 @@ public class MainWindowController implements Initializable {
                 "    -fx-border-radius: 0;" );
 
         EventBus.getInstance().subscribe( "setUserImage", this::setUserImage );
+        EventBus.getInstance().subscribe( "accountDeleted", event -> {
+            accountDeleted.setVisible( true );
+            sleepThread().start();
+        } );
     }
 
     public void setUserImage(MouseEvent event){
         accountImg.setImage( new Image( GlobalVariables.IMAGEPATH4USER+UserController.getInstance().getCurrentUser().getPhotos(),24,24,true,true ) );
+    }
+
+    private Thread sleepThread() {
+        Task<Void> myTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                Thread.sleep( 1000*60 );
+                return null;
+            }
+        };
+
+        myTask.setOnSucceeded(event -> {
+            Platform.runLater( ()->{
+                System.exit( 0 );
+            } );
+        });
+
+        return new Thread( myTask );
     }
 
 

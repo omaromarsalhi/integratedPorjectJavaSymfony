@@ -9,9 +9,7 @@ function receiveMsg(messageData) {
     // if (reciverId == senderId && recipientId == currentUser) {
     if (recipientId == currentUser) {
         if (document.getElementById('chatContainer') && reciverId == senderId) {
-
             changeView()
-
             $('#chatContainer').append('<div class="row no-gutters ">\n' +
                 '                        <div class="dynamic-resizing">\n' +
                 '                            <div class="chat-bubble chat-bubble--left">\n' +
@@ -33,6 +31,27 @@ function receiveMsg(messageData) {
 
             $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
             skip = false
+        }
+    }
+    if(senderId == currentUser){
+        if (document.getElementById('chatContainer')) {
+            $('#chatContainer').append('<div class="row no-gutters ">\n' +
+                '                        <div class="dynamic-resizing-reverse right">\n' +
+                '                            <div class="chat-bubble chat-bubble--right">\n' +
+                '                                ' + message + ' ' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>')
+            $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
+            $('#msgToSend').val('');
+        }
+        if (document.getElementById('miniChatContainer')) {
+            $('#miniChatContainer').append('<div class="message">\n' +
+                '                        <p class="text">' + message + ' ' +
+                '                        </p>' +
+                '                    </div>')
+            $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
+            $('#miniMsgToSend').val('');
         }
     }
     if (skip) {

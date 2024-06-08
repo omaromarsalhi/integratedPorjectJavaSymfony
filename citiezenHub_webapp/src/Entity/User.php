@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -149,6 +151,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\Column(length: 1000, nullable: true)]
     private ?string $UMID = null;
+
+    #[ORM\OneToMany(targetEntity: Favorite::class, mappedBy: 'idUser')]
+    private Collection $favorites;
+
+    public function __construct()
+    {
+        $this->favorites = new ArrayCollection();
+    }
 
 
 
@@ -441,6 +451,66 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function setUMID(?string $UMID): static
     {
         $this->UMID = $UMID;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getSpecifications(): Collection
+    {
+        return $this->specifications;
+    }
+
+    public function addSpecification(Favorite $specification): static
+    {
+        if (!$this->specifications->contains($specification)) {
+            $this->specifications->add($specification);
+            $specification->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSpecification(Favorite $specification): static
+    {
+        if ($this->specifications->removeElement($specification)) {
+            // set the owning side to null (unless already changed)
+            if ($specification->getIdUser() === $this) {
+                $specification->setIdUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Favorite>
+     */
+    public function getFavorites(): Collection
+    {
+        return $this->favorites;
+    }
+
+    public function addFavorite(Favorite $favorite): static
+    {
+        if (!$this->favorites->contains($favorite)) {
+            $this->favorites->add($favorite);
+            $favorite->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFavorite(Favorite $favorite): static
+    {
+        if ($this->favorites->removeElement($favorite)) {
+            // set the owning side to null (unless already changed)
+            if ($favorite->getIdUser() === $this) {
+                $favorite->setIdUser(null);
+            }
+        }
 
         return $this;
     }

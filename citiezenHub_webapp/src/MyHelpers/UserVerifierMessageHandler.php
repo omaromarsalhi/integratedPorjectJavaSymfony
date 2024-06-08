@@ -27,6 +27,7 @@ class UserVerifierMessageHandler
             $this->entityManager->remove($user);
             $this->entityManager->flush();
             $this->realTimeUpdater->notifyFromSystem(['message' => 'your account has been deleted', 'senderId' => -100, 'recipientId' => $obj['idUser'], 'action' => 'accountDeletion']);
-        }
+
+         }
     }
 }

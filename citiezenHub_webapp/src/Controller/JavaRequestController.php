@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\MyHelpers\AiDataHolder;
 use App\MyHelpers\AiVerification;
+use App\MyHelpers\AiVerificationMessage;
 use App\MyHelpers\UserMessage;
 use App\MyHelpers\ImageHelperUser;
 use App\Repository\AiResultRepository;
@@ -51,7 +52,7 @@ class JavaRequestController extends AbstractController
             'initiator'=>'java'
         ];
 
-        $messageBus->dispatch(new UserMessage($obj));
+        $messageBus->dispatch(new AiVerificationMessage($obj));
         return new Response('done', Response::HTTP_OK);
     }
 
