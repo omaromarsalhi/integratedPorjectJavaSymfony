@@ -3,9 +3,14 @@
 namespace App\Controller;
 
 use App\MyHelpers\UserVerifierMessage;
+use App\Repository\TransactionRepository;
 use App\Service\GeocodingService;
 use Carbon\Traits\Timestamp;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Component\Translation\Translator;
@@ -26,7 +31,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Twig\Environment;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 
 class UserController extends AbstractController
@@ -40,7 +49,32 @@ class UserController extends AbstractController
     }
 
 
+    #[Route('/user/generatePdfWithoutMail', name: 'app_user_generatePdfWithoutMail')]
+    public function generatePdfWithoutMail(Pdf $knpSnappyPdf): PdfResponse|Response
+    {
+        $path = '../../files/usersJsonFiles/' . md5('user' . ($this->getUser()->getId() * 1000 + 17)) . '.json';
+        $filesystem = new Filesystem();
+        if (!$filesystem->exists([$path]))
+            return new Response('error',Response::HTTP_BAD_REQUEST);
 
+
+        $jsonString = file_get_contents($path);
+        $jsonDataCin = json_decode($jsonString, true);
+
+        $html = $this->renderView('user_dashboard/madhmoun.html.twig',[
+            'firstName'=>$jsonDataCin['الاسم']['data'],
+            'lastName'=>$jsonDataCin['اللقب']['data'],
+            'dob'=>$jsonDataCin['الولادة']['data'],
+            'location'=>$jsonDataCin['مكانها']['data'],
+            'gender'=>'dhkar',
+            'fatherName'=>$jsonDataCin['بن']['data'],
+            'motherName'=>$jsonDataCin['الأم']['data']
+        ]);
+        return new PdfResponse(
+            $knpSnappyPdf->getOutputFromHtml($html),
+            'file.pdf'
+        );
+    }
 
     #[Route('/cinTimeInfo', name: 'app_cinTimeInfo', methods: ['GET', 'POST'])]
     public function cinTimeInfo(Request $request): Response
@@ -63,7 +97,7 @@ class UserController extends AbstractController
 
 
     #[Route('/verifyInfoCinWithOtherInfo', name: 'app_verifyInfoCinWithOtherInfo', methods: ['GET', 'POST'])]
-    public function verifyInfoCinWithOtherInfo(HttpClientInterface $client,$user): string
+    public function verifyInfoCinWithOtherInfo(HttpClientInterface $client, $user): string
     {
         $geocoder = new GeocodingService($client);
         $path = '../../files/usersJsonFiles/' . md5('user' . ($user->getId() * 1000 + 17)) . '.json';
@@ -87,7 +121,7 @@ class UserController extends AbstractController
     }
 
 
-    private function updateState(MessageBusInterface $messageBus, EntityManagerInterface $entityManager, $state,$user)
+    private function updateState(MessageBusInterface $messageBus, EntityManagerInterface $entityManager, $state, $user)
     {
         $user->setIsVerified($state);
         $user->setState($state);
@@ -99,18 +133,18 @@ class UserController extends AbstractController
                 'idUser' => $user->getId(),
                 'UMID' => $user->getUMID()
             ];
-            $delayInSeconds = 2*60;
+            $delayInSeconds = 2 * 60;
             $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
         }
     }
 
     #[Route('/java/testForJava', name: 'app_user_testForJava', methods: ['GET', 'POST'])]
-    public function testForJava(Request $request,HttpClientInterface $client,MessageBusInterface $messageBus,EntityManagerInterface $entityManager,UserRepository $userRepository): Response
+    public function testForJava(Request $request, HttpClientInterface $client, MessageBusInterface $messageBus, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
-        $user=$userRepository->findOneBy(['idUser'=>$request->get('idUser')]);
+        $user = $userRepository->findOneBy(['idUser' => $request->get('idUser')]);
 
-        $returnedData = $this->verifyInfoCinWithOtherInfo($client,$user);
-        $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0,$user);
+        $returnedData = $this->verifyInfoCinWithOtherInfo($client, $user);
+        $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0, $user);
 
         return new Response($returnedData, Response::HTTP_OK);
     }
@@ -142,8 +176,8 @@ class UserController extends AbstractController
                 return new Response('error', Response::HTTP_OK);
             }
 
-            $returnedData = $this->verifyInfoCinWithOtherInfo($client,$this->getUser());
-            $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0,$this->getUser());
+            $returnedData = $this->verifyInfoCinWithOtherInfo($client, $this->getUser());
+            $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0, $this->getUser());
 
             return new Response($returnedData, Response::HTTP_OK);
         }
@@ -152,7 +186,7 @@ class UserController extends AbstractController
 
 
     #[Route('/updateAddress', name: 'app_user_updateAddress', methods: ['GET', 'POST'])]
-    public function updateAddress(MessageBusInterface $messageBus, HttpClientInterface $client,Request $request, EntityManagerInterface $entityManager, MunicipaliteRepository $municipalityRepository): Response
+    public function updateAddress(MessageBusInterface $messageBus, HttpClientInterface $client, Request $request, EntityManagerInterface $entityManager, MunicipaliteRepository $municipalityRepository): Response
     {
 //        $address=$this->userDate();
         if ($request->isXmlHttpRequest()) {
@@ -178,8 +212,8 @@ class UserController extends AbstractController
             $entityManager->persist($municipality);
             $entityManager->flush();
 
-            $returnedData = $this->verifyInfoCinWithOtherInfo($client,$this->getUser());
-            $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0,$this->getUser());
+            $returnedData = $this->verifyInfoCinWithOtherInfo($client, $this->getUser());
+            $this->updateState($messageBus, $entityManager, $returnedData == 'success' ? 1 : 0, $this->getUser());
 
             return new Response($returnedData, Response::HTTP_OK);
         }
@@ -188,7 +222,7 @@ class UserController extends AbstractController
 
 
     #[Route('/editProfile', name: 'editProfile', methods: ['GET', 'POST'])]
-    public function editUser(MessageBusInterface $messageBus, HttpClientInterface $client,ImageHelperUser $imageHelperUser, UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelperUser $imageHelper, SessionInterface $session): Response
+    public function editUser(MessageBusInterface $messageBus, HttpClientInterface $client, ImageHelperUser $imageHelperUser, UserRepository $rep, ManagerRegistry $doc, Request $req, ValidatorInterface $validator, ImageHelperUser $imageHelper, SessionInterface $session): Response
     {
         $user = $rep->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
 
@@ -232,8 +266,8 @@ class UserController extends AbstractController
                 $em->persist($user);
                 $em->flush();
 
-                $returnedData = $this->verifyInfoCinWithOtherInfo($client,$this->getUser());
-                $this->updateState($messageBus, $em, $returnedData == 'success' ? 1 : 0,$this->getUser());
+                $returnedData = $this->verifyInfoCinWithOtherInfo($client, $this->getUser());
+                $this->updateState($messageBus, $em, $returnedData == 'success' ? 1 : 0, $this->getUser());
 
                 return new Response($returnedData, Response::HTTP_OK);
             }

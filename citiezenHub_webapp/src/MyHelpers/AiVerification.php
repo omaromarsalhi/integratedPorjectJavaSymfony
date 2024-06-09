@@ -156,9 +156,9 @@ class AiVerification
             }
 
             for ($i = 0; $i < sizeof($bounding_boxesFront); $i++) {
-                if ($bounding_boxesFront[$i]['text'] !== 'اللقب' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['اللقب']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['اللقب']['top']) {
+                if (($bounding_boxesFront[$i]['text'] !== 'اللقب' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['اللقب']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['اللقب']['top'])||($bounding_boxesFront[$i]['text'] !== 'اللقب' && ($bounding_boxesFront[$i]['top']>$userCinData['اللقب']['top']&&$bounding_boxesFront[$i]['top']<$userCinData['اللقب']['topPlusHeight'])  )) {
                     $userCinData['اللقب']['data'] = $userCinData['اللقب']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
-                } else if ($bounding_boxesFront[$i]['text'] !== 'الاسم' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الاسم']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الاسم']['top']) {
+                } else if (($bounding_boxesFront[$i]['text'] !== 'الاسم' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الاسم']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الاسم']['top'])||($bounding_boxesFront[$i]['text'] !== 'الاسم' && ($bounding_boxesFront[$i]['top']>$userCinData['الاسم']['top']&&$bounding_boxesFront[$i]['top']<$userCinData['الاسم']['topPlusHeight'])  )) {
                     $userCinData['الاسم']['data'] = $userCinData['الاسم']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
                 } else if ((($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الاسم']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الولادة']['top'])) {
                     $userCinData['بن']['data'] = $userCinData['بن']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
@@ -184,7 +184,6 @@ class AiVerification
                 }
             }
 
-            dump($userCinData);
 
 
             $userCinData['الولادة']['data'] = trim($userCinData['الولادة']['data']);

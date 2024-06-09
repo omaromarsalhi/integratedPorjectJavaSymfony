@@ -8,7 +8,7 @@ def idRcognition(path,fileName):
     url = "https://api.edenai.run/v2/ocr/ocr"
     data = {
         "providers": "google",
-        "language": "ar",
+        "language": "en",
     }
 
     payload = {

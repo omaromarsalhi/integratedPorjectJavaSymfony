@@ -1,3 +1,6 @@
+
+
+
 function getCinTimeInfo() {
     $.ajax({
         url: '/cinTimeInfo',

@@ -38,9 +38,19 @@
                             <div class="rn-author-info-content">
                                 <h4 class="title">{{ app.user.firstName|upper~' '~app.user.lastName }}</h4>
                                 <div class="author-button-area">
-                    <span class="btn at-follw follow-button" onclick="showPop()"
-                    ><i class="fa-solid fa-file-pdf"></i> Madhmoun</span
-                    >
+                                    <!--{#<span class="btn at-follw follow-button"
+                                    ><i class="fa-solid fa-file-pdf"></i> Madhmoun</span>#}-->
+
+                                    <a
+                                            href="{{ path('app_user_generatePdfWithoutMail') }}"
+                                            id="generatePdfBtnMafhmoun"
+                                            type="button"
+                                            class="btn at-follw follow-button"
+                                            onclick="generatePdfMadhmoun()"
+                                    >
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        <span class="">Madhmoun</span>
+                                    </a>
                                     <span
                                             class="btn at-follw share-button"
                                             data-bs-toggle="modal"

@@ -5,6 +5,20 @@
 });*/
 
 
+function generatePdfMadhmoun() {
+    let value = "../../marketPlaceImages/basketAnimation.gif"
+    $('#generatePdfBtnMafhmoun').removeClass('pdfBtn');
+    $('#generatePdfBtnMafhmoun' ).addClass('pdfBtn_disabled');
+    $('#generatePdfBtnMafhmoun').html('<img class="loaderPdf" src="' + value + '" />')
+
+    setTimeout(function () {
+        $('#generatePdfBtnMafhmoun' ).addClass('pdfBtn');
+        $('#generatePdfBtnMafhmoun' ).removeClass('pdfBtn_disabled');
+        $('#generatePdfBtnMafhmoun' ).html('<i class="fa-solid fa-file-pdf"></i> <span class="text_pdf">Madhmoun</span>')
+    }, 2000)
+}
+
+
 function generatePdf(index) {
     let value = "../../marketPlaceImages/basketAnimation.gif"
     $('#generatePdfBtn_' + index).removeClass('pdfBtn');
