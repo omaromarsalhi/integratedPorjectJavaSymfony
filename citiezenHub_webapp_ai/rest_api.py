@@ -1,40 +1,16 @@
-from flask import Flask,request,jsonify,send_file
+from flask import Flask,request,jsonify
 import ollama_vesion as ov
 import OCRID
-import pdfkit,os
+
 
 
 app = Flask(__name__)
 
-url='https://1185-130-211-197-217.ngrok-free.app'
+url='https://3688-34-68-251-87.ngrok-free.app'
 model='llava:13b'
 
 
 
-
-@app.route('/download-pdf')
-def download_pdf():
-    # Path to the input HTML file
-    html_file_path = 'file.html'  # Ensure this path is correct
-    # Path to the output PDF file
-    output_pdf = 'converted_output.pdf'
-    # Path to wkhtmltopdf executable (update this path as needed)
-    path_wkhtmltopdf = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'  # Example for Windows
-    # Configure pdfkit to use the specific path to wkhtmltopdf
-    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-
-    # Check if HTML file exists
-    if not os.path.exists(html_file_path):
-        return f"Error: {html_file_path} does not exist.", 404
-
-    try:
-        # Generate PDF from the HTML file
-        pdfkit.from_file(html_file_path, output_pdf, configuration=config)
-    except Exception as e:
-        return f"Error generating PDF: {str(e)}", 500
-
-    # Send the generated PDF as a downloadable file
-    return send_file(output_pdf, as_attachment=True, download_name='madhmoun.pdf')
 
 
 @app.route('/get-descreption',methods=['POST'])

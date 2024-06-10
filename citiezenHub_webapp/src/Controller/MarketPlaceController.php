@@ -6,6 +6,8 @@ use App\MyHelpers\AiVerification;
 use App\MyHelpers\ImageHelper;
 use App\Repository\AiResultRepository;
 use App\Repository\ProductRepository;
+use App\Repository\TransactionRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -177,9 +179,36 @@ class MarketPlaceController extends AbstractController
         $product = $productRepository->findAll();
 
         return $this->render('market_place/marketplace.html.twig', [
-            'list'=>$product,
+            'list' => $product,
         ]);
     }
+
+    #[Route('/showTransanctionAdmin', name: 'app_transaction_Admin', methods: ['GET', 'POST'])]
+    public function showTransAdmin(TransactionRepository $transactionRepository, UserRepository $userRepository): Response
+    {
+        $transactions = $transactionRepository->findAll();
+
+        $transactionData = array_map(function ($transaction) use ($userRepository) {
+            $seller = $userRepository->find($transaction->getIdSeller());
+            $buyer = $userRepository->find($transaction->getIdBuyer());
+
+            return [
+                'idTransaction' => $transaction->getId(),
+                'sellerImage' => $seller->getImage(),
+                'sellerName' => $seller->getFirstName() . ' ' . $seller->getLastName(),
+                'buyerImage' => $buyer->getImage(),
+                'buyerName' => $buyer->getFirstName() . ' ' . $buyer->getLastName(),
+                'quantity' => $transaction->getQuantity(),
+                'pricePerUnit' => $transaction->getPricePerUnit(),
+                'datee' => $transaction->getTimestamp()->format('D, d M y h:i A'),
+            ];
+        }, $transactions);
+
+        return $this->render('market_place/transaction.html.twig', [
+            'transactionData' => $transactionData,
+        ]);
+    }
+
 }
 
 

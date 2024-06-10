@@ -2,29 +2,29 @@
 
 {% block body %}
     <div class="content">
-       
-        <div class="mb-9">
-            <div class="row g-2 mb-4">
-                <div class="col-auto">
-                    <h2 class="mb-0">Customers</h2>
-                </div>
+
+    <div class="mb-9">
+        <div class="row g-2 mb-4">
+            <div class="col-auto">
+                <h2 class="mb-0">Customers</h2>
             </div>
+        </div>
 
-            <div id="products" data-list='{"valueNames":["customer","email","total-orders","total-spent","city","last-seen","last-order"],"page":10,"pagination":true}'>
-                <div class="mb-4">
-                    <div class="row g-3">
-                        <div class="col-auto">
-                            <div class="search-box" style="margin-bottom: 20px">
-                                <form class="position-relative" data-bs-toggle="search" data-bs-display="static"><input class="form-control search-input search" type="search" placeholder="Search customers" aria-label="Search" />
-                                    <span class="fas fa-search search-box-icon"></span>
-                                </form>
-                            </div>
+        <div id="products" data-list='{"valueNames":["customer","email","total-orders","total-spent","city","last-seen","last-order"],"page":10,"pagination":true}'>
+            <div class="mb-4">
+                <div class="row g-3">
+                    <div class="col-auto">
+                        <div class="search-box" style="margin-bottom: 20px">
+                            <form class="position-relative" data-bs-toggle="search" data-bs-display="static"><input class="form-control search-input search" type="search" placeholder="Search customers" aria-label="Search" />
+                                <span class="fas fa-search search-box-icon"></span>
+                            </form>
                         </div>
-                        <div class="col-auto scrollbar overflow-hidden-y flex-grow-1">
-                            <div class="btn-group position-static" role="group">
+                    </div>
+                    <div class="col-auto scrollbar overflow-hidden-y flex-grow-1">
+                        <div class="btn-group position-static" role="group">
 
-                            </div>
                         </div>
+                    </div>
 
                 </div>
                 <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
@@ -46,7 +46,7 @@
 
 
                                     <td class="customer align-middle white-space-nowrap "  style="margin-right: 50px"><a class="d-flex align-items-center text-body-emphasis" href="{{path('Show_Details', {user : user.email} )}}">
-                                            <div class="avatar avatar-m"><img class="rounded-circle avatar-placeholder" src="{{ asset('images/users/' ~ user.image) }}" alt="" /></div>
+                                            <div class="avatar avatar-m"><img class="rounded-circle avatar-placeholder"  data-gallery="gallery-posts-1"  src="{{ asset('usersImg/' ~ user.image) }}" alt="" /></div>
                                             <p class="mb-0 ms-3 text-body-emphasis fw-bold">{{ user.firstName }} {{ user.lastName }}</p>
                                         </a>
                                     </td>
@@ -55,8 +55,8 @@
                                     {#                      <td class="total-spent align-middle white-space-nowrap fw-bold text-end ps-3 text-body-emphasis">$ 21567</td>#}
                                     {#                      <td class="city align-middle white-space-nowrap text-body-highlight ps-7">Manchester</td>#}
                                     {#  <td class="last-seen align-middle white-space-nowrap text-body-tertiary text-end">6 hours ago</td>#}
-                                    <td class="last-order align-middle white-space-nowrap text-body-tertiary text-end">{{ user.dob | date('Y-m-d H:i:s') }}</td>
-                                    <td class="last-order align-middle white-space-nowrap text-body-tertiary text-end">{{ user.date | date('Y-m-d H:i:s') }}</td>
+                                    <td class="last-order align-middle white-space-nowrap text-body-tertiary text-end">{{ user.dob | date('Y-m-d') }}</td>
+                                    <td class="last-order align-middle white-space-nowrap text-body-tertiary text-end">{{ user.date | date('Y-m-d') }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>

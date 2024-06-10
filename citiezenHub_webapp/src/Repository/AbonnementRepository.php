@@ -45,4 +45,17 @@ class AbonnementRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    /**
+     * @return Abonnement[] Returns an array of Abonnement objects
+     */
+    public function findByUser($userId)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.idUser = :idUser')
+            ->setParameter('idUser', $userId)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

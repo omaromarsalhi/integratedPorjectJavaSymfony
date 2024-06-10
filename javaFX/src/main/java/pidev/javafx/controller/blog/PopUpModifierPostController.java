@@ -14,18 +14,15 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-import pidev.javafx.crud.user.ServiceUser;
-import pidev.javafx.model.blog.Account;
-import pidev.javafx.model.blog.Post;
 import pidev.javafx.crud.blog.BlogService;
+import pidev.javafx.crud.user.ServiceUser;
+import pidev.javafx.model.blog.Post;
 import pidev.javafx.model.user.User;
 import pidev.javafx.tools.GlobalVariables;
-import pidev.javafx.tools.UserController;
+import pidev.javafx.tools.marketPlace.MyTools;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
@@ -33,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
 public class PopUpModifierPostController implements Initializable {
 
@@ -104,8 +100,8 @@ public class PopUpModifierPostController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         images = new ArrayList<>();
-        leftArrow.setVisible(false);
-        rightArrow.setVisible(false);
+        leftArrow.setVisible( false );
+        rightArrow.setVisible( false );
         imageUpdeted = false;
         currentImgToShow = 0;
         enleverImgClicked = false;
@@ -117,116 +113,116 @@ public class PopUpModifierPostController implements Initializable {
         imagesToShow = new ArrayList<>();
         currentImgToShow = 0;
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisisez des images/videos");
+        fileChooser.setTitle( "Choisisez des images/videos" );
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Images", "*.jpg", "*.png"),
-                new FileChooser.ExtensionFilter("Videos", "*.mp4")
+                new FileChooser.ExtensionFilter( "Images", "*.jpg", "*.png" ),
+                new FileChooser.ExtensionFilter( "Videos", "*.mp4" )
         );
-        List<File> selectedFiles = fileChooser.showOpenMultipleDialog(null);
+        List<File> selectedFiles = fileChooser.showOpenMultipleDialog( null );
 
         if (selectedFiles != null && !selectedFiles.isEmpty()) {
             for (File selectedFile : selectedFiles) {
                 SourceString = selectedFile.getAbsolutePath();
-                images.add(SourceString);
+                images.add( SourceString );
 
-                String correctedPath = SourceString.replace("\\", "/");
-                imagesToShow.add(correctedPath);
+                String correctedPath = SourceString.replace( "\\", "/" );
+                imagesToShow.add( correctedPath );
             }
-            addImgBtn.setText("remplacer les images");
-            Image img = new Image(new File(imagesToShow.get(0)).toURI().toString());
-            imgPost.setImage(img);
-            enlverImgBtn.setVisible(true);
-            enlverImgBtn.setManaged(true);
+            addImgBtn.setText( "remplacer les images" );
+            Image img = new Image( new File( imagesToShow.get( 0 ) ).toURI().toString() );
+            imgPost.setImage( img );
+            enlverImgBtn.setVisible( true );
+            enlverImgBtn.setManaged( true );
             if (imagesToShow.size() > 1) {
-                rightArrow.setVisible(true);
-                rightArrow.setManaged(true);
-                leftArrow.setManaged(true);
+                rightArrow.setVisible( true );
+                rightArrow.setManaged( true );
+                leftArrow.setManaged( true );
             }
-            rightArrow.setOnMouseClicked(mouseEvent -> {
+            rightArrow.setOnMouseClicked( mouseEvent -> {
                 currentImgToShow++;
                 if (currentImgToShow > 0) {
-                    leftArrow.setVisible(true);
-                    leftArrow.setManaged(true);
+                    leftArrow.setVisible( true );
+                    leftArrow.setManaged( true );
                 }
                 if (currentImgToShow == images.size() - 1) {
-                    rightArrow.setVisible(false);
+                    rightArrow.setVisible( false );
                 }
                 if (currentImgToShow < images.size()) {
-                    Image img2 = new Image(new File(imagesToShow.get(currentImgToShow)).toURI().toString());
-                    imgPost.setImage(img2);
+                    Image img2 = new Image( new File( imagesToShow.get( currentImgToShow ) ).toURI().toString() );
+                    imgPost.setImage( img2 );
                 }
-            });
-            leftArrow.setOnMouseClicked(mouseEvent -> {
+            } );
+            leftArrow.setOnMouseClicked( mouseEvent -> {
                 currentImgToShow--;
                 if (currentImgToShow == 0) {
-                    leftArrow.setVisible(false);
+                    leftArrow.setVisible( false );
                 }
                 if (currentImgToShow < images.size() - 1) {
-                    rightArrow.setVisible(true);
+                    rightArrow.setVisible( true );
                 }
                 if (currentImgToShow < images.size()) {
-                    Image img3 = new Image(new File(imagesToShow.get(currentImgToShow)).toURI().toString());
-                    imgPost.setImage(img3);
+                    Image img3 = new Image( new File( imagesToShow.get( currentImgToShow ) ).toURI().toString() );
+                    imgPost.setImage( img3 );
                 }
-            });
+            } );
         }
     }
 
     public void getData(Post post) {
         BlogService bs = new BlogService();
         ServiceUser serviceUser = new ServiceUser();
-        User user = serviceUser.getUserById(post.getIdCompte());
+        User user = serviceUser.getUserById( post.getIdCompte() );
 
 
-        AccountImg.setImage(new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() ));
+        AccountImg.setImage( new Image( GlobalVariables.IMAGEPATH4USER + user.getPhotos() ) );
 
         Image img;
         idPostUpadte = post.getId();
         idCompteUpdate = post.getIdCompte();
-        caption.setText(post.getCaption());
+        caption.setText( post.getCaption() );
         images = post.getImages();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd MMM yyyy HH:mm");
-        String formattedDate = dateFormat.format(post.getDate());
-        dateLabel.setText(formattedDate);
+        SimpleDateFormat dateFormat = new SimpleDateFormat( "EE dd MMM yyyy HH:mm" );
+        String formattedDate = dateFormat.format( post.getDate() );
+        dateLabel.setText( formattedDate );
         if (!images.isEmpty()) {
             if (images.size() > 1) {
-                rightArrow.setVisible(true);
+                rightArrow.setVisible( true );
             }
-            img = new Image(GlobalVariables.IMAGEPATH + images.get(0));
-            imgPost.setImage(img);
-            addImgBtn.setText("changer la photo");
-            enlverImgBtn.setVisible(true);
+            img = new Image( GlobalVariables.IMAGEPATH4USER + images.get( 0 ) );
+            imgPost.setImage( img );
+            addImgBtn.setText( "changer la photo" );
+            enlverImgBtn.setVisible( true );
 
-            rightArrow.setOnMouseClicked(mouseEvent -> {
+            rightArrow.setOnMouseClicked( mouseEvent -> {
                 currentImgToShow++;
                 if (currentImgToShow > 0) {
-                    leftArrow.setVisible(true);
-                    leftArrow.setManaged(true);
+                    leftArrow.setVisible( true );
+                    leftArrow.setManaged( true );
                 }
                 if (currentImgToShow == images.size() - 1) {
-                    rightArrow.setVisible(false);
+                    rightArrow.setVisible( false );
                 }
                 if (currentImgToShow < images.size()) {
-                    animateImageTransition(-17, post);
+                    animateImageTransition( -17, post );
                 }
-            });
-            leftArrow.setOnMouseClicked(mouseEvent -> {
+            } );
+            leftArrow.setOnMouseClicked( mouseEvent -> {
                 currentImgToShow--;
                 if (currentImgToShow == 0) {
-                    leftArrow.setVisible(false);
+                    leftArrow.setVisible( false );
                 }
                 if (currentImgToShow < images.size() - 1) {
-                    rightArrow.setVisible(true);
+                    rightArrow.setVisible( true );
                 }
                 if (currentImgToShow < images.size()) {
-                    animateImageTransition(17, post);
+                    animateImageTransition( 17, post );
                 }
-            });
+            } );
         } else {
-            img = new Image(getClass().getResourceAsStream("/img/blogImg/aucuneImg.png"));
-            imgPost.setImage(img);
-            addImgBtn.setText("ajouter une photo");
-            enlverImgBtn.setVisible(false);
+            img = new Image( getClass().getResourceAsStream( "/img/blogImg/aucuneImg.png" ) );
+            imgPost.setImage( img );
+            addImgBtn.setText( "ajouter une photo" );
+            enlverImgBtn.setVisible( false );
         }
         nbReaction = post.getTotalReactions();
     }
@@ -237,52 +233,40 @@ public class PopUpModifierPostController implements Initializable {
         Post p = new Post();
         BlogService bs = new BlogService();
 
-        p.setId(idPostUpadte);
-        p.setIdCompte(idCompteUpdate);
+        p.setId( idPostUpadte );
+        p.setIdCompte( idCompteUpdate );
         long currentTimeMillis = System.currentTimeMillis();
-        Timestamp timestamp = new Timestamp(currentTimeMillis);
-        p.setDate(timestamp);
-        p.setCaption(caption.getText().trim());
+        Timestamp timestamp = new Timestamp( currentTimeMillis );
+        p.setDate( timestamp );
+        p.setCaption( caption.getText().trim() );
         if (!images.isEmpty() && imageUpdeted) {
-            bs.supprimerImages(idPostUpadte);
+            bs.supprimerImages( idPostUpadte );
             for (String image : images) {
-                try {
-                    Path sourcePath = Paths.get(image);
-                    if (image.endsWith(".png")) {
-                        randomFileName = UUID.randomUUID().toString() + ".png";
-                    } else {
-                        randomFileName = UUID.randomUUID().toString() + ".jpg";
-                    }
-                    Path destinationPath = Paths.get(destinationString, randomFileName);
-                    Files.copy(sourcePath, destinationPath);
-                    imgPath = "/blogImgPosts" + "/" + randomFileName;
-                    bs.ajouterImages(imgPath, idPostUpadte);
-                    p.getImages().add(imgPath);
-                } catch (IOException e) {
-                    System.err.println("Erreur lors de la copie du fichier : " + e.getMessage());
-                }
+                imgPath = MyTools.getInstance().getPathAndSaveIMG( String.valueOf( Paths.get( image ).toAbsolutePath() ) );
+                bs.ajouterImages( imgPath, idPostUpadte );
+                p.getImages().add( imgPath );
             }
         }
 
         if (enleverImgClicked) {
             BlogService blogService = new BlogService();
-            blogService.supprimerImages(idPostUpadte);
+            blogService.supprimerImages( idPostUpadte );
         }
 
-        p.setTotalReactions(nbReaction);
-        bs.modifier(p);
+        p.setTotalReactions( nbReaction );
+        bs.modifier( p );
         SourceString = null;
     }
 
     @FXML
     void enleverImgBtnClicked(MouseEvent event) {
         enleverImgClicked = true;
-        Image img = new Image(getClass().getResourceAsStream("/img/blogImg/aucuneImg.png"));
-        imgPost.setImage(img);
-        addImgBtn.setText("ajouter des photos");
-        enlverImgBtn.setVisible(false);
-        rightArrow.setVisible(false);
-        leftArrow.setVisible(false);
+        Image img = new Image( getClass().getResourceAsStream( "/img/blogImg/aucuneImg.png" ) );
+        imgPost.setImage( img );
+        addImgBtn.setText( "ajouter des photos" );
+        enlverImgBtn.setVisible( false );
+        rightArrow.setVisible( false );
+        leftArrow.setVisible( false );
         SourceString = null;
         imgPath = null;
         images.clear();
@@ -290,26 +274,26 @@ public class PopUpModifierPostController implements Initializable {
     }
 
     private void animateImageTransition(double targetTranslateX, Post post) {
-        FadeTransition fadeOutTransition = new FadeTransition(Duration.seconds(0.2), imgPost);
-        fadeOutTransition.setFromValue(1.0);
-        fadeOutTransition.setToValue(0.0);
+        FadeTransition fadeOutTransition = new FadeTransition( Duration.seconds( 0.2 ), imgPost );
+        fadeOutTransition.setFromValue( 1.0 );
+        fadeOutTransition.setToValue( 0.0 );
 
-        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(0.2), imgPost);
-        translateTransition.setByX(targetTranslateX);
+        TranslateTransition translateTransition = new TranslateTransition( Duration.seconds( 0.2 ), imgPost );
+        translateTransition.setByX( targetTranslateX );
 
-        ParallelTransition parallelTransition = new ParallelTransition(fadeOutTransition, translateTransition);
+        ParallelTransition parallelTransition = new ParallelTransition( fadeOutTransition, translateTransition );
         parallelTransition.play();
 
-        parallelTransition.setOnFinished(event -> {
-            Image img = new Image(GlobalVariables.IMAGEPATH + post.getImages().get(currentImgToShow));
-            imgPost.setImage(img);
-            imgPost.setTranslateX(0);
+        parallelTransition.setOnFinished( event -> {
+            Image img = new Image( GlobalVariables.IMAGEPATH4USER + post.getImages().get( currentImgToShow ) );
+            imgPost.setImage( img );
+            imgPost.setTranslateX( 0 );
 
-            FadeTransition fadeInTransition = new FadeTransition(Duration.seconds(0.2), imgPost);
-            fadeInTransition.setFromValue(0.0);
-            fadeInTransition.setToValue(1.0);
+            FadeTransition fadeInTransition = new FadeTransition( Duration.seconds( 0.2 ), imgPost );
+            fadeInTransition.setFromValue( 0.0 );
+            fadeInTransition.setToValue( 1.0 );
 
             fadeInTransition.play();
-        });
+        } );
     }
 }

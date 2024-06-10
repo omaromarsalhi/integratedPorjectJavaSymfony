@@ -42,7 +42,7 @@
                                     ><i class="fa-solid fa-file-pdf"></i> Madhmoun</span>#}-->
 
                                     <a
-                                            href="{{ path('app_user_generatePdfWithoutMail') }}"
+                                            href="{{ path('app_user_generatePdfWithoutMail',{'idUser':app.user.getId()}) }}"
                                             id="generatePdfBtnMafhmoun"
                                             type="button"
                                             class="btn at-follw follow-button"
@@ -51,16 +51,9 @@
                                         <i class="fa-solid fa-file-pdf"></i>
                                         <span class="">Madhmoun</span>
                                     </a>
-                                    <span
-                                            class="btn at-follw share-button"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#statusSuccessModal"
-                                    ><i data-feather="share-2"></i
-                                        ></span>
-
                                     <a
                                             href="{{ path('editProfile') }}"
-                                            class="btn at-follw follow-button edit-btn"
+                                            class="btn at-follw follow-button edit-btn d-flex justify-content-center"
                                     ><i data-feather="edit"></i
                                         ></a>
                                 </div>
@@ -820,7 +813,7 @@
 
 {% block scripts %}
     <script>
-        var currentUser = {{ app.user.getId()|json_encode }};
+        setPriceIntervale(0,999998999)
     </script>
     <script src="{{ asset('js/favorite.js') }}"></script>
     <script src="{{ asset('js/reclamation.js') }}"></script>

@@ -1,30 +1,15 @@
 {% extends 'base.html.twig' %}
 
-
-
-
-
-
-
-
-
-
-    {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('css/popUp.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/abonnement.css') }}">
-    {% endblock %}
-    {% block javascripts %}
-        <script src="{{ asset('js/AbonnementScript.js') }}"></script>
-        <script src="{{ asset('js/TransportScript.js') }}"></script>
-    {% endblock %}
-
-
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/popUp.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/abonnement.css') }}">
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/AbonnementScript.js') }}"></script>
+    <script src="{{ asset('js/TransportScript.js') }}"></script>
+{% endblock %}
 
 {% block body %}
-
-
-
-
 
     <div class="rn-breadcrumb-inner ptb--30">
         <div class="container">
@@ -32,17 +17,12 @@
                 <div class="col-lg-6 col-md-6 col-12">
                     <h5 class="title text-center text-md-start">My Subscriptions</h5>
                 </div>
-
             </div>
         </div>
     </div>
 
-
-
-
     <div class="rn-banner-area">
         <div class="slider-activation-banner-4 game-banner-short-slick-wrapper slick-arrow-style-one rn-slick-dot-style">
-            {#            <div id="abonnements-list"> #}{# Ajout de l'ID abonnements-list #}
             {% for abonnement in l %}
                 <div class="slider-style-7 border-radious-none bg_image--2 pt--150 pb--190 pt_sm--70 pb_sm--70 bg_image"
                      data-black-overlay="6">
@@ -52,37 +32,25 @@
                                 <h2 class="title pl--30">
                                     {{ abonnement.Nom }}
                                     {{ abonnement.Prenom }}
-
                                     <br>
                                 </h2>
                                 <h2 class="title pl--30">
-                                        <span>{{ abonnement.TypeAbonnement }}
-
-</span>
+                                    <span>{{ abonnement.TypeAbonnement }}</span>
                                 </h2>
                             </a>
                         </div>
                         <div class="col-xl-6 col-lg-12 col-12 order-2 order-xl-2 order-sm-2">
                             <div class="item-description">
-
-                                <div class="product-share-wrapper">
-
-                                    <!-- Start Countdown area -->
-                                    <!-- End Countdown area -->
-                                </div>
+                                <div class="product-share-wrapper"></div>
                                 <div class="row d-flex justify-content-center">
                                     <div class="col col-md-9 col-lg-7 col-xl-7">
-                                        <div class="card" style="border-radius: 15px;">
-                                            <div class="card-body p-4">
-                                                <div class="d-flex">
-                                                    <div class="flex-shrink-0">
-                                                        <img src="{{ asset('/usersImg/'~ abonnement.image ) }}"
-                                                             alt="Generic placeholder image" class="img-fluid"
-                                                             style="width: 180px; height:     220px; border-radius: 10px;">
-                                                    </div>
-                                                    <div class="flex-grow-1 ms-3">
-                                                        <h5 class="mb-1">{{ abonnement.nom }} {{ abonnement.Prenom }}
-                                                            ></h5>
+                                        <div class="abncontainer">
+                                            {% set tabColor = abonnement.TypeAbonnement == 'Annuel' ? '#c0a264' : '#61ff25' %}
+                                            {% set tabColorLight = abonnement.TypeAbonnement == 'Annuel' ? '#fef6b3' : '#90ee90' %}
+                                            <div class="cover" style="background-color: {{ tabColorLight }};">
+                                                <img src="{{ asset('/usersImg/'~ abonnement.image ) }}" style="height: 180px; width: 180px; margin-top: 30px; margin-left: 60px;" />
+                                                <div class="title-area">
+                                                    <div class="abnTimer">
                                                         <div class="countdown" data-date="{{ abonnement.dateFin }}">
                                                             <div class="countdown-container days">
                                                                 <span class="countdown-value days-bottom">285</span>
@@ -101,46 +69,133 @@
                                                                 <span class="countdown-heading seconds-top">Sec</span>
                                                             </div>
                                                         </div>
-
-                                                        <div class="d-flex justify-content-start rounded-3 p-2 mb-2 bg-body-tertiary">
-                                                            <div>
-                                                                <p class="mb-1">Date Debut</p>
-                                                                <p class="small text-muted mb-1">{{ abonnement.dateFin }}</p>
-
-                                                            </div>
-                                                            <div class="px-3">
-                                                                <p class="mb-1">Date Fin</p>
-                                                                <p class="small text-muted mb-1">16-05-2024</p>
-                                                            </div>
-                                                            <div>
-                                                                <p class="mb-0">Type Abonnement</p>
-                                                                <p class="small text-muted mb-1">{{ abonnement.TypeAbonnement }}</p>
-                                                            </div>
-                                                        </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="new-container" style="border-left-color: {{ tabColor }};">
+                                                <div class="green-tab" style="background-color: {{ tabColor }};">
+                                                    {% for i in 0..6 %}
+                                                        <div class="light-tab" style="background-color: {{ tabColorLight }};"></div>
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="emblem">
+                                                    <img src="{{ asset('images/transports/transtu.png') }}" style="width: 90px; height: 82px" />
+                                                </div>
+                                                <h3 class="name-text">SUBSCRIPTION</h3>
+                                                <div style="margin-top: 60px">
+                                                    <p class="text1" style="color: #0a0b0f">Name: {{ abonnement.nom }}</p>
+                                                    <p class="text1" style="color: #0a0b0f">LastName: {{ abonnement.Prenom }}</p>
+                                                </div>
+                                                <div class="title-area1">
+                                                    <p class="text2" style="color: #0a0b0f">00{{ abonnement.id }}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
-
             {% endfor %}
-            {#            </div> #}
         </div>
     </div>
+
     <style>
+        .abncontainer {
+            display: flex;
+            border-radius: 30px;
+            overflow: hidden;
+            width: 600px;
+        }
+        .cover,
+        .new-container {
+            width: 300px;
+            height: 400px;
+            position: relative;
+        }
+        .new-container {
+            background-color: white;
+            border-radius: 0 20px 20px 0;
+            width: 380px;
+        }
+        .title-area {
+            background-color: #fffaf0;
+            width: 280px;
+            height: 90px;
+            position: absolute;
+            bottom: 50px;
+            left: 10px;
+            border-radius: 5px;
+        }
+        .title-area1 {
+            background-color: #fffaf0;
+            width: 190px;
+            height: 40px;
+            position: absolute;
+            bottom: 30px;
+            left: 85px;
+            border-radius: 5px;
+        }
+        .green-tab {
+            width: 30px;
+            height: 400px;
+            position: absolute;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .light-tab {
+            width: 30px;
+            height: 30px;
+        }
+        .emblem {
+            position: absolute;
+            top: 5px;
+            right: 0;
+            font-family: "Arial", sans-serif;
+        }
+        .name-text {
+            font-family: "Souliyo", sans-serif;
+            font-weight: normal;
+            text-align: center;
+            color: black;
+            margin-top: 92px;
+        }
+        .text1 {
+            font-family: "Souliyo", sans-serif;
+            font-weight: normal;
+            margin-left: 40px;
+            color: black;
+            font-size: 20px;
+        }
+        .text2 {
+            font-family: "Souliyo", sans-serif;
+            font-weight: normal;
+            color: black;
+            margin-top: 10px;
+            margin-left: 70px;
+            font-size: 20px;
+        }
+        .text3 {
+            font-family: "Souliyo", sans-serif;
+            font-weight: normal;
+            color: black;
+            margin-left: 10px;
+            font-size: 20px;
+        }
+        .abnTimer {
+            margin-top: 23px;
+            margin-right: 23px;
+        }
         .bg_image--2 {
             background-image: url('/images/transport/trans.gif');
             background-size: cover;
             background-position: center;
         }
-
-
     </style>
+
 {% endblock %}

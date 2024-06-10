@@ -15,7 +15,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import pidev.javafx.controller.reclamation.ReclamationBoxController;
 import pidev.javafx.crud.reclamation.ServiceReclamation;
 import pidev.javafx.crud.user.ServiceUser;
@@ -24,9 +26,23 @@ import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyTools;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+
+
+import org.apache.hc.client5.http.HttpResponseException;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class NewAccountController implements Initializable {
 
@@ -48,6 +64,9 @@ public class NewAccountController implements Initializable {
 
     @FXML
     private Button insertCinBtn;
+
+    @FXML
+    private Button downloadingMafhmoun;
 
     @FXML
     private AnchorPane loadingPage;
@@ -80,6 +99,22 @@ public class NewAccountController implements Initializable {
             showFormUser( "showDetails" );
 
         initializeButtons();
+
+        downloadingMafhmoun.setOnMouseClicked( event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save PDF");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("PDF Files", "*.pdf")
+            );
+            File selectedFile = fileChooser.showSaveDialog(Stage.getWindows().get( 0 ));
+            if (selectedFile != null) {
+                try {
+                    downloadPdf(selectedFile.getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } );
 
         EventBus.getInstance().subscribe( "exitFormUser", this::onExitFormBtnClicked );
     }
@@ -148,10 +183,32 @@ public class NewAccountController implements Initializable {
 
     }
 
+    public static void downloadPdf(String destinationPath) throws IOException {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet("http://127.0.0.1:8000/user/generatePdfWithoutMail/195");
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+                if (response.getCode() == 200) {
+                    try (InputStream inputStream = response.getEntity().getContent();
+                         FileOutputStream outputStream = new FileOutputStream(destinationPath)) {
+                        byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+                        System.out.println("PDF downloaded to " + destinationPath);
+                    }
+                } else {
+                    throw new HttpResponseException(response.getCode(), response.getReasonPhrase());
+                }
+            }
+        }
+    }
+
 
     @FXML
     public void initializeButtons() {
         consultInfoBtn.setOnMouseClicked( event -> {
+            downloadingMafhmoun.setStyle( "" );
             editInfoBtn.setStyle( "" );
             editLocationBtn.setStyle( "" );
             insertCinBtn.setStyle( "" );
@@ -161,6 +218,7 @@ public class NewAccountController implements Initializable {
             showFormUser( "showDetails" );
         } );
         editInfoBtn.setOnMouseClicked( event -> {
+            downloadingMafhmoun.setStyle( "" );
             consultInfoBtn.setStyle( "" );
             editLocationBtn.setStyle( "" );
             insertCinBtn.setStyle( "" );
@@ -170,6 +228,7 @@ public class NewAccountController implements Initializable {
             showFormUser( "editDetails" );
         } );
         editLocationBtn.setOnMouseClicked( event -> {
+            downloadingMafhmoun.setStyle( "" );
             consultInfoBtn.setStyle( "" );
             editInfoBtn.setStyle( "" );
             insertCinBtn.setStyle( "" );
@@ -179,10 +238,21 @@ public class NewAccountController implements Initializable {
             showMap();
         } );
         insertCinBtn.setOnMouseClicked( event -> {
+            downloadingMafhmoun.setStyle( "" );
             consultInfoBtn.setStyle( "" );
             editInfoBtn.setStyle( "" );
             editLocationBtn.setStyle( "" );
             insertCinBtn.setStyle( "-fx-border-color: #563f05;" +
+                    "    -fx-border-width: 0 0 0 2px ;" +
+                    "    -fx-border-radius: 0;" );
+            showCin();
+        } );
+        downloadingMafhmoun.setOnMouseClicked( event -> {
+            consultInfoBtn.setStyle( "" );
+            insertCinBtn.setStyle( "" );
+            editInfoBtn.setStyle( "" );
+            editLocationBtn.setStyle( "" );
+            downloadingMafhmoun.setStyle( "-fx-border-color: #563f05;" +
                     "    -fx-border-width: 0 0 0 2px ;" +
                     "    -fx-border-radius: 0;" );
             showCin();

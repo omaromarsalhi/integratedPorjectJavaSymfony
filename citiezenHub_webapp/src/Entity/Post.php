@@ -41,6 +41,9 @@ class Post
     #[ORM\JoinColumn(name: "compte", referencedColumnName: "idUser")]
     private $user;
 
+    #[ORM\OneToMany(targetEntity: ReactionPost::Class, mappedBy: "post")]
+    private $reactions;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -156,6 +159,33 @@ class Post
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
+    }
+
+    public function addReaction(ReactionPost $reaction): self
+    {
+        if (!$this->reactions->contains($reaction)) {
+            $this->reactions[] = $reaction;
+            $reaction->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReaction(ReactionPost $reaction): self
+    {
+        if ($this->reactions->removeElement($reaction)) {
+            // set the owning side to null (unless already changed)
+            if ($reaction->getPost() === $this) {
+                $reaction->setPost(null);
+            }
+        }
 
         return $this;
     }

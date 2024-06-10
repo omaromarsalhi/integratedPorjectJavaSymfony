@@ -22,18 +22,21 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.json.JSONException;
 import org.json.JSONObject;
+import pidev.javafx.controller.login.GlobalSocketConnection;
 import pidev.javafx.crud.blog.BlogService;
 import pidev.javafx.crud.blog.CommentService;
 import pidev.javafx.crud.blog.ReactionService;
 import pidev.javafx.model.blog.Post;
 import pidev.javafx.model.blog.Reactions;
-import pidev.javafx.model.user.Role;
 import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 import pidev.javafx.tools.marketPlace.CustomMouseEvent;
 import pidev.javafx.tools.marketPlace.EventBus;
 import pidev.javafx.tools.marketPlace.MyTools;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -41,11 +44,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 
 public class BlogController implements Initializable {
@@ -109,9 +114,11 @@ public class BlogController implements Initializable {
         leftArrow.setVisible( false );
         leftArrow.setManaged( false );
         BlogService blogService = new BlogService();
-        Image img = new Image( GlobalVariables.IMAGEPATH4USER + UserController.getInstance().getCurrentUser().getPhotos() );
-        ProfileImg.setImage( img );
+        ProfileImg.setImage( new Image( GlobalVariables.IMAGEPATH4USER + UserController.getInstance().getCurrentUser().getPhotos() ) );
         EventBus.getInstance().subscribe( "loadPosts", this::setPathPosts );
+        EventBus.getInstance().subscribe( "loadPostInRealTime", this::loadPostInRealTime );
+        EventBus.getInstance().subscribe( "deletePostInRealTime", this::deletePostInRealTime );
+        EventBus.getInstance().subscribe( "updatePostInRealTime", this::updatePostInRealTime );
     }
 
     public void setPathPosts(CustomMouseEvent<String> customMouseEvent) {
@@ -128,6 +135,57 @@ public class BlogController implements Initializable {
         }
     }
 
+    public static String createMessage(int idPost,String usage) {
+        JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
+                .add( "Data", Json.createObjectBuilder().add( "idPost",idPost ) )
+                .add( "action", "postEvent" )
+                .add( "subAction", usage );
+        JsonObject jsonMessage = jsonObjectBuilder.build();
+        return jsonMessage.toString();
+    }
+
+    public void updatePostInRealTime(CustomMouseEvent<Integer> customMouseEvent) {
+        BlogService blogService = new BlogService();
+        String id = '#' + String.valueOf( customMouseEvent.getEventData() );
+        Optional<Post> optionalPost = posts.stream()
+                .filter( obj -> obj.getId() == customMouseEvent.getEventData() )
+                .findFirst();
+        if (optionalPost.isPresent()) {
+            Post p = optionalPost.get();
+            posts.remove( p );
+        }
+        MyTools.getInstance().deleteAnimation( (VBox) postsContainer.lookup( id ), postsContainer );
+        try {
+            loadPost( blogService.getOneById( customMouseEvent.getEventData() ) );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public void deletePostInRealTime(CustomMouseEvent<Integer> customMouseEvent) {
+        BlogService blogService = new BlogService();
+        String id = '#' + String.valueOf( customMouseEvent.getEventData() );
+        BlogService bs = new BlogService();
+        bs.supprimer( customMouseEvent.getEventData() );
+        Optional<Post> optionalPost = posts.stream()
+                .filter( obj -> obj.getId() == customMouseEvent.getEventData() )
+                .findFirst();
+        if (optionalPost.isPresent()) {
+            Post p = optionalPost.get();
+            posts.remove( p );
+        }
+        MyTools.getInstance().deleteAnimation( (VBox) postsContainer.lookup( id ), postsContainer );
+    }
+
+    public void loadPostInRealTime(CustomMouseEvent<Integer> customMouseEvent) {
+        BlogService blogService = new BlogService();
+        try {
+            loadPost( blogService.getOneById( customMouseEvent.getEventData() ) );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+    }
+
     public void loadPost(Post post) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation( getClass().getResource( pathPosts ) );
@@ -136,7 +194,7 @@ public class BlogController implements Initializable {
         postController.setIdPost( post.getId() );
         postController.setIdCompte( post.getIdCompte() );
         postController.setData( post, post.getIdCompte() );
-
+        vBox.setId( String.valueOf( post.getId() ) );
         if (posts.contains( post )) {
             postsContainer.getChildren().add( vBox );
         } else {
@@ -145,14 +203,14 @@ public class BlogController implements Initializable {
         }
 
 
-         if (post.getIdCompte() == ConnectedAccount) {
+        if (post.getIdCompte() == ConnectedAccount) {
             postController.getMenuBtnPost().setVisible( true );
         } else if (post.getIdCompte() != ConnectedAccount) {
             postController.getMenuBtnPost().setVisible( false );
         }
 
         postController.getSupprimerPostBtn().setOnAction( actionEvent -> {
-            supprimerPost( post.getId(), postController, vBox );
+            supprimerPost( post.getId(), vBox );
         } );
 
         postController.getModifierPost().setOnAction( actionEvent -> {
@@ -330,25 +388,15 @@ public class BlogController implements Initializable {
             p.setId( lastid );
             if (!images.isEmpty()) {
                 for (String image : images) {
-                    System.out.println( image );
-                    try {
-                        Path sourcePath = Paths.get( image );
-                        if (image.endsWith( ".png" )) {
-                            randomFileName = UUID.randomUUID().toString() + ".png";
-                        } else {
-                            randomFileName = UUID.randomUUID().toString() + ".jpg";
-                        }
-                        Path destinationPath = Paths.get( destinationString, randomFileName );
-                        Files.copy( sourcePath, destinationPath );
-                        imgPath = "/blogImgPosts/" + randomFileName;
-                        bs.ajouterImages( imgPath, lastid );
-                        p.getImages().add( imgPath );
-                    } catch (IOException e) {
-                        System.err.println( "Erreur lors de la copie du fichier : " + e.getMessage() );
-                    }
+                    Path sourcePath = Paths.get( image );
+                    imgPath = MyTools.getInstance().getPathAndSaveIMG( String.valueOf( sourcePath.toAbsolutePath() ) );
+                    bs.ajouterImages( imgPath, lastid );
+                    p.getImages().add( imgPath );
+
                 }
             }
             try {
+                GlobalSocketConnection.send( createMessage( p.getId(),"ADD" ) );
                 loadPost( p );
             } catch (IOException e) {
                 System.out.println( e.getMessage() );
@@ -358,7 +406,7 @@ public class BlogController implements Initializable {
         }
     }
 
-    public void supprimerPost(int idPost, PostController postController, VBox vBox) {
+    public void supprimerPost(int idPost, VBox vBox) {
         Alert alert = new Alert( Alert.AlertType.CONFIRMATION );
         alert.setTitle( "Confirmation de suppression" );
         alert.setHeaderText( null );
@@ -406,7 +454,7 @@ public class BlogController implements Initializable {
 
             Scene sc = new Scene( parent );
             stage.setScene( sc );
-            stage.setTitle( "Modifier la Publication" );
+            stage.setTitle( "Update Post" );
             sc.setFill( Color.TRANSPARENT );
             stage.initStyle( StageStyle.TRANSPARENT );
             Scene scene = postsContainer.getScene();

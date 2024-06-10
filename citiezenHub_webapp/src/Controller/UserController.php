@@ -49,17 +49,20 @@ class UserController extends AbstractController
     }
 
 
-    #[Route('/user/generatePdfWithoutMail', name: 'app_user_generatePdfWithoutMail')]
-    public function generatePdfWithoutMail(Pdf $knpSnappyPdf): PdfResponse|Response
+
+    #[Route('/user/generatePdfWithoutMail/{idUser}', name: 'app_user_generatePdfWithoutMail')]
+    public function generatePdfWithoutMail($idUser,HttpClientInterface $client,Pdf $knpSnappyPdf): PdfResponse|Response
     {
-        $path = '../../files/usersJsonFiles/' . md5('user' . ($this->getUser()->getId() * 1000 + 17)) . '.json';
+        $path = '../../files/usersJsonFiles/' . md5('user' . ($idUser * 1000 + 17)) . '.json';
         $filesystem = new Filesystem();
         if (!$filesystem->exists([$path]))
             return new Response('error',Response::HTTP_BAD_REQUEST);
 
-
         $jsonString = file_get_contents($path);
         $jsonDataCin = json_decode($jsonString, true);
+        $geocoder = new GeocodingService($client);
+        $addressDetails=$geocoder->getMadhmounData($this->getUser()->getAddress());
+
 
         $html = $this->renderView('user_dashboard/madhmoun.html.twig',[
             'firstName'=>$jsonDataCin['الاسم']['data'],
@@ -68,11 +71,23 @@ class UserController extends AbstractController
             'location'=>$jsonDataCin['مكانها']['data'],
             'gender'=>'dhkar',
             'fatherName'=>$jsonDataCin['بن']['data'],
-            'motherName'=>$jsonDataCin['الأم']['data']
+            'motherName'=>$jsonDataCin['الأم']['data'],
+            'addressDetails'=>$addressDetails
         ]);
-        return new PdfResponse(
-            $knpSnappyPdf->getOutputFromHtml($html),
-            'file.pdf'
+
+//        return new PdfResponse(
+//            $knpSnappyPdf->getOutputFromHtml($html),
+//            'file.pdf'
+//        );
+        $pdfOutput = $knpSnappyPdf->getOutputFromHtml($html);
+
+        return new Response(
+            $pdfOutput,
+            200,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="file.pdf"'
+            ]
         );
     }
 

@@ -1,0 +1,249 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/blogStyle.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/BlogScript.js') }}"></script>
+    <script src="{{ asset('js/PostDetails.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="rn-breadcrumb-inner ptb--30">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <h5 class="title text-center text-md-start">Forum Details</h5>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <ul class="breadcrumb-list">
+                        <li class="item"><a href="index.html">Home</a></li>
+                        <li class="separator"><i class="feather-chevron-right"></i></li>
+                        <li class="item current">Forum Details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title area -->
+
+    <!-- community area start -->
+    <div class="nu-community-area rn-section-gapTop">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-8">
+                    <div class="community-content-wrapper">
+
+                        <!-- start Community single box -->
+                        <div class="single-community-box">
+                            <div class="community-bx-header">
+                                <div class="header-left">
+                                    <div class="thumbnail">
+                                        <img src="{{ asset('../usersImg/' ~ imguser) }}" alt="NFT-thumbnail">
+                                    </div>
+                                    <div class="name-date">
+                                        <a class="name">{{ prenom }} {{ nom }}</a>
+                                        <span class="date">{{ post.datePost|date('d M y, h:i A') }}</span>
+                                    </div>
+                                </div>
+                                <!-- header-right -->
+                                <!-- header-right End -->
+                            </div>
+                            <div class="community-content">
+                                <p class="desc">
+                                    {{ post.caption }}
+                                </p>
+
+                                <div style="position: relative">
+                                    {% if images|length > 0 %}
+                                        <button id="prev-button" class="nav-button prev-button"
+                                                style="position: absolute; background: none; border: none; top: 50%; left: 0; transform: translateY(-50%); font-size: 25px; width: 10px;">
+                                            <i class="fa-solid fa-angle-left" style="font-size: 27px"></i>
+                                        </button>
+                                        <img id="post-image" class="community-img"
+                                             src="{{ asset('usersImg/' ~ images[0]) }}"
+                                             alt="Blog Images"
+                                             style="width: 930px; height: 523px; object-fit: contain;">
+                                        <button id="next-button" class="nav-button next-button"
+                                                style="position: absolute; background: none; border: none; top: 50%; right: 22px; transform: translateY(-50%); font-size: 25px; width: 10px;">
+                                            <i class="fa-solid fa-angle-right" style="font-size: 27px"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+
+                                <div class="hr"></div>
+                                <div class="rn-community-footer">
+                                    <div class="community-reaction">
+                                        <a href="#" class="likes">
+                                            <i class="feather-heart"></i>
+                                            <span>2.1k</span>
+                                        </a>
+                                        <a class="comments">
+                                            <i class="feather-message-circle"></i>
+                                            <span>{{ nbComments }} Comments</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end Community single box -->
+
+                        <!-- comment Box -->
+                        <div class="forum-input-ans-wrapper">
+                            <img src="{{ asset('../usersImg/' ~ imguser) }}" alt="Nft-Profile">
+                            <input type="text" id="contact-message" placeholder="Write Answer...">
+                            <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}"/>
+                            <button class="btn btn-primary rounded" onclick="addComment(event)">Answer</button>
+                        </div>
+                        <!-- comment Box -->
+
+                        <!-- answers box -->
+                        <div class="forum-ans-box">
+                            <!-- single answer -->
+
+                            <div id="commentContainer">
+
+                            </div>
+
+                            {% for comment in comments %}
+                                <div class="forum-single-ans" id="comment-{{ comment.id }}">
+                                    <div class="ans-header d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <a href="author.html"><img
+                                                        src="{{ asset('../usersImg/' ~ comment.userImage) }}"
+                                                        alt="Nft-Profile"></a>
+
+                                            <p class="name">{{ comment.userSurname }} {{ comment.userName }}</p>
+                                            <div class="date">
+                                                <i class="feather-watch"></i>
+                                                <span>{{ comment.dateComment }}</span>
+                                            </div>
+
+                                        </div>
+
+                                        {% if comment.userId == currentUser %}
+                                            <div class="dropdown">
+                                                <button class="dropbtnComment"><i class="fa-solid fa-ellipsis"></i>
+                                                </button>
+                                                <div class="dropdown-content">
+                                                    <button onclick="handleMenuAction(this, {{ comment.id }}, '{{ comment.caption }}',  {{ comment.idPost }}, 'modifier')">
+                                                        Modifier
+                                                    </button>
+                                                    <button onclick="handleMenuAction(this, {{ comment.id }}, '{{ comment.caption }}',  {{ comment.idPost }}, 'supprimer')">
+                                                        supprimer
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ans-content">
+                                        <input type="text" id="caption-{{ comment.id }}" value="{{ comment.caption }}" disabled>
+
+                                        <div id="updateBtn-{{ comment.id }}">
+
+                                        </div>
+
+
+                                        <hr class="form-ans-separator">
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <!-- answers box End -->
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="rbt-single-widget widget_categories mt--30">
+                        <h3 class="title">Categories</h3>
+                        <div class="inner">
+                            <ul class="category-list ">
+                                <li><a href="#"><span class="left-content">Development</span><span
+                                                class="count-text">300</span></a></li>
+                                <li><a href="#"><span class="left-content">Company</span><span
+                                                class="count-text">275</span></a></li>
+                                <li><a href="#"><span class="left-content">Marketing</span><span
+                                                class="count-text">625</span></a></li>
+                                <li><a href="#"><span class="left-content">UX
+                                            Design</span><span class="count-text">556</span></a></li>
+                                <li><a href="#"><span class="left-content">Business</span><span
+                                                class="count-text">247</span></a></li>
+                                <li><a href="#"><span class="left-content">App
+                                            Development</span><span class="count-text">457</span></a></li>
+                                <li><a href="#"><span class="left-content">Application</span><span
+                                                class="count-text">423</span></a></li>
+                                <li><a href="#"><span class="left-content">Art</span><span
+                                                class="count-text">235</span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="rbt-single-widget widget_tag_cloud mt--40">
+                        <h3 class="title">Tags</h3>
+                        <div class="inner mt--20">
+                            <div class="tagcloud">
+                                <a href="#">Corporate</a>
+                                <a href="#">Agency</a>
+                                <a href="#">Creative</a>
+                                <a href="#">Design</a>
+                                <a href="#">Minimal</a>
+                                <a href="#">Company</a>
+                                <a href="#">Development</a>
+                                <a href="#">App Landing</a>
+                                <a href="#">Startup</a>
+                                <a href="#">App</a>
+                                <a href="#">Business</a>
+                                <a href="#">Software</a>
+                                <a href="#">Landing</a>
+                                <a href="#">Art</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var images = {{ images|json_encode|raw }};
+        var currentIndex = 0;
+        var idUser = 0;
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            $.ajax({
+                url: '/getUserId',
+                type: 'GET',
+                success: function (response) {
+                    idUser = response.userId;
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+
+        document.getElementById('prev-button').addEventListener('click', function () {
+            currentIndex--;
+            if (currentIndex < 0) {
+                currentIndex = images.length - 1;
+            }
+
+            document.getElementById('post-image').src = '../usersImg/' + images[currentIndex];
+        });
+
+        document.getElementById('next-button').addEventListener('click', function () {
+
+            currentIndex++;
+            if (currentIndex >= images.length) {
+                currentIndex = 0;
+            }
+
+            document.getElementById('post-image').src = '../usersImg/' + images[currentIndex];
+        });
+    </script>
+
+{% endblock %}

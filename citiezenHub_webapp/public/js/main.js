@@ -27,6 +27,9 @@ socket.addEventListener('message', (event) => {
         } else if (messageData.subAction === 'DELETE') {
             filterByPrice();
         }
+    }else if (messageData.action === 'postEvent') {
+        if (messageData.subAction === 'ADD')
+            showInRealTimePost(messageData.Data.idPost);
     }
     else if(messageData.action === 'accountDeletion'){
         if(currentUser===messageData.recipientId){

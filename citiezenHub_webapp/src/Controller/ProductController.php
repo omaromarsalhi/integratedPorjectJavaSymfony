@@ -275,8 +275,21 @@ class ProductController extends AbstractController
             $entityManager->flush();
 
             $products = $prodRepository->findAll();
-            return new JsonResponse(['list' => $products]);
-        }
+            $productsArray = array_map(function  ($products) {
+                return [
+                    'images' => $products->getImages(),
+                    'name' => $products->getName(),
+                    'price' => $products->getPrice(),
+                    'category' => $products->getCategory(),
+                    'state' => $products->getState(),
+                    'quantity' => $products->getQuantity(),
+                    'timestamp' => $products->getTimestamp(),
+                    'idProduct' => $products->getIdProduct(),
+
+                ];
+            }, $products);
+
+            return new JsonResponse(['products' => $productsArray]);        }
 
         $responses = [
 
@@ -286,6 +299,5 @@ class ProductController extends AbstractController
         return new JsonResponse($responses);
 
     }
-
 
 }

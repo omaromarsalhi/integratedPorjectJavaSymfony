@@ -14,8 +14,11 @@ use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use App\Service\GeocodingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -28,47 +31,78 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class WtfDudeController extends AbstractController
 {
     #[Route('/wtf/dude', name: 'app_wtf_dude')]
-    public function index(FavoriteRepository $favoriteRepository,ProductRepository $productRepository): Response
+    public function index(FavoriteRepository $favoriteRepository,HttpClientInterface $client): Response
     {
-        $favorites = $favoriteRepository->findAll();
-        $product=$productRepository->findOneBy(['idProduct'=>783]);
-        foreach ($favorites as $favorite) {
-            $checkIfProductIsValid = true;
-            $parts = explode('__', $favorite->getSpecifications());
-            $today = (new \DateTime())->format('Y-m-d');
-            if ($today >= $parts[0] && ($parts[1] == '' || $today <= $parts[1])) {
-                if ($parts[2] != '' && intval($parts[2]) >= $product->getPrice()) {
-                    $checkIfProductIsValid = false;
-                    dump (1);
-                }
-                else if ($parts[3] != '' && intval($parts[3]) <= $product->getPrice()) {
-                    $checkIfProductIsValid = false;
-                    dump (2);
-                }
-                else if ($parts[4] != '' && intval($parts[4]) != $product->getQuantity()) {
-                    $checkIfProductIsValid = false;
-                    dump (3);
-                }
-                else if ($parts[5] != '' && $parts[5] != $product->getCategory() && $parts[5] != 'All') {
-                    $checkIfProductIsValid = false;
-                    dump (4);
-                }
-            } else
-                $checkIfProductIsValid = false;
 
-//            if ($checkIfProductIsValid)
-//                SendSms::send('new '.$product->getName().' has been added');
-//                SendSms::send('new product has been added');
-            dump($checkIfProductIsValid);
+
+        $geocoder = new GeocodingService($client);
+        $path = '../../files/usersJsonFiles/' . md5('user' . ($this->getUser()* 1000 + 17)) . '.json';
+        $filesystem = new Filesystem();
+        if (!$filesystem->exists([$path]))
+            return 'none';
+
+
+        $jsonString = file_get_contents($path);
+        $jsonDataCin = json_decode($jsonString, true);
+        $address_components=$geocoder->geocode(' الشرايع سبيطلة القصرين ');
+        $address_components=$address_components[0]['address_components'];
+
+
+        $result = array(
+            "ولاية" => null,
+            "معتمدية" => null,
+            "بلدية" => null,
+            "الدائرة البلدية" => null,
+            "عمادة" => null
+        );
+
+        foreach ($address_components as $component) {
+            $types = $component['types'];
+            if (in_array('administrative_area_level_1', $types)) {
+                $result["ولاية"] = $component['long_name'];
+            } elseif (in_array('administrative_area_level_2', $types)) {
+                $result["معتمدية"] = $component['long_name'];
+            } elseif (in_array('locality', $types)) {
+                $result["بلدية"] = $component['long_name'];
+            } elseif (in_array('administrative_area_level_3', $types)) {
+                $result["بلدية"] = $component['long_name'];
+            } elseif (in_array('sublocality', $types)) {
+                $result["الدائرة البلدية"] = $component['long_name'];
+            } elseif (in_array('neighborhood', $types)) {
+                $result["عمادة"] = $component['long_name'];
+            }
         }
+
+         dump($result);
         die();
         return new Response("done");
     }
 
 
     #[Route('/test/page', name: 'test_page', methods: ['GET', 'POST'])]
-    public function page(): Response
+    public function generateQrCode(string $text, int $size = 300): string
     {
-        return $this->render('index.html.twig');
+        $result = Builder::create()
+            ->data($text)
+            ->size($size)
+            ->writer(new PngWriter())
+            ->build();
+
+        // Save the QR code to a temporary file and return its path
+        $path = sys_get_temp_dir() . '/qrcode.png';
+        file_put_contents($path, $result->getString());
+
+        return $path;
+    }
+
+    #[Route('/test/qr', name: 'test_page_qr', methods: ['GET', 'POST'])]
+    public function generate(): Response
+    {
+
+        $qrCodePath = $this->generateQrCode('http://127.0.0.1:8000/user/generatePdfWithoutMail/195');
+        return new Response(file_get_contents($qrCodePath), 200, [
+            'Content-Type' => 'image/png',
+        ]);
+
     }
 }

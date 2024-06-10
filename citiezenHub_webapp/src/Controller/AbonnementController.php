@@ -27,9 +27,14 @@ class AbonnementController extends AbstractController
     #[Route('/showAbonnement', name: 'show_abonnement')]
     public function afficherAbn(): Response
     {
-        $abonnement = $this->getDoctrine()->getManager()->getRepository(Abonnement::class)->findAll();
+        $user = $this->getUser();
+
+        $abonnements = $this->getDoctrine()
+            ->getRepository(Abonnement::class)
+            ->findByUser(  $user->getId());
+
         return $this->render('abonnement/showAbonnement.html.twig', [
-            'l' => $abonnement
+            'l' => $abonnements
         ]);
     }
 
@@ -79,11 +84,13 @@ class AbonnementController extends AbstractController
             $Lastname=$request->get('lastname');
             $Type=$request->get('type');
             $Image=$request->files->get('image');
- 
+            $user = $this->getUser();
+
             $abonnement->setNom($Name);
             $abonnement->setPrenom($Lastname);
             $abonnement->setTypeAbonnement($Type);
             $abonnement->setImageFile($Image);
+            $abonnement->setIdUser($user->getId());
             $em = $doc->getManager();
 
             $em->persist($abonnement);

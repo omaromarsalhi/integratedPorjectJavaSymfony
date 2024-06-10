@@ -1,0 +1,102 @@
+{% extends 'index.html.twig' %}
+
+
+{% block body %}
+
+    <div class="content">
+
+        <div class="mb-9">
+            <div class="row g-3 mb-4">
+                <div class="col-auto">
+                    <h2 class="mb-0">Transactions</h2>
+                </div>
+            </div>
+
+            <div id="orderTable" data-list='{"valueNames":["order","total","customer","payment_status","fulfilment_status","delivery_type","date"],"page":10,"pagination":true}'>
+                <div class="mb-4">
+                    <div class="row g-3">
+                        <div class="col-auto">
+                            <div class="search-box">
+                                <form class="position-relative" data-bs-toggle="search" data-bs-display="static"><input class="form-control search-input search" type="search" placeholder="Search orders" aria-label="Search" />
+                                    <span class="fas fa-search search-box-icon"></span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mx-n4 px-4 mx-lg-n6 px-lg-6 bg-body-emphasis border-top border-bottom border-translucent position-relative top-1">
+                    <div class="table-responsive scrollbar mx-n1 px-1">
+                        <table class="table table-sm fs-9 mb-0">
+                            <thead>
+                            <tr>
+
+                                <th class="sort white-space-nowrap text-center align-middle pe-3" scope="col" data-sort="order" style="width:5%;">TRANSACTION</th>
+                                <th class="sort align-middle  text-center  ps-8" scope="col" data-sort="total" style="width:6%;">BUYER</th>
+                                <th class="sort align-middle  text-center  ps-8" scope="col" data-sort="total" style="width:6%;">SELLER</th>
+                                <th class="sort align-middle text-center ps-3" scope="col" data-sort="payment_status" style="width:10%;">PRICE PER UNIT</th>
+                                <th class="sort align-middle text-center text-start pe-3" scope="col" data-sort="fulfilment_status" style="width:12%; min-width: 200px;"> QUANTITY</th>
+                                <th class="sort align-middle text-center text-start pe-3" scope="col" data-sort="fulfilment_status" style="width:12%; min-width: 200px;">PRICE</th>
+                                <th class="sort align-middle text-center text-start pe-3" scope="col" data-sort="fulfilment_status" style="width:12%; min-width: 200px;"> DATE </th>
+                            </tr>
+                            </thead>
+                            <tbody class="list" id="order-table-body">
+
+                            {% for transaction in transactionData %}
+                            <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+
+                                <td class="order align-middle text-center  white-space-nowrap py-0"><a class="fw-semibold">#{{ transaction.idTransaction }}UI</a></td>
+                                <td class="customer align-middle text-center   white-space-nowrap ps-8"><a class="d-flex align-items-center text-body">
+                                        <div class="avatar avatar-m"><img class="rounded-circle" src="{{ asset('usersImg/' ~ transaction.buyerImage) }}" /></div>
+                                        <h6 class="mb-0 ms-3 text-body">{{ transaction.buyerName }}</h6>
+                                    </a></td>
+                                <td class="customer align-middle  white-space-nowrap ps-8"><a class="d-flex align-items-center text-body">
+                                        <div class="avatar avatar-m"><img class="rounded-circle" src="{{ asset('usersImg/' ~ transaction.sellerImage) }}"/></div>
+                                        <h6 class="mb-0 ms-3 text-body">{{ transaction.sellerName }}</h6>
+                                    </a></td>
+
+                                <td class="payment_status align-middle text-center white-space-nowrap text-start fw-bold text-body-tertiary">{{transaction.pricePerUnit}} DT</td>
+                                <td class="fulfilment_status align-middle text-center white-space-nowrap text-start fw-bold text-body-tertiary">{{transaction.quantity}}</td>
+                                <td class="delivery_type align-middle text-center white-space-nowrap text-body fs-9 text-start">{{ transaction.pricePerUnit * transaction.quantity }} DT</td>
+                                <td class="delivery_type align-middle text-center white-space-nowrap text-body fs-9 text-start">{{ transaction.datee }}</td>
+                            </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
+                        <div class="col-auto d-flex">
+                            <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body" data-list-info="data-list-info"></p><a class="fw-semibold" href="#!" data-list-view="*">View all<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a class="fw-semibold d-none" href="#!" data-list-view="less">View Less<span class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a>
+                        </div>
+                        <div class="col-auto d-flex"><button class="page-link" data-list-pagination="prev"><span class="fas fa-chevron-left"></span></button>
+                            <ul class="mb-0 pagination"></ul><button class="page-link pe-0" data-list-pagination="next"><span class="fas fa-chevron-right"></span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer position-absolute">
+            <div class="row g-0 justify-content-between align-items-center h-100">
+                <div class="col-12 col-sm-auto text-center">
+                    <p class="mb-0 mt-2 mt-sm-0 text-body">Thank you for chosing Citizenhub<span class="d-none d-sm-inline-block"></span><span class="d-none d-sm-inline-block mx-1">|</span><br class="d-sm-none" />2023 &copy;<a class="mx-1" href="https://themewagon.com/">Themewagon</a></p>
+                </div>
+                <div class="col-12 col-sm-auto text-center">
+                    <p class="mb-0 text-body-tertiary text-opacity-85">v1.14.0</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block js %}
+
+
+{% endblock %}

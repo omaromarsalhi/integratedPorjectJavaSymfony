@@ -19,12 +19,13 @@ public class GlobalSocketConnection {
     private static MyWebSocketClient webSocketClient;
     private static boolean chatInterface;
     private static boolean marketInterface;
+    private static boolean blogInterface;
 
     public static void initiateConnection() {
         int userID = UserController.getInstance().getCurrentUser().getId();
         URI uri = null;
         try {
-            uri = new URI( "ws://localhost:8091?userId=" + userID+"&app=java" );
+            uri = new URI( "ws://localhost:8091?userId=" + userID + "&app=java" );
         } catch (URISyntaxException e) {
             throw new RuntimeException( e );
         }
@@ -36,12 +37,12 @@ public class GlobalSocketConnection {
     private static void handleMessage(String message) {
         JSONObject jsonObject = new JSONObject( message );
         String action = (String) jsonObject.get( "action" );
-
+        System.out.println( jsonObject );
         if (action.equals( "chat" ) && chatInterface)
             dealWithChat( message );
         else if (action.equals( "chat" ) && !chatInterface) {
             Platform.runLater( () -> {
-                if((Integer) jsonObject.get( "senderId" )!=UserController.getInstance().getCurrentUser().getId()) {
+                if ((Integer) jsonObject.get( "senderId" ) != UserController.getInstance().getCurrentUser().getId()) {
                     MyTools.getInstance().getImageNotif().setGraphic( new ImageView( new Image( "file:src/main/resources/namedIcons/new-message.png", 16, 16, false, false ) ) );
                     MyTools.getInstance().getTextNotif().setText( "New message is received" );
                     MyTools.getInstance().showNotif();
@@ -51,6 +52,9 @@ public class GlobalSocketConnection {
         if (action.equals( "productEvent" ) && marketInterface)
             dealWithMarket( jsonObject );
 
+        if (action.equals( "postEvent" ) && blogInterface)
+            dealWithPost( jsonObject );
+
         if (action.equals( "aiTermination" )) {
             dealWithSystemMessage( jsonObject );
         }
@@ -59,7 +63,35 @@ public class GlobalSocketConnection {
             dealWithSystemMessageForClosingAccount( jsonObject );
         }
 
+    }
 
+
+    private static void dealWithPost(JSONObject jsonObject) {
+        String subAction = (String) jsonObject.get( "subAction" );
+        switch (subAction) {
+            case "ADD" -> {
+                Platform.runLater( () -> {
+                    MyTools.getInstance().getTextNotif().setText( "New Post Has Been Added" );
+                    MyTools.getInstance().showNotif();
+                    var customMouseEvent = new CustomMouseEvent<>( (Integer) jsonObject.getJSONObject( "Data" ).get( "idPost" ) );
+                    EventBus.getInstance().publish( "loadPostInRealTime", customMouseEvent );
+                } );
+            }
+            case "UPDATE" -> {
+                Platform.runLater( () -> {
+                    MyTools.getInstance().getTextNotif().setText( "Post Has Been Updated" );
+                    MyTools.getInstance().showNotif();
+                    var customMouseEvent = new CustomMouseEvent<>( (Integer) jsonObject.getJSONObject( "Data" ).get( "idPost" ) );
+                    EventBus.getInstance().publish( "updatePostInRealTime", customMouseEvent );
+                } );
+            }
+            case "DELETE" -> {
+                Platform.runLater( () -> {
+                    var customMouseEvent = new CustomMouseEvent<>( Integer.parseInt( (String) jsonObject.getJSONObject( "Data" ).get( "idPost" ) ) );
+                    EventBus.getInstance().publish( "deletePostInRealTime", customMouseEvent );
+                } );
+            }
+        }
     }
 
 
@@ -68,7 +100,7 @@ public class GlobalSocketConnection {
             var customMouseEvent = new CustomMouseEvent<>( 10 );
             EventBus.getInstance().publish( "accountDeleted", customMouseEvent );
             MyTools.getInstance().getTextNotif().setText( "Account deleted" );
-            MyTools.getInstance().showErrorNotif2(120*1000);
+            MyTools.getInstance().showErrorNotif2( 120 * 1000 );
         } );
     }
 
@@ -110,7 +142,6 @@ public class GlobalSocketConnection {
                 } );
             }
         }
-
     }
 
     public static void send(String message) {
@@ -124,10 +155,17 @@ public class GlobalSocketConnection {
 
 
     public static void setMarketInterface(boolean marketInterface) {
+        resetAllVarsToFalse();
         GlobalSocketConnection.marketInterface = marketInterface;
+    }
+
+    public static void setBlogInterface(boolean blogInterface) {
+        resetAllVarsToFalse();
+        GlobalSocketConnection.blogInterface = blogInterface;
     }
 
     private static void resetAllVarsToFalse() {
         GlobalSocketConnection.marketInterface = false;
+        GlobalSocketConnection.blogInterface = false;
     }
 }

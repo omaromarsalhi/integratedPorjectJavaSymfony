@@ -197,7 +197,7 @@ public class PopUpCommentsController implements Initializable {
             if (images.size() > 1) {
                 rightArrow.setVisible(true);
             }
-            img = new Image(GlobalVariables.IMAGEPATH + images.get(0));
+            img = new Image(GlobalVariables.IMAGEPATH4USER + images.get(0));
             imgPost.setImage(img);
 
             rightArrow.setOnMouseClicked(mouseEvent -> {
@@ -295,7 +295,7 @@ public class PopUpCommentsController implements Initializable {
         parallelTransition.play();
 
         parallelTransition.setOnFinished(event -> {
-            Image img = new Image(GlobalVariables.IMAGEPATH + post.getImages().get(currentImgToShow));
+            Image img = new Image(GlobalVariables.IMAGEPATH4USER + post.getImages().get(currentImgToShow));
             imgPost.setImage(img);
             imgPost.setTranslateX(0);
 

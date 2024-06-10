@@ -345,9 +345,8 @@ public class PostController extends VBox implements Initializable {
             postContainer.setPrefHeight(postContainer.getPrefHeight() - 62.4);
         }
 
-        if (!post.getImages().isEmpty() /*&& !post.getImage().isEmpty()*/) {
+        if (!post.getImages().isEmpty()) {
             img = new Image(GlobalVariables.IMAGEPATH4USER + post.getImages().get(0));
-//            img = new Image(GlobalVariables.IMAGEPATH4USER +"/usersImg/6aa95ab93e82c924423c02c6ffb05965.png");
             imgPost.setImage(img);
             if (post.getImages().size() > 1) {
                 rightArrow.setVisible(true);

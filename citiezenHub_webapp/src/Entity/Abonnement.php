@@ -34,6 +34,8 @@ class Abonnement
 
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
+    #[ORM\Column(name: "idUser")]
+    private ?int $idUser = null;
 
     #[ORM\Column(length: 255)]
     private ?string $TypeAbonnement = null;
@@ -106,6 +108,19 @@ class Abonnement
     public function setTypeAbonnement(string $TypeAbonnement): static
     {
         $this->TypeAbonnement = $TypeAbonnement;
+
+        return $this;
+    }
+
+
+    public function getIdUser(): ?int
+    {
+        return $this->idUser;
+    }
+
+    public function setIdUser(int $idUser): static
+    {
+        $this->idUser = $idUser;
 
         return $this;
     }

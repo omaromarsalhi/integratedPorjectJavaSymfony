@@ -4,7 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import pidev.javafx.crud.ConnectionDB;
 import pidev.javafx.model.Transport.Abonnement;
-import  pidev.javafx.crud.CrudInterface;
+import pidev.javafx.tools.UserController;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -38,8 +38,8 @@ Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
 
         }
         Date sqlDate = Date.valueOf(futureDate);
-        String sql = "INSERT INTO `abonnement`( `Type_Abonnement`,`Nom`,`Prenom`, `dateFin`, `Image`) " +
-                "VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO `abonnement`( `Type_Abonnement`,`Nom`,`Prenom`, `dateFin`, `Image`,`idUser`) " +
+                "VALUES (?,?,?,?,?,?)";
         try {
             prepare = cnx.prepareStatement(sql);
             prepare.setString(1,a.getType());
@@ -47,6 +47,7 @@ Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
             prepare.setString(3,a.getPrenom());
             prepare.setDate(4,sqlDate);
             prepare.setString(5,a.getImage());
+            prepare.setInt(6, UserController.getInstance().getCurrentUser().getId());
 
 
             prepare.executeUpdate();
@@ -58,10 +59,12 @@ Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
 
     public Abonnement findById(int id) {
         Connection cnx = ConnectionDB.getInstance().getCnx();
-        String req = "SELECT * FROM abonnement WHERE idAbonnement = ?";
+        String req = "SELECT * FROM abonnement WHERE idAbonnement = ? AND idUser = ?";
 
         try (PreparedStatement preparedStatement = cnx.prepareStatement(req)) {
             preparedStatement.setInt(1, id);
+            preparedStatement.setInt(2, UserController.getInstance().getCurrentUser().getId());
+
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -132,32 +135,28 @@ Alert alert=new Alert(Alert.AlertType.CONFIRMATION);
 
     public Set<Abonnement> getAll() {
         Connection cnx = ConnectionDB.getInstance().getCnx();
-        Set <Abonnement> abonnementList = new HashSet<>();
-        String req = "Select * from abonnement";
+        Set<Abonnement> abonnementList = new HashSet<>();
+        String req = "SELECT * FROM abonnement WHERE idUser = ?";
 
-
-        try (PreparedStatement preparedStatement = cnx.prepareStatement(req);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            while (resultSet.next()) {
-
-                Abonnement abs = new Abonnement();
-                abs.setNom(resultSet.getString("Nom"));
-                abs.setPrenom(resultSet.getString("Prenom"));
-                abs.setType(resultSet.getString("Type_Abonnement"));
-                abs.setDateDebut(resultSet.getTimestamp("dateDebut"));
-                abs.setDateFin(resultSet.getDate("dateFin"));
-                abs.setIdAboonnement(resultSet.getInt("idAbonnement"));
-                abs.setImage(resultSet.getString("image"));
-                abonnementList.add(abs);
+        try (PreparedStatement preparedStatement = cnx.prepareStatement(req)) {
+            preparedStatement.setInt(1, UserController.getInstance().getCurrentUser().getId() ); // Set the user ID parameter
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Abonnement abs = new Abonnement();
+                    abs.setNom(resultSet.getString("Nom"));
+                    abs.setPrenom(resultSet.getString("Prenom"));
+                    abs.setType(resultSet.getString("Type_Abonnement"));
+                    abs.setDateDebut(resultSet.getTimestamp("dateDebut"));
+                    abs.setDateFin(resultSet.getDate("dateFin"));
+                    abs.setIdAboonnement(resultSet.getInt("idAbonnement"));
+                    abs.setImage(resultSet.getString("image"));
+                    abonnementList.add(abs);
+                }
             }
-
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace(); // Printing stack trace for better error handling
         }
 
         return abonnementList;
-
-
     }
 }

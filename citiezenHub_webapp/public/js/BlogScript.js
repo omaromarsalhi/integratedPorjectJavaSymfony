@@ -12,32 +12,61 @@ var idUser = 0;
 var firstLoad = false;
 
 
+function showInRealTimePost(idPost) {
+
+    $.ajax({
+        url: '/blog/showSingleBlog',
+        type: "POST",
+        data: {
+            idPost: idPost
+        },
+        async: true,
+        success: function (response) {
+            var newPostHTML = createPostHTML(response.post, response.post.url, response.post.userId);
+            $('#postsContainer').prepend(newPostHTML);
+            posts.unshift(response.post);
+            $('html, body').animate({
+                scrollTop: 950
+            }, 300);
+            $('#contact-message').val('');
+            $('#nipa').val('');
+            document.getElementById("previousImage").style.display = "none";
+            document.getElementById("nextImage").style.display = "none";
+            $('#rbtinput2').attr('src', 'images/blog/aucuneImg.png');
+        }
+    });
+}
+
+
 //blog de creation de post
 function createPostHTML(post, postUrl, idU) {
+
+    var captiontext = '';
+    if (post.caption !== '') {
+        captiontext = `
+            <p class="desc" style="color: white">${post.caption}</p>
+            <a class="translateBtn" style="color: #a2a2a3; font-size: 12px;" data-post-id="${post.id}" data-original-caption="${post.caption}" onclick="translateText('${post.id}', '${post.caption}', 'fr', 'ar')">Translate</a>
+        `;
+    }
+
     var bouttonImg = '';
     if (post.images.length > 1) {
         bouttonImg = `
-            <button class="image-nav" style="position: absolute; background: none; border: none; top: 50%; left: 0; transform: translateY(-50%); font-size: 30px; width: 10px" onclick="changeImage(${post.id}, -1)">&#8592;</button>
-            <button class="image-nav" style="position: absolute; background: none; border: none; top: 50%; right: 22px; transform: translateY(-50%); font-size: 30px; width: 10px"" onclick="changeImage(${post.id}, 1)">&#8594;</button>
+            <button class="image-nav" style="position: absolute; background: none; border: none; top: 50%; left: 0; transform: translateY(-50%); font-size: 30px; width: 10px" onclick="changeImage(${post.id}, -1)"><i class="fa-solid fa-angle-left" style="font-size: 27px"></i></button>
+            <button class="image-nav" style="position: absolute; background: none; border: none; top: 50%; right: 22px; transform: translateY(-50%); font-size: 30px; width: 10px" onclick="changeImage(${post.id}, 1)"><i class="fa-solid fa-angle-right" style="font-size: 27px"></i></button>
         `;
     }
 
     var imageHTML = '';
     if (post.images.length > 0) {
         imageHTML = `
-            <div class="thumbnail" style="position: relative;">
-                <img id="post-image-${post.id}" src="../usersImg/${post.images[0]}" alt="Personal Portfolio Images" style="width: 1100px; height: 300px; object-fit: contain;">
-                ${bouttonImg}
-            </div>
-        `;
-    }
-
-    var captiontext = '';
-    if (post.caption !== '') {
-        captiontext = `
-            <h4 class="title"><a href="${postUrl}">${post.caption} <i class="feather-arrow-up-right"></i></a></h4>
-            <a class="translateBtn" style="font-size: 12px;" data-post-id="${post.id}" data-original-caption="${post.caption}" onclick="translateText('${post.id}', '${post.caption}', 'fr', 'ar')">Translate</a>
-        `;
+        <div class="thumbnail d-flex justify-content-center align-items-center mb-4" style="position: relative;">
+            <a href="../usersImg/${post.images[0]}">
+            <img id="post-image-${post.id}" class="community-img" src="../usersImg/${post.images[0]}" alt="Nft_Community-image" style="height: 300px; object-fit: contain;">
+            </a>
+            ${bouttonImg}
+        </div>
+    `;
     }
 
     var dropDown = '';
@@ -45,7 +74,7 @@ function createPostHTML(post, postUrl, idU) {
         dropDown = `
             <div class="meta">
                 <div class="dropdown">
-                    <button class="dropbtn"><i class="fas fa-cog"></i></button>
+                    <button class="dropbtn"><i class="fa-solid fa-ellipsis"></i></button>
                     <div class="dropdown-content">
                         <button onclick="handleMenuAction(this, ${post.id}, '${post.caption}', '${post.images}', 'modifier')">Modifier</button>
                         <button onclick="handleMenuAction(this, ${post.id}, '${post.caption}', '${post.images}', 'supprimer')">Supprimer</button>
@@ -55,32 +84,77 @@ function createPostHTML(post, postUrl, idU) {
         `;
     }
 
+    var reactionButtonHTML = '';
+    if (post.userReactionType) {
+        reactionButtonHTML = `
+    
+        <button id="reaction-button-${post.id}" class="dropbtn-react" onclick="toggleReaction(${post.id}, 'Like', this)" style="border-color: transparent !important;">
+            <img src="images/blog/ic_${post.userReactionType.toLowerCase()}.png" alt="${post.userReactionType}" style="width: 22px; height: 22px;">
+        </button>
+    `;
+    } else {
+        reactionButtonHTML = `
+        <button id="reaction-button-${post.id}" class="dropbtn-react" onclick="toggleReaction(${post.id}, 'Like', this) " style="border-color: transparent !important;" >
+            <i class="fa-regular fa-thumbs-up"></i>
+        </button>
+    `;
+    }
+
     return `
-        <div class="col-xl-10 col-lg-8" data-post-id="${post.id}">
-            <div class="rn-blog single-column mb--30" data-toggle="modal" data-target="#exampleModalCenters">
-                <div class="inner">
-                    <div class="content mb-4">
-                        <div class="category-info">                                                                                                                                  
-                            <div class="category-list">
-                                <img src="../usersImg/${post.userImage}" height="40" width="40" style="margin-right: 10px">
-                                <span style="font-size: 16px;"><strong>${post.userSurname} ${post.userName}</strong><br><p style="font-size: 10px;">${post.datePost}</p></span>
+        <div class="single-community-box mb-5" data-post-id="${post.id}">
+                            <div class="community-bx-header">
+                                <div class="header-left">
+                                    <div class="thumbnail">
+                                        <img src="../usersImg/${post.userImage}" alt="NFT-thumbnail">
+                                    </div>
+                                    <div class="name-date">
+                                        <a class="name" style="font-size: 15px">${post.userSurname} ${post.userName}</a>
+                                        <span class="date">${post.datePost}</span>
+                                    </div>
+                                </div>
+                                <!-- header-right -->
+                                <div class="header-right">
+                                    <div class="product-share-wrapper">
+                                        <div class="profile-share">
+                                            ${dropDown}
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- header-right End -->
                             </div>
-                            ${dropDown}
+                            <div class="community-content">
+                                ${captiontext}
+                                ${imageHTML}
+                                <div class="hr"></div>
+                                <div class="rn-community-footer">
+                                    <div class="community-reaction">
+                                        <a class="likes">
+                                            
+                                           
+                                            <div class="dropdown-react">
+                                                ${reactionButtonHTML}
+                                                <div class="dropdown-content-react">
+                                                        <img src="images/blog/ic_like.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Like', this)">
+    <img src="images/blog/ic_haha.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Haha', this)">
+    <img src="images/blog/ic_sad.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Sad', this)">
+    <img src="images/blog/ic_angry.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Angry', this)">
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            <span id="reactions-count-${post.id}">${post.nbReactions}</span>
+
+                                        </a>
+                                        <a href="${postUrl}" class="comments">
+                                            <i class="feather-message-circle"></i>
+                                            <span>${post.nbComments} Comments</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        ${captiontext}
-                    </div>
-                    ${imageHTML}
-                    <div class="meta" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px">
-                        <div><span style="font-size: 12px;">${post.nbReactions} Reactions</span></div>
-                        <div><span style="font-size: 12px;">${post.nbComments} Comments</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
     `;
 }
-
-
 
 
 function loadPostsPage(page) {
@@ -105,7 +179,7 @@ function loadPostsPage(page) {
             }
             isLoading = false;
             document.getElementById('loadingIcon').style.display = 'none';
-            firstLoad=true
+            firstLoad = true
         },
         error: function (xhr, status, error) {
             console.error(response.message);
@@ -149,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 window.onscroll = function () {
-    if(firstLoad) {
+    if (firstLoad) {
         var scrollPosition = window.pageYOffset;
         var windowSize = window.innerHeight;
         var bodyHeight = document.body.offsetHeight;
@@ -175,10 +249,17 @@ function changeImage(postId, direction) {
 }
 
 function addPost(event) {
+
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#ajoutPost').html('<img src="' + value + '" width="30"/>')
+    $('#ajoutPost').addClass('btnTransparent');
+    $('#ajoutPost').prop('disabled', true)
+
+
     event.preventDefault();
 
-    document.getElementById('loadingLogo').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
+    // document.getElementById('loadingLogo').style.display = 'block';
+    // document.getElementById('overlay').style.display = 'block';
 
     let imageFile = document.querySelector('#nipa').files[0];
     let formData = new FormData();
@@ -193,6 +274,7 @@ function addPost(event) {
             processData: false,
             contentType: false,
             success: function (data) {
+
                 var isPublic = true;
                 var max = 0;
                 var categorie = "";
@@ -246,15 +328,19 @@ function addPost(event) {
                             } else {
                                 console.error('Failed to create post: ' + response.message);
                             }
-
-                            document.getElementById('loadingLogo').style.display = 'none';
-                            document.getElementById('overlay').style.display = 'none';
+                            $('#ajoutPost').html('publish')
+                            $('#ajoutPost').removeClass('btnTransparent');
+                            $('#ajoutPost').prop('disabled', false)
+                            // document.getElementById('loadingLogo').style.display = 'none';
+                            // document.getElementById('overlay').style.display = 'none';
                         },
                         error: function (response) {
                             console.error("error");
-
-                            document.getElementById('loadingLogo').style.display = 'none';
-                            document.getElementById('overlay').style.display = 'none';
+                            $('#ajoutPost').html('publish')
+                            $('#ajoutPost').removeClass('btnTransparent');
+                            $('#ajoutPost').prop('disabled', false)
+                            // document.getElementById('loadingLogo').style.display = 'none';
+                            // document.getElementById('overlay').style.display = 'none';
                         },
                     });
                 } else {
@@ -271,15 +357,20 @@ function addPost(event) {
                     $('#rbtinput2').attr('src', 'images/blog/aucuneImg.png');
                     document.getElementById("delImage").style.display = "none";
 
-                    document.getElementById('loadingLogo').style.display = 'none';
-                    document.getElementById('overlay').style.display = 'none';
+                    $('#ajoutPost').html('publish')
+                    $('#ajoutPost').removeClass('btnTransparent');
+                    $('#ajoutPost').prop('disabled', false)
+                    // document.getElementById('loadingLogo').style.display = 'none';
+                    // document.getElementById('overlay').style.display = 'none';
                 }
             },
             error: function () {
                 console.log('Une erreur est survenue');
-
-                document.getElementById('loadingLogo').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
+                $('#ajoutPost').html('publish')
+                $('#ajoutPost').removeClass('btnTransparent');
+                $('#ajoutPost').prop('disabled', false)
+                // document.getElementById('loadingLogo').style.display = 'none';
+                // document.getElementById('overlay').style.display = 'none';
             }
         });
     } else {
@@ -323,15 +414,19 @@ function addPost(event) {
                 } else {
                     console.error('Failed to create post: ' + response.message);
                 }
-
-                document.getElementById('loadingLogo').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
+                $('#ajoutPost').html('publish')
+                $('#ajoutPost').removeClass('btnTransparent');
+                $('#ajoutPost').prop('disabled', false)
+                // document.getElementById('loadingLogo').style.display = 'none';
+                // document.getElementById('overlay').style.display = 'none';
             },
             error: function (response) {
                 console.error("error");
-
-                document.getElementById('loadingLogo').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
+                $('#ajoutPost').html('publish')
+                $('#ajoutPost').removeClass('btnTransparent');
+                $('#ajoutPost').prop('disabled', false)
+                // document.getElementById('loadingLogo').style.display = 'none';
+                // document.getElementById('overlay').style.display = 'none';
             },
         });
     }
@@ -605,3 +700,68 @@ function translateText(postId, textToTranslate, sourceLanguage, targetLanguage) 
         .catch(error => console.error("Erreur lors de l'analyse de la réponse JSON : ", error));
 }
 
+function addReaction(postId, reactionType, imageElement) {
+    $.ajax({
+        url: '/addReaction',
+        type: 'POST',
+        data: {
+            postId: postId,
+            reactionType: reactionType
+        },
+        success: function (response) {
+            const buttonElement = document.getElementById("reaction-button-" + postId);
+            if (buttonElement.innerHTML.includes('fa-thumbs-up')) {
+                let reactionsCountElement = $(`#reactions-count-${postId}`);
+                let currentCount = parseInt(reactionsCountElement.text());
+                reactionsCountElement.text(currentCount + 1);
+            }
+            $('.dropbtn-react').html('<img src="' + imageElement.src + '" alt="' + reactionType + '" width="25px" height="25px">');
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+}
+
+
+function toggleReaction(postId, reactionType, buttonElement) {
+    if (buttonElement.innerHTML.includes('fa-thumbs-up')) {
+        $.ajax({
+            url: '/addReaction',
+            type: 'POST',
+            data: {
+                postId: postId,
+                reactionType: reactionType
+            },
+            success: function (response) {
+                buttonElement.innerHTML = '<img src="images/blog/ic_like.png" alt="Like" width="22px" height="22px">';
+                // Increment the reactions count
+                let reactionsCountElement = $(`#reactions-count-${postId}`);
+                let currentCount = parseInt(reactionsCountElement.text());
+                reactionsCountElement.text(currentCount + 1);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    } else {
+        $.ajax({
+            url: '/deleteReaction',
+            type: 'POST',
+            data: {
+                postId: postId
+            },
+            success: function (response) {
+                console.log(response);
+                buttonElement.innerHTML = '<i class="fa-regular fa-thumbs-up"></i>';
+                // Decrement the reactions count
+                let reactionsCountElement = $(`#reactions-count-${postId}`);
+                let currentCount = parseInt(reactionsCountElement.text());
+                reactionsCountElement.text(currentCount === 0 ? 0 : currentCount - 1);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+}

@@ -1,11 +1,15 @@
 {% extends 'index.html.twig' %}
 
+
+
 {% block css %}
     <link href="{{ asset('assetsAdmin/vendors/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 {% endblock %}
 
-{% block body %}
 
+
+
+{% block body %}
     <div class="content kanban-boards-content">
         <div class="mb-9">
             <div class="border-bottom border-translucent px-4 px-lg-6 pb-5">
@@ -41,7 +45,7 @@
                                                                  href="{{ path('Show_Details_Municipality',{id:municipalite.id}) }}">
                                             <div class="card overflow-hidden bg-transparent h-100">
                                                 <div class="position-relative"><img class="w-100"
-                                                                                    src="{{ asset('assets/images/banner/munisipalityImg.png') }}"
+                                                                                    src="{{ asset('images/user/municipalite.png') }}"
                                                                                     style="height: 200px; width: 100px; object-fit: contain;"/>
 
                                                     <div class="avatar-group position-absolute"
@@ -71,11 +75,6 @@
                                             </div>
                                         </a></div>
                                 {% endfor %}
-                                <div class="swiper-slide"><a
-                                            class="btn btn-phoenix-primary d-flex flex-center h-100 w-100 fs-7 fw-semibold text-truncate"
-                                            href="create-kanban-board.html"><span
-                                                class="fa-solid fa-plus-circle fs-8 me-2"></span>Create New Board</a>
-                                </div>
                             </div>
                         </div>
                         <div class="swiper-nav">

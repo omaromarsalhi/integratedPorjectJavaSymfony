@@ -6,9 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
 import javafx.scene.effect.BoxBlur;
@@ -16,16 +14,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.json.JSONObject;
 import pidev.javafx.crud.transport.ServicesAbonnement;
 import pidev.javafx.model.Transport.Abonnement;
 import pidev.javafx.model.Transport.Transport;
@@ -34,6 +31,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,8 +43,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import pidev.javafx.tools.GlobalVariables;
-import pidev.javafx.tools.marketPlace.CustomMouseEvent;
-import pidev.javafx.tools.marketPlace.EventBus;
+import pidev.javafx.tools.marketPlace.Flouci;
 import pidev.javafx.tools.marketPlace.MyTools;
 
 public class AbonnementClientController implements Initializable {
@@ -70,6 +67,8 @@ public class AbonnementClientController implements Initializable {
 
     @FXML
     private Label NomLabel;
+    @FXML
+    private Pane pane;
 
     @FXML
     private Label PrenomLabel;
@@ -91,9 +90,13 @@ public class AbonnementClientController implements Initializable {
     @FXML
     private AnchorPane loadinPage;
     @FXML
+    private ImageView imageAbonnes;
+    @FXML
     private Pane form;
     @FXML
     private Pane visiolScan;
+    @FXML
+    private ImageView imgAbn;
 
 
 
@@ -109,8 +112,6 @@ public class AbonnementClientController implements Initializable {
     Set<Abonnement> abonnementSet;
     TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(1), paneToAnnimate);
     String imagePath;
-
-    final String destinationString = "../citiezenHub_webapp/public/usersImg";
 
 
 
@@ -138,7 +139,6 @@ public class AbonnementClientController implements Initializable {
 
         abonnementSet = sa.getAll();
         abonnementList = List.copyOf(abonnementSet);
-        System.out.println(abonnementList.toString());
 
     }
 
@@ -166,15 +166,13 @@ public class AbonnementClientController implements Initializable {
                 if (!task.getValue().isEmpty() && task.getValue().containsKey("man")) {
                     Platform.runLater(() -> {
                         visiolScan.setVisible( false );
-                        System.out.println(imagePath);
-                        imageAbonne.setImage(new Image("file:///"+imagePath));
+                        imageAbonnes.setImage(new Image("file:///"+imagePath));
                     });
                 }
 
                 else {
                     visiolScan.setVisible( false );
 
-                    System.out.println("image should be of a humain being and in portrait mode");
 
                 }
             });
@@ -209,28 +207,11 @@ public class AbonnementClientController implements Initializable {
 
 
     public void ajouter() {
-        String randomFileName = null;
-        Path sourcePath = Paths.get(imagePath);
-        if (imagePath.endsWith(".png")) {
-            randomFileName = UUID.randomUUID().toString() + ".png";
-        } else {
-            randomFileName = UUID.randomUUID().toString() + ".jpg";
-        }
-        Path destinationPath = Paths.get(destinationString, randomFileName);
-        System.out.println(sourcePath);
-        System.out.println(destinationPath);
-        try {
-            Files.copy(sourcePath, destinationPath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        imagePath =  randomFileName;
+
+        imagePath = MyTools.getInstance().getPathAndSaveIMG( String.valueOf( Paths.get(imagePath).toAbsolutePath() ) );
 
         Abonnement p = new Abonnement(NomText.getText(), PrenomText.getText(), TypeAbonnementBox.getValue().toString(), imagePath);
-        sa.addItem(p);
-        afficher();
-        remplir_abonnement();
-        sleepThread().start();
+        pay(p);
 
     }
 
@@ -291,6 +272,16 @@ public class AbonnementClientController implements Initializable {
         else if (i == abonnementList.size() - 1) {
             nextBtn.setVisible(false);
         }
+        if(abonnementList.get(i).getType().equals("Annuel"))
+        {
+            Image image = new Image( "file:src/main/resources/img_transport/Abonnement.png");
+            imgAbn.setImage(image);
+        }
+        else
+        {
+            Image image = new Image( "file:src/main/resources/img_transport/Abonnement1.png" );
+            imgAbn.setImage(image);
+        }
         String[] time = abonnementList.get(i).getDateDebut().toLocalDateTime().toString().split("T");
         String id = Integer.toString(abonnementList.get(i).getIdAboonnement());
         DebutLabel.setText(time[0]);
@@ -299,7 +290,6 @@ public class AbonnementClientController implements Initializable {
         PrenomLabel.setText(abonnementList.get(i).getPrenom());
         IdLabel.setText("000" + id);
         imagePath = abonnementList.get(i).getImage();
-        System.out.println(GlobalVariables.IMAGEPATH+"usersImg/"+abonnementList.get(i).getImage() );
         Image image = new Image( GlobalVariables.IMAGEPATH +"usersImg/"+ abonnementList.get(i).getImage());
         imageAbn.setImage(image);
         imageAbn.setStyle("-fx-background-radius: 50%;  ");
@@ -315,7 +305,6 @@ public class AbonnementClientController implements Initializable {
             nextBtn.setVisible(true);
             previousBtn.setVisible(true);
             i = i + 1;
-            System.out.println(i);
             remplir_abonnement();
         } else {
             nextBtn.setVisible(false);
@@ -328,10 +317,11 @@ public class AbonnementClientController implements Initializable {
     public void previousAb() {
 
         if (i > 0) {
+
             previousBtn.setVisible(true);
             nextBtn.setVisible(true);
             i = i - 1;
-            System.out.println(i);
+
             remplir_abonnement();
         } else if (i == 0) {
             previousBtn.setVisible(false);
@@ -356,7 +346,6 @@ public class AbonnementClientController implements Initializable {
     public void Update() {
 
         Abonnement A = new Abonnement(NomText.getText(), PrenomText.getText(), TypeAbonnementBox.getValue(), imagePath);
-        System.out.println(NomText.getText());
         A.setIdAboonnement(abonnementList.get(i).getIdAboonnement());
         sa.updateItem(A);
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -411,6 +400,7 @@ public class AbonnementClientController implements Initializable {
 
 
 
+
     public Map<String, Double> image_api(String s) {
         imagePath = s; // Replace with your local image path
 
@@ -437,7 +427,6 @@ public class AbonnementClientController implements Initializable {
 
             // Print the contents of the map
             tagMap.forEach((tag, confidence) -> System.out.println("Tag: " + tag + ", Confidence: " + confidence));
-            System.out.println(tagMap.toString());
             return tagMap;
 
         } catch (IOException e) {
@@ -446,6 +435,45 @@ public class AbonnementClientController implements Initializable {
         }
 
     }
+
+
+
+
+
+    public void loadPayment(Abonnement p, URL link) {
+        WebView webView = new WebView();
+        webView.setStyle("-fx-border-radius: 20;" +
+                "-fx-background-radius: 20;" +
+                "-fx-padding: 20;" +
+                "-fx-background-color: red");
+
+        WebEngine webEngine = webView.getEngine();
+        System.out.println(p.toString());
+
+        // Ensure the URL is not null
+        if (link != null) {
+            webEngine.load(link.toString());
+        } else {
+            System.out.println("The URL link provided is null.");
+            return;
+        }
+
+        webEngine.locationProperty().addListener((observableValue, s, t1) -> {
+            if (t1.contains("Paymentsuccessful21")) {
+                Platform.runLater(() -> {
+                    pane.getChildren().remove(webView);
+                 //   pane.getChildren().remove(2);
+                    sa.addItem(p);
+                    afficher();
+                    remplir_abonnement();
+                    sleepThread().start();
+                });
+            }
+        });
+
+        pane.getChildren().add(webView);
+    }
+
 
     private static Request buildRequest(String imagePath) {
         File imageFile = new File(imagePath);
@@ -467,5 +495,17 @@ public class AbonnementClientController implements Initializable {
         return java.util.Base64.getEncoder().encodeToString(credentials.getBytes());
     }
 
+    public void pay(Abonnement p){
 
+        JSONObject jsonResponse = new JSONObject( Flouci.PayFlouci( 1010d ) );
+        JSONObject result = jsonResponse.getJSONObject("result");
+        String linkString = result.getString("link");
+        URL link = null;
+        try {
+            link = new URL(linkString);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException( e );
+        }
+        loadPayment( p, link);
+    }
 }

@@ -139,7 +139,7 @@ public class MyTools {
     public String getPathAndSaveIMG(String chosenFilePath) {
 
         var byteArray=imageToByteArray(chosenFilePath);
-        return "usersImg/"+sendImage(byteArray,"http://localhost:8000/api/upload-image").replace( '"',' ').trim();
+        return sendImage(byteArray,"http://localhost:8000/api/upload-image").replace( '"',' ').trim();
     }
 
     public String getPathAndSaveIMGUser(String chosenFilePath) {

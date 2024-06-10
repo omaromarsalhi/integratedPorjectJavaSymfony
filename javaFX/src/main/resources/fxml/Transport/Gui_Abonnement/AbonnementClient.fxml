@@ -16,7 +16,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<StackPane style="-fx-background-color: transparent; -fx-background-radius: 20; -fx-border-radius: 20;" stylesheets="@../../../style/transport/Transport.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.abonnement.AbonnementClientController">
+<StackPane fx:id="pane" style="-fx-background-color: transparent; -fx-background-radius: 20; -fx-border-radius: 20;" stylesheets="@../../../style/transport/Transport.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pidev.javafx.controller.abonnement.AbonnementClientController">
    <children>
       <VBox fx:id="mainContainer" alignment="CENTER" prefHeight="670.0" prefWidth="938.0" style="-fx-background-color: transparent;">
          <children>
@@ -46,61 +46,86 @@
             <Line endX="900.0" startX="-100.0" />
             <HBox alignment="CENTER" fillHeight="false" prefHeight="494.0" prefWidth="1040.0">
                <children>
-                  <Pane prefHeight="363.0" prefWidth="596.0" styleClass="TableView">
+                  <Pane prefHeight="363.0" prefWidth="596.0" style="-fx-border-color: transparent;" styleClass="TableView">
                      <children>
                         <Button fx:id="previousBtn" layoutX="6.0" layoutY="160.0" mnemonicParsing="false" onAction="#previousAb" prefHeight="33.0" prefWidth="63.0" styleClass="Button_abonnement">
                            <graphic>
                               <ImageView fitHeight="150.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../icons/marketPlace/left-arrow.png" />
+                                    <Image url="@../../../icons/userIcons/icons8-arrière-50.png" />
                                  </image>
                               </ImageView>
                            </graphic>
                         </Button>
                         <Pane fx:id="paneToAnnimate" layoutX="92.0" layoutY="32.0">
                            <children>
-                              <ImageView fitHeight="313.0" fitWidth="408.0" pickOnBounds="true" preserveRatio="true" styleClass="rounded-image">
+                              <ImageView fx:id="imgAbn" fitHeight="313.0" fitWidth="408.0" pickOnBounds="true" styleClass="rounded-image">
                                  <image>
                                     <Image url="@../../../img_transport/Abonnement.png" />
                                  </image>
                               </ImageView>
-                              <Label fx:id="IdLabel" layoutX="262.79999923706055" layoutY="272.0" text="0001">
+                              <Label fx:id="IdLabel" layoutX="262.79999923706055" layoutY="262.0" text="0001">
                                  <font>
                                     <Font name="Souliyo Unicode" size="24.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="NomLabel" layoutX="237.79999923706055" layoutY="135.0" text="Fouleni">
+                              <Label fx:id="NomLabel" layoutX="306.79999923706055" layoutY="135.0" text="Fouleni">
                                  <font>
                                     <Font name="Souliyo Unicode" size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="PrenomLabel" layoutX="245.79999923706055" layoutY="172.39999389648438" text="Lfouleni">
+                              <Label fx:id="PrenomLabel" layoutX="307.79999923706055" layoutY="172.39999389648438" text="Lfouleni">
                                  <font>
                                     <Font name="Souliyo Unicode" size="18.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="DebutLabel" layoutX="64.79999923706055" layoutY="198.0" prefHeight="33.0" prefWidth="112.0" text="12/02/2002">
+                              <Label fx:id="DebutLabel" layoutX="66.79999923706055" layoutY="196.0" prefHeight="33.0" prefWidth="112.0" text="12/02/2002">
                                  <font>
                                     <Font name="Souliyo Unicode" size="13.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="FinLabel" layoutX="49.79999923706055" layoutY="224.60000610351562" prefHeight="39.0" prefWidth="130.0" text="12/02/2002">
+                              <Label fx:id="FinLabel" layoutX="57.79999923706055" layoutY="229.60000610351562" prefHeight="39.0" prefWidth="130.0" text="12/02/2002">
                                  <font>
                                     <Font name="Souliyo Unicode" size="13.0" />
                                  </font>
                               </Label>
-                              <ImageView fx:id="imageAbn" fitHeight="154.0" fitWidth="126.0" layoutX="11.0" layoutY="21.0" pickOnBounds="true">
+                              <ImageView fx:id="imageAbn" fitHeight="154.0" fitWidth="126.0" layoutX="22.0" layoutY="21.0" pickOnBounds="true">
                                  <image>
                                     <Image url="@../../../../../../../../javaFX/src/main/resources/img/omar.jpg" />
                                  </image>
                               </ImageView>
+                              <Label fx:id="DebutLabel1" layoutX="22.0" layoutY="196.0" prefHeight="33.0" prefWidth="112.0" text="Start :">
+                                 <font>
+                                    <Font name="Souliyo Unicode" size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="DebutLabel11" layoutX="23.0" layoutY="234.0" prefHeight="33.0" prefWidth="112.0" text="End :">
+                                 <font>
+                                    <Font name="Souliyo Unicode" size="13.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="PrenomLabel1" layoutX="206.0" layoutY="172.0" text="Lastname :">
+                                 <font>
+                                    <Font name="Souliyo Unicode" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="PrenomLabel11" layoutX="206.0" layoutY="135.0" text="Name :">
+                                 <font>
+                                    <Font name="Souliyo Unicode" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="PrenomLabel111" layoutX="213.0" layoutY="62.0" text="SUBSCRIPTION">
+                                 <font>
+                                    <Font name="Souliyo Unicode" size="25.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </Pane>
                         <Button fx:id="nextBtn" layoutX="523.0" layoutY="160.0" mnemonicParsing="false" onAction="#nextAb" prefHeight="40.0" prefWidth="64.0" styleClass="Button_abonnement">
                            <graphic>
                               <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../icons/marketPlace/right-arrow.png" />
+                                    <Image url="@../../../icons/userIcons/icons8-vers-l'avant-50.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -154,7 +179,7 @@
                                  <children>
                                     <Button mnemonicParsing="false" onAction="#insert_Image" style="-fx-background-color: transparent; -fx-border-color: transparent;">
                                        <graphic>
-                                          <ImageView fx:id="imageAbonne" fitHeight="127.0" fitWidth="126.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fx:id="imageAbonnes" fitHeight="127.0" fitWidth="126.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../../../icons/userIcons/image128B.png" />
                                              </image>

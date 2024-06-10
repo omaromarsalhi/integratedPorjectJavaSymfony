@@ -13,7 +13,7 @@ class ImageExpliciteApi
             'headers' => [
                 'accept' => 'application/json',
                 'content-type' => 'application/json',
-                'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiN2IzNjdkMjItMDg2NS00MDBiLThiMDYtYTA0NWFmODMyZTQyIiwidHlwZSI6ImFwaV90b2tlbiJ9.Vn0fTezmrfzxyCYZrpjRmsjpAhpCD4pqc8YOTqFJafM'
+                'authorization' => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjc3NGE4YmUtMGRiOS00ODdkLTg1NzgtZGJlZDBlNGQwZTQ3IiwidHlwZSI6ImZyb250X2FwaV90b2tlbiJ9.yGYERdSpWYTXYlKwkSDfY8e9-_T5vI9mO8P7IsR7jB4'
             ]
         ]);
     }

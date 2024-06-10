@@ -14,6 +14,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.1",
         "dompdf/dompdf": "^2.0",
+        "endroid/qr-code": "^5.0",
         "geocoder-php/google-maps-provider": "*",
         "guzzlehttp/guzzle": "^7.8",
         "ivory/google-map-bundle": "*",

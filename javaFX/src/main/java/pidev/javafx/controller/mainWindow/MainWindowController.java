@@ -124,6 +124,7 @@ public class MainWindowController implements Initializable {
     @FXML
     public void onBlogBtnClicked(ActionEvent event) throws IOException {
         btns();
+        GlobalSocketConnection.setBlogInterface( true );
         blogBtn.setStyle( " -fx-border-color: #fdc847;" +
                 "    -fx-border-width: 0 0 0 2px ;" +
                 "    -fx-border-radius: 0;" );

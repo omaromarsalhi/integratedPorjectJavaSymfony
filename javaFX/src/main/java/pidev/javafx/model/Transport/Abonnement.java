@@ -13,6 +13,19 @@ public class Abonnement {
     private String nom;
     private String image;
 
+
+    private int idUser;
+
+    public Abonnement(String prenom, String type, Timestamp dateDebut, Date dateFin, String nom, String image, int idUser) {
+        this.prenom = prenom;
+        this.type = type;
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.nom = nom;
+        this.image = image;
+        this.idUser = idUser;
+    }
+
     public Abonnement(String nom, String prenom, String type, String image) {
 
         this.nom = nom;
@@ -113,4 +126,14 @@ public class Abonnement {
     public void setDateFin(Date dateFin) {
         this.dateFin = dateFin;
     }
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
+
 }

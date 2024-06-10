@@ -184,7 +184,7 @@ public class ServiceUser implements IserviceUser<User> {
         Connection cnx = ConnectionDB.getInstance().getCnx();
         List<User> users = new ArrayList<>();
         int userId = UserController.getInstance().getCurrentUser().getId();
-        String req = "SELECT * FROM `user` where idUser in (select idSender from chat where idReciver=? ) or idUser in (select idReciver from chat where idSender=? )";
+        String req = "SELECT * FROM `user` where idUser in (select idSender from chat where idReciver=? )";
         try {
             PreparedStatement ps = cnx.prepareStatement( req );
             ps.setInt( 1, userId );

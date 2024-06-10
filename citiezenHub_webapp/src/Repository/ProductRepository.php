@@ -170,12 +170,12 @@ class ProductRepository extends ServiceEntityRepository
         if ($filterData['price']['asc'] === "true") {
             $qb->orderBy('p.price', 'ASC');
         }
-        
+
         if ($filterData['price']['desc'] === "true") {
             $qb->orderBy('p.price', 'DESC');
         }
 
-        if ($filterData['price']['desc'] === "false"&&$filterData['price']['asc'] === "false")
+        if ($filterData['price']['desc'] === "false" && $filterData['price']['asc'] === "false")
             $qb->orderBy('p.idProduct', 'DESC');
 
 
@@ -238,5 +238,25 @@ class ProductRepository extends ServiceEntityRepository
         return $formattedData;
     }
 
+
+    public function getVerifiedProductCount(): int
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p.idProduct)')
+            ->where('p.state = :val')
+            ->setParameter('val', 'verified')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getUnverifiedProductCount(): int
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p.idProduct)')
+            ->where('p.state = :val')
+            ->setParameter('val', 'unverified')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 
 }

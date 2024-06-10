@@ -4,13 +4,67 @@
 {% block body %}
 
     <div class="content">
+
+        <div class="pb-5">
+            <div class="row g-4">
+                <div class="col-12 col-xxl-12">
+                    <div class="mb-8">
+                        <h2 class="mb-2">Ecommerce Dashboard</h2>
+                        <h5 class="text-body-tertiary fw-semibold">Here’s what’s going on at your business right
+                            now</h5>
+                    </div>
+                    <div class="row align-items-center g-4">
+                        <div class="col-12 col-md-auto">
+                            <div class="d-flex align-items-center"><span class="fa-stack"
+                                                                         style="min-height: 46px;min-width: 46px;"><span
+                                            class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-success-light"
+                                            data-fa-transform="down-4 rotate--10 left-4"></span><span
+                                            class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-success"
+                                            data-fa-transform="up-4 right-3 grow-2"></span><span
+                                            class="fa-stack-1x fa-solid fa-star text-success "
+                                            data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                                <div class="ms-3">
+                                    <h4 class="mb-0">{{ verifiedProductCount }} Verified</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-auto">
+                            <div class="d-flex align-items-center"><span class="fa-stack"
+                                                                         style="min-height: 46px;min-width: 46px;"><span
+                                            class="fa-solid fa-square fa-stack-2x dark__text-opacity-50 text-danger-light"
+                                            data-fa-transform="down-4 rotate--10 left-4"></span><span
+                                            class="fa-solid fa-circle fa-stack-2x stack-circle text-stats-circle-danger"
+                                            data-fa-transform="up-4 right-3 grow-2"></span><span
+                                            class="fa-stack-1x fa-solid fa-xmark text-danger "
+                                            data-fa-transform="shrink-2 up-8 right-6"></span></span>
+                                <div class="ms-3">
+                                    <h4 class="mb-0">{{ unverifiedProductCount }} Unverified </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="bg-body-secondary mb-6 mt-4"/>
+
+                    <div class="col-xxl-12 mb-2 mt-6 ">
+                        <h3>Products details</h3>
+                        <p class="text-body-tertiary mb-1">Check the products details in one place</p>
+                        <div class="d-flex justify-content-center">
+                            <div class="echart-series-bar-chart-example mt-6"
+                                 style="min-height:300px; width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="row gy-3 mb-4 justify-content-between">
-            <div class="col-xxl-6">
+            <div class="col-xxl-12">
                 <h2 class="mb-2 text-body-emphasis">Governments Dashboard</h2>
                 <h5 class="text-body-tertiary fw-semibold mb-4">Check all Governments in one place</h5>
                 <div class="row g-3 mb-3 d-flex justify-content-center align-items-center">
 
-                <div class="col-sm-6 col-md-4 col-xl-12 col-xxl-12">
+                    <div class="col-sm-6 col-md-4 col-xl-12 col-xxl-12">
                         <div class="card h-100">
                             <div class="card-body">
                                 <div class="d-flex d-sm-block justify-content-between">
@@ -20,14 +74,17 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-xl-8 col-xxl-9 gy-5 mt-7 gy-md-3 justify-content-center">
+                    <div class="col-md-4 col-xl-8 col-xxl-8 gy-5 mt-7 gy-md-3 justify-content-center">
                         <div class="border-bottom border-translucent">
                             <h5 class="pb-4 border-bottom border-translucent">Top 5 Rank municipality</h5>
                             <ul class="list-group list-group-flush">
                                 {% for index, i in muniCount %}
-                                <li class="list-group-item bg-transparent list-group-crm fw-bold text-body fs-9 py-2">
-                                    <div class="d-flex justify-content-between"><span class="fw-normal fs-9 mx-1"> <span class="fw-bold">{{ index + 1 }}. </span>{{ i.municipalite }} </span><span>{{ i.userCount }}</span></div>
-                                </li>
+                                    <li class="list-group-item bg-transparent list-group-crm fw-bold text-body fs-9 py-2">
+                                        <div class="d-flex justify-content-between"><span
+                                                    class="fw-normal fs-9 mx-1"> <span
+                                                        class="fw-bold">{{ index + 1 }}. </span>{{ i.municipalite }} </span><span>{{ i.userCount }}</span>
+                                        </div>
+                                    </li>
                                 {% endfor %}
                             </ul>
                         </div>
@@ -36,24 +93,19 @@
 
                 </div>
             </div>
-            <div class="col-xxl-6 mb-2 mt-6">
-                <h3>Products details</h3>
-                <p class="text-body-tertiary mb-1">Check the products details in one place</p>
-                <!--<div class="echart-line-chart-example" style="min-height:300px; width: 100%"></div>-->
-                <div class="echart-series-bar-chart-example mt-6" style="min-height:280px;"></div>
-            </div>
-            <div class="col-12 col-xxl-6 mb-3 mb-sm-0">
 
-            </div>
-            <div class="col-12 col-xxl-6 mb-8">
+
+            <div class="col-12 col-xxl-12 mb-8">
                 <div class="mb-3">
                     <h3>Accounts and Municipality's</h3>
                     <p class="text-body-tertiary mb-0">Accounts and municipality's created this week</p>
                 </div>
                 <div class="row g-6">
                     <div class="col-md-6 mb-2 mb-sm-0">
-                        <div class="d-flex align-items-center"><span class="me-2 text-info" data-feather="users" style="min-height:24px; width:24px"></span>
-                            <h4 class="text-body-tertiary mb-0">New Users :<span class="text-body-emphasis"> {{ nbrUser[0].nbrUsers }}</span></h4>
+                        <div class="d-flex align-items-center"><span class="me-2 text-info" data-feather="users"
+                                                                     style="min-height:24px; width:24px"></span>
+                            <h4 class="text-body-tertiary mb-0">New Users :<span
+                                        class="text-body-emphasis"> {{ nbrUser[0].nbrUsers }}</span></h4>
                         </div>
                         <div class="pb-0 pt-4">
                             <!--<div class="echarts-new-users" style="min-height:110px;width:100%;"></div>-->
@@ -61,8 +113,10 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="d-flex align-items-center"><span class="me-2 text-primary" data-feather="zap" style="height:24px; width:24px"></span>
-                            <h4 class="text-body-tertiary mb-0">New Municipality's :<span class="text-body-emphasis">18</span></h4>
+                        <div class="d-flex align-items-center"><span class="me-2 text-primary" data-feather="zap"
+                                                                     style="height:24px; width:24px"></span>
+                            <h4 class="text-body-tertiary mb-0">New Municipality's :<span
+                                        class="text-body-emphasis">18</span></h4>
                         </div>
                         <div class="pb-0 pt-4">
                             <div class="echart-stacked-line-chart-example" style="min-height:300px"></div>
@@ -71,10 +125,125 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-12 col-xxl-12">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="mb-1">Added Stations<span
+                                                class="badge badge-phoenix badge-phoenix-warning rounded-pill fs-9 ms-2"></span>
+                                    </h5>
+                                    <h6 class="text-body-tertiary">Last 7 days</h6>
+                                </div>
+                                <h4>16</h4>
+                            </div>
+                            <div class="d-flex justify-content-center px-4 py-6">
+                                <div class="echart-total-orders" style="height:85px;width:115px"></div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bullet-item bg-primary me-2"></div>
+                                    <h6 class="text-body fw-semibold flex-1 mb-0">New</h6>
+                                    <h6 class="text-body fw-semibold mb-0">52%</h6>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="bullet-item bg-primary-subtle me-2"></div>
+                                    <h6 class="text-body fw-semibold flex-1 mb-0">Old</h6>
+                                    <h6 class="text-body fw-semibold mb-0">48%</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="mb-1">Subscriptions </h5>
+                                    <h6 class="text-body-tertiary">Last 7 days</h6>
+                                </div>
+                                <h4>15</h4>
+                            </div>
+                            <div class="pb-0 pt-4">
+                                <div class="echarts-new-customers" style="height:180px;width:100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="mb-2">Posts</h5>
+                                    <h6 class="text-body-tertiary">Last 7 days</h6>
+                                </div>
+                            </div>
+                            <div class="pb-4 pt-3">
+                                <div class="echart-top-coupons" style="height:115px;width:100%;"></div>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bullet-item bg-primary me-2"></div>
+                                    <h6 class="text-body fw-semibold flex-1 mb-0">Accepted</h6>
+                                    <h6 class="text-body fw-semibold mb-0">72%</h6>
+                                </div>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bullet-item bg-primary-lighter me-2"></div>
+                                    <h6 class="text-body fw-semibold flex-1 mb-0">Pending</h6>
+                                    <h6 class="text-body fw-semibold mb-0">18%</h6>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="bullet-item bg-info-dark me-2"></div>
+                                    <h6 class="text-body fw-semibold flex-1 mb-0">Denied</h6>
+                                    <h6 class="text-body fw-semibold mb-0">10%</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="mb-2">Reclamations</h5>
+                                    <h6 class="text-body-tertiary">Last 7 days</h6>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center pt-3 flex-1">
+                                <div class="echarts-paying-customer-chart" style="height:100%;width:100%;"></div>
+                            </div>
+                            <div class="mt-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bullet-item bg-primary me-2"></div>
+                                    <h6 class="text-body fw-semibold flex-1 mb-0">Responded</h6>
+                                    <h6 class="text-body fw-semibold mb-0">30%</h6>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="bullet-item bg-primary-subtle me-2"></div>
+                                    <h6 class="text-body fw-semibold flex-1 mb-0">Pending</h6>
+                                    <h6 class="text-body fw-semibold mb-0">70%</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <footer class="footer position-absolute">
             <div class="row g-0 justify-content-between align-items-center h-100">
                 <div class="col-12 col-sm-auto text-center">
-                    <p class="mb-0 mt-2 mt-sm-0 text-body">Thank you for creating with Phoenix<span class="d-none d-sm-inline-block"></span><span class="d-none d-sm-inline-block mx-1">|</span><br class="d-sm-none" />2023 &copy;<a class="mx-1" href="https://themewagon.com/">Themewagon</a></p>
+                    <p class="mb-0 mt-2 mt-sm-0 text-body">Thank you for creating with Phoenix<span
+                                class="d-none d-sm-inline-block"></span><span
+                                class="d-none d-sm-inline-block mx-1">|</span><br class="d-sm-none"/>2023 &copy;<a
+                                class="mx-1" href="https://themewagon.com/">Themewagon</a></p>
                 </div>
                 <div class="col-12 col-sm-auto text-center">
                     <p class="mb-0 text-body-tertiary text-opacity-85">v1.14.0</p>
@@ -86,34 +255,66 @@
         <div class="container-fluid support-chat">
             <div class="card bg-body-emphasis">
                 <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom border-translucent">
-                    <h5 class="mb-0 d-flex align-items-center gap-2">Demo widget<span class="fa-solid fa-circle text-success fs-11"></span></h5>
-                    <div class="btn-reveal-trigger"><button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex" type="button" id="support-chat-dropdown" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h text-body"></span></button>
-                        <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a class="dropdown-item" href="#!">Request a callback</a><a class="dropdown-item" href="#!">Search in chat</a><a class="dropdown-item" href="#!">Show history</a><a class="dropdown-item" href="#!">Report to Admin</a><a class="dropdown-item btn-support-chat" href="#!">Close Support</a></div>
+                    <h5 class="mb-0 d-flex align-items-center gap-2">Demo widget<span
+                                class="fa-solid fa-circle text-success fs-11"></span></h5>
+                    <div class="btn-reveal-trigger">
+                        <button class="btn btn-link p-0 dropdown-toggle dropdown-caret-none transition-none d-flex"
+                                type="button" id="support-chat-dropdown" data-bs-toggle="dropdown"
+                                data-boundary="window" aria-haspopup="true" aria-expanded="false"
+                                data-bs-reference="parent"><span class="fas fa-ellipsis-h text-body"></span></button>
+                        <div class="dropdown-menu dropdown-menu-end py-2" aria-labelledby="support-chat-dropdown"><a
+                                    class="dropdown-item" href="#!">Request a callback</a><a class="dropdown-item"
+                                                                                             href="#!">Search in
+                                chat</a><a class="dropdown-item" href="#!">Show history</a><a class="dropdown-item"
+                                                                                              href="#!">Report to
+                                Admin</a><a class="dropdown-item btn-support-chat" href="#!">Close Support</a></div>
                     </div>
                 </div>
                 <div class="card-body chat p-0">
                     <div class="d-flex flex-column-reverse scrollbar h-100 p-3">
-                        <div class="text-end mt-6"><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
-                                <p class="mb-0 fw-semibold fs-9">I need help with something</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-                            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
-                                <p class="mb-0 fw-semibold fs-9">I can’t reorder a product I previously ordered</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-                            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
-                                <p class="mb-0 fw-semibold fs-9">How do I place an order?</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
-                            </a><a class="false d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3" href="#!">
-                                <p class="mb-0 fw-semibold fs-9">My payment method not working</p><span class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                        <div class="text-end mt-6"><a
+                                    class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                    href="#!">
+                                <p class="mb-0 fw-semibold fs-9">I need help with something</p><span
+                                        class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                   href="#!">
+                                <p class="mb-0 fw-semibold fs-9">I can’t reorder a product I previously ordered</p><span
+                                        class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                            </a><a class="mb-2 d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                   href="#!">
+                                <p class="mb-0 fw-semibold fs-9">How do I place an order?</p><span
+                                        class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
+                            </a><a class="false d-inline-flex align-items-center text-decoration-none text-body-emphasis bg-body-hover rounded-pill border border-primary py-2 ps-4 pe-3"
+                                   href="#!">
+                                <p class="mb-0 fw-semibold fs-9">My payment method not working</p><span
+                                        class="fa-solid fa-paper-plane text-primary fs-9 ms-3"></span>
                             </a></div>
                         <div class="text-center mt-auto">
-                            <div class="avatar avatar-3xl status-online"><img class="rounded-circle border border-3 border-light-subtle" src="../assets/img/team/30.webp" alt="" /></div>
+                            <div class="avatar avatar-3xl status-online"><img
+                                        class="rounded-circle border border-3 border-light-subtle"
+                                        src="../assets/img/team/30.webp" alt=""/></div>
                             <h5 class="mt-2 mb-3">Eric</h5>
-                            <p class="text-center text-body-emphasis mb-0">Ask us anything – we’ll get back to you here or by email within 24 hours.</p>
+                            <p class="text-center text-body-emphasis mb-0">Ask us anything – we’ll get back to you here
+                                or by email within 24 hours.</p>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer d-flex align-items-center gap-2 border-top border-translucent ps-3 pe-4 py-3">
-                    <div class="d-flex align-items-center flex-1 gap-3 border border-translucent rounded-pill px-4"><input class="form-control outline-none border-0 flex-1 fs-9 px-0" type="text" placeholder="Write message" /><label class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0" for="supportChatPhotos"><span class="fa-solid fa-image"></span></label><input class="d-none" type="file" accept="image/*" id="supportChatPhotos" /><label class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0" for="supportChatAttachment"> <span class="fa-solid fa-paperclip"></span></label><input class="d-none" type="file" id="supportChatAttachment" /></div><button class="btn p-0 border-0 send-btn"><span class="fa-solid fa-paper-plane fs-9"></span></button>
+                    <div class="d-flex align-items-center flex-1 gap-3 border border-translucent rounded-pill px-4">
+                        <input class="form-control outline-none border-0 flex-1 fs-9 px-0" type="text"
+                               placeholder="Write message"/><label
+                                class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0"
+                                for="supportChatPhotos"><span class="fa-solid fa-image"></span></label><input
+                                class="d-none" type="file" accept="image/*" id="supportChatPhotos"/><label
+                                class="btn btn-link d-flex p-0 text-body-quaternary fs-9 border-0"
+                                for="supportChatAttachment"> <span class="fa-solid fa-paperclip"></span></label><input
+                                class="d-none" type="file" id="supportChatAttachment"/></div>
+                    <button class="btn p-0 border-0 send-btn"><span class="fa-solid fa-paper-plane fs-9"></span>
+                    </button>
                 </div>
             </div>
-        </div><button class="btn p-0 border border-translucent btn-support-chat"><span class="fs-8 btn-text text-primary text-nowrap">Chat demo</span><span class="fa-solid fa-circle text-success fs-9 ms-2"></span><span class="fa-solid fa-chevron-down text-primary fs-7"></span></button>
+        </div>
     </div>
 
 

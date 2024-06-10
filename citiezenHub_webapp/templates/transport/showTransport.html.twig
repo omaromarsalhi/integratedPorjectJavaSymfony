@@ -39,6 +39,9 @@
                         <table class="table upcoming-projects">
                             <thead>
                             <tr>
+                                <th>
+                                    <span>Rank</span>
+                                </th>
 
                                 <th>
                                     <span>Company</span>
@@ -64,40 +67,53 @@
                             </tr>
                             </thead>
                             <tbody class="ranking" id="transport-table-body">
+                            {% set counter = 0 %}
                             {% for transport in transports %}
+                                {% set counter = counter + 1 %}
 
 
-                                <tr class="color-light">
+                                {% if counter % 2 == 1 %}
+                                    <tr class="color-light">
+                                {% else %}
+                                    <tr class="">
+                                {% endif %}
 
 
-                                    <td>
-                                        <div class="product-wrapper d-flex align-items-center">
-                                            <img src="/usersImg/{{ transport.VehiculeImage }}" alt="Nft_Profile">
-                                            </a>
-                                        </div>
-                                    </td>
-                                    <td><span >{{transport.Heure}}</span></td>
-                                    {% for station_dep in stations %}
-                                        {% if station_dep.id == transport.Stationdepart %}
-                                            <td><span class="color-danger">{{station_dep.NomStation}}</span></td>
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% for station_ari in stations %}
-                                        {% if station_ari.id == transport.Stationarrive %}
 
-                                            <td><span class="color-green">{{station_ari.NomStation}}</span></td>
-                                        {% endif %}
+                                <td><span>{{ counter }}.</span></td>
+                                <td>
+                                    <div class="product-wrapper d-flex align-items-center">
+                                        <span style="opacity: 0">aaaaaa</span>
 
-                                    {% endfor %}
-                                    <td><span>{{transport.TypeVehicule}}</span></td>
-                                    <td><span>{{transport.Prix}}</span></td>
-                                    <td>
-                                        <button onclick="openModal({{ transport.idTransport }})" class="btn btn-sm btn-info">
-                                            <i class="fas fa-star"></i> <!-- Font Awesome star icon -->
-                                        </button>
-                                        <button type="button" data-toggle="modal" data-target="#mapModal" id="refreshButton" name="mapBtn" onclick="getStationCoordinates({{ transport.Stationdepart }}, {{ transport.Stationarrive }})"    class="btn btn-sm btn-primary">
-                                            <i class="fas fa-map-marker-alt"></i> <!-- Font Awesome map marker icon -->
-                                        </button>                                    </td>
+                                        <a href="" class="thumbnail">
+                                            <img src="/usersImg/{{ transport.VehiculeImage }}" alt="Nft_Profile" style="width: 60px; height: 60px; object-fit: cover;">
+                                        </a>
+                                    </div>
+                                </td>
+
+
+                                <td><span >{{transport.Heure}}</span></td>
+                                {% for station_dep in stations %}
+                                    {% if station_dep.id == transport.Stationdepart %}
+                                        <td><span class="color-danger">{{station_dep.NomStation}}</span></td>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for station_ari in stations %}
+                                    {% if station_ari.id == transport.Stationarrive %}
+
+                                        <td><span class="color-green">{{station_ari.NomStation}}</span></td>
+                                    {% endif %}
+
+                                {% endfor %}
+                                <td><span>{{transport.TypeVehicule}}</span></td>
+                                <td><span>{{transport.Prix}}</span></td>
+                                <td>
+                                    <button onclick="openModal({{ transport.idTransport }})" class="btn btn-sm btn-info">
+                                        <i class="fas fa-star"></i> <!-- Font Awesome star icon -->
+                                    </button>
+                                    <button type="button" data-toggle="modal" data-target="#mapModal" id="refreshButton" name="mapBtn" onclick="getStationCoordinates({{ transport.Stationdepart }}, {{ transport.Stationarrive }})"    class="btn btn-sm btn-primary">
+                                        <i class="fas fa-map-marker-alt"></i> <!-- Font Awesome map marker icon -->
+                                    </button>                                    </td>
 
                                 </tr>
 
@@ -107,6 +123,9 @@
                         </table>
                     </div>
                     <!-- table End -->
+
+                    {% if counter > 5 %}
+
                     <div class="row">
                         <div class="col-lg-12" data-sal="slide-up" data-sal-delay="550" data-sal-duration="800">
                             <nav class="pagination-wrapper" aria-label="Page navigation example">
@@ -119,6 +138,9 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
+
+
             </div>
         </div>
     </div>
@@ -150,17 +172,17 @@
 
 
     <div id="mapModal" class="modalMap">
-    <div class="modal-content-map">
+        <div class="modal-content-map">
 
-        <div class="rn-live-bidding-area rn-section-gapTop">
-            <span class="close" onclick="closeModalMap()">&times;</span>
+            <div class="rn-live-bidding-area rn-section-gapTop">
+                <span class="close" onclick="closeModalMap()">&times;</span>
 
-            <div class="container lg-product-wrapper mt-2">
-                            <div id="map" style="height: 800px ;border-radius: 10px"></div>
-                            <div id="infowindow-content">
-                                <span id="place-name" class="title"></span><br/>
-                                <span id="place-address"></span>
-                            </div>
+                <div class="container lg-product-wrapper mt-2">
+                    <div id="map" style="height: 800px ;border-radius: 10px"></div>
+                    <div id="infowindow-content">
+                        <span id="place-name" class="title"></span><br/>
+                        <span id="place-address"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -203,7 +225,7 @@
             </div>
         </div>
     </div>
-    </div>
+
 
 
     <style>
@@ -308,15 +330,16 @@
         var modal = document.getElementById('ratingModal');
         var rating = 0;
         var id;
-        var stationId ;
-        var userId=115;
+        let stationId ;
 
         // Function to open the modal
         function openModal(station) {
+            stationId=station;
+            console.log(stationId)
+
             modal.style.display = 'block';
             document.getElementById('page-1').style.display='none';
 
-            stationId=station;
         }
 
         // Function to close the modal
@@ -370,13 +393,10 @@
             }
 
             // Get rating value from the input field
-
-
+            console.log(stationId);
             let formData = new FormData();
             formData.append('rating', ratingValue);
             formData.append('stationId', stationId);
-            formData.append('userId', userId);
-            console.log(formData);
 
             // Make AJAX request to Symfony controller endpoint
             $.ajax({

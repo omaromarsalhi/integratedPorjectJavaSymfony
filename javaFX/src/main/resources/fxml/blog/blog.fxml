@@ -62,7 +62,7 @@
                         </HBox>
                      </children>
                   </HBox>
-                  <VBox fx:id="vboxStatutBlog" alignment="CENTER" fillWidth="false" prefHeight="324.0" prefWidth="740.0" spacing="15.0" styleClass="post-background" stylesheets="@../../Style/blog/Blog.css">
+                  <VBox fx:id="vboxStatutBlog" alignment="CENTER" fillWidth="false" prefHeight="262.0" prefWidth="740.0" spacing="15.0" styleClass="post-background" stylesheets="@../../Style/blog/Blog.css">
                      <children>
                         <HBox alignment="TOP_CENTER" prefHeight="61.0" prefWidth="740.0" spacing="10.0">
                            <children>

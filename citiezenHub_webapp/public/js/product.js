@@ -396,23 +396,21 @@ function DisplayListProducts4Owner(movement_direction, page) {
 }
 
 
+
 function deleteProductAdmin(id) {
-    console.log(id)
     $.ajax({
         url: '/product/deleteproductAdmin/' + id,
         type: "DELETE",
         success: function (response) {
-            console.log(response.list[0])
-            updateTransportList(response.list);
 
-            $('#alert').html('        ' +
-                ' <div class="alert alert-subtle-success" role="alert">Transport deleted succefully !!!</div>\n');
-            setTimeout(function () {
+            document.getElementById('prod-' + id).remove();
+            $('#alert').html('         <div class="alert alert-subtle-success" role="alert">Product deleted succesfully !!!</div>\n');
+            setTimeout(function() {
                 $('#alert').empty();
             }, 4000);
         },
         error: function (xhr, status, error) {
-            $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while Deleting the Transport!</div>\n');
+            $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while Deleting the Product!</div>\n');
             setTimeout(function () {
                 $('#alert').empty();
             }, 4000);

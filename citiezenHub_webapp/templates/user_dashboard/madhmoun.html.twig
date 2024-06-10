@@ -95,11 +95,12 @@
     <table>
         <tr>
             <td class="row" style="min-height: 120px;max-width: 200px !important;">
-                <div>ولاية:</div>
-                <div>معتمدية:</div>
-                <div>بلدية:</div>
-                <div>الدائرة البلدية:</div>
-                <div>عمادة:</div>
+
+                <div style="font-size: 15px !important; font-weight: 500 !important;letter-spacing: 10px !important;"> ولاية :  {{ addressDetails['ولاية']|default("") }}</div>
+                <div style="font-size: 15px !important; font-weight: 500 !important;letter-spacing: 10px !important;">معتمدية :  {{ addressDetails['معتمدية']|default("") }}</div>
+                <div style="font-size: 15px !important; font-weight: 500 !important;letter-spacing: 10px !important;">بلدية :  {{ addressDetails['بلدية']|default("") }}</div>
+                <div style="font-size: 15px !important; font-weight: 500 !important;letter-spacing: 10px !important;">الدائرة البلدية :  {{ addressDetails['الدائرة البلدية']|default("") }}</div>
+                <div style="font-size: 15px !important; font-weight: 500 !important;letter-spacing: 10px !important;">عمادة :  {{ addressDetails['عمادة']|default("") }}</div>
             </td>
             <td >
                 <img  style="margin: 0 120px 20px 0 !important;" src="{{ absolute_url(asset('marketPlaceImages/image.png')) }}"  />

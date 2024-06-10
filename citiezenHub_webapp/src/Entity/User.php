@@ -155,9 +155,15 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\OneToMany(targetEntity: Favorite::class, mappedBy: 'idUser')]
     private Collection $favorites;
 
+    #[ORM\OneToMany(targetEntity: ReactionPost::Class, mappedBy: "user")]
+    private $reactions;
+
+
+
     public function __construct()
     {
         $this->favorites = new ArrayCollection();
+        $this->reactions = new ArrayCollection();
     }
 
 
@@ -509,6 +515,33 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
             // set the owning side to null (unless already changed)
             if ($favorite->getIdUser() === $this) {
                 $favorite->setIdUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getReactions(): Collection
+    {
+        return $this->reactions;
+    }
+
+    public function addReaction(ReactionPost $reaction): self
+    {
+        if (!$this->reactions->contains($reaction)) {
+            $this->reactions[] = $reaction;
+            $reaction->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReaction(ReactionPost $reaction): self
+    {
+        if ($this->reactions->removeElement($reaction)) {
+            // set the owning side to null (unless already changed)
+            if ($reaction->getUser() === $this) {
+                $reaction->setUser(null);
             }
         }
 

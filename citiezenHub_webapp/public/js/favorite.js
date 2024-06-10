@@ -49,7 +49,7 @@ function saveFavorite() {
     let fromDateFavorite = $('#fromDateFavorite').val()
     let toDateFavorite = $('#toDateFavorite').val()
 
-    if (!test) {
+    if (!test&&fromDateFavorite&&toDateFavorite) {
         showInvalidPop("dates are wrong")
         return
     }

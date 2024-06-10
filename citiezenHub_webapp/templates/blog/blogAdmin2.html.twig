@@ -20,12 +20,12 @@
                                                 <div class="d-flex align-items-center mb-3"><a href="">
                                                         <div class="avatar avatar-xl  me-2">
                                                             <img class="rounded-circle "
-                                                                 src="{{ asset('../usersImg/'~ post.userImage)  }}"
+                                                                 src="{{ asset('../usersImg/'~ post.userImage) }}"
                                                                  alt=""/>
                                                         </div>
                                                     </a>
                                                     <div class="flex-1"><a class="fw-bold mb-0 text-body-emphasis"
-                                                                           href="">{{post.userSurname}} {{ post.userName }}</a>
+                                                                           href="">{{ post.userSurname }} {{ post.userName }}</a>
                                                         <p class="fs-10 mb-0 text-body-tertiary text-opacity-85 fw-semibold">{{ post.datePost }}</p>
                                                     </div>
                                                     <div class="btn-reveal-trigger">
@@ -43,10 +43,11 @@
                                                 </div>
                                                 <p class="text-body-secondary">{{ post.caption }}</p>
                                                 {% if post.images|length > 0 %}
-                                                    <div class="row g-1 mb-5">
+                                                    <div class="row g-1 mb-5 d-flex justify-content-center align-items-center">
                                                         {% for image in post.images %}
                                                             {% set colSize = image.size == 'large' ? 'col-6' : 'col-3' %}
-                                                            <div class="{{ colSize }}">
+
+                                                            <div class="{{ colSize }} d-flex justify-content-center">
                                                                 <a href="{{ asset('usersImg/' ~ image.path) }}"
                                                                    data-gallery="gallery-posts-{{ loop.parent.loop.index }}">
                                                                     <img class="rounded h-100 w-100"
@@ -54,10 +55,13 @@
                                                                          alt="..."/>
                                                                 </a>
                                                             </div>
+
                                                         {% endfor %}
                                                     </div>
                                                 {% endif %}
+
                                             </div>
+
                                             <div class="d-flex">
                                                 <button class="btn btn-link p-0 me-3 fs-10 fw-bolder"
                                                         type="button"><span
@@ -76,7 +80,7 @@
                                                     <div class="d-flex align-items-start"><a href="profile.html">
                                                             <div class="avatar avatar-m  me-2">
                                                                 <img class="rounded-circle "
-                                                                     src="{{ asset('../usersImg/'~ commnet.userImage)  }}"
+                                                                     src="{{ asset('../usersImg/'~ commnet.userImage) }}"
                                                                      alt=""/>
                                                             </div>
                                                         </a>
@@ -103,6 +107,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -128,6 +133,9 @@
                         class="fa-solid fa-calendar-days nav-icon"></span><span class="nav-label">Events</span></a>
         </div>
     </div>
+
+
+
     <script>
 
 
@@ -153,6 +161,7 @@
                                 'Votre post a été supprimé.',
                                 'success'
                             )
+
                             $('#tabPost-' + postId).remove();
                         },
                         error: function (xhr, status, error) {

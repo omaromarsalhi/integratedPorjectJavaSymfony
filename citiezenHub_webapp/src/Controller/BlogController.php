@@ -2,12 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\ReactionPost;
 use App\MyHelpers\ImageExpliciteApi;
 use App\Entity\CommentPost;
 use App\Entity\ImagePsot;
+use App\MyHelpers\RealTimeUpdater;
 use App\MyHelpers\UploadImage;
 use App\Repository\CommentPostRepository;
+use App\Repository\ReactionPostRepository;
 use App\Repository\UserRepository;
+use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,16 +36,53 @@ class BlogController extends AbstractController
         ]);
     }
 
-    #[Route('/blog/page/{page}', name: 'app_blog_page', methods: ['GET'])]
-    public function page(int $page, PostRepository $postRepository): Response
+
+    #[Route('/blog/showSingleBlog', name: 'app_blog_showSingleBlog')]
+    public function showSingleBlog(PostRepository $postRepository, Request $request): Response
+    {
+        if ($request->isXmlHttpRequest()) {
+            $post = $postRepository->findOneBy(['id' => $request->get('idPost')]);
+            $paths=[];
+
+            foreach ($post->getImages() as $image){
+                $paths[]=$image->getPath();
+            }
+
+            $newPos=[
+                'id' => $post->getId(),
+                'caption' => $post->getCaption(),
+                'datePost' => $post->getDatePost()->format('D, d M y h:i A'),
+                'nbReactions' => $post->getNbReactions(),
+                'images' => $paths,
+                'url' => $this->generateUrl('app_PostDetail', ['id' => $post->getId()]),
+                'nbComments' => 0,
+                'userName' => $post->getUser()->getFirstName(),
+                'userSurname' => $post->getUser()->getLastName(),
+                'userImage' => $post->getUser()->getImage(),
+                'userId' => $post->getUser()->getId(),
+            ];
+            dump($newPos);
+            return new JsonResponse([
+                'success' => true,
+                'post' => $newPos
+            ]);
+
+        }
+        return new Response('error ',Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    #[
+        Route('/blog/page/{page}', name: 'app_blog_page', methods: ['GET'])]
+    public function page(int $page, PostRepository $postRepository, ReactionPostRepository $reactionPostRepository): Response
     {
         $postsPerPage = 5;
         $offset = ($page - 1) * $postsPerPage;
 
         $posts = $postRepository->findBy([], ['date_post' => 'DESC'], $postsPerPage, $offset);
 
+        $user = $this->getUser(); // Get the logged-in user
 
-        $postsArray = array_map(function ($post) {
+        $postsArray = array_map(function ($post) use ($user, $reactionPostRepository) {
             $images = $post->getImages();
             $imagesArray = array_map(function ($image) {
                 return $image->getPath();
@@ -51,6 +92,12 @@ class BlogController extends AbstractController
 
             $nbComments = count($post->getComments());
 
+            // Get the user's reaction to this post
+            $userReaction = $reactionPostRepository->findOneBy(['post' => $post, 'user' => $user]);
+            $userReactionType = $userReaction ? $userReaction->getType() : null;
+
+            // Get the number of reactions for this post
+            $nbReactions = $reactionPostRepository->countReactionsForPost($post);
 
             $user = $post->getUser();
             $userName = $user->getLastName();
@@ -62,7 +109,7 @@ class BlogController extends AbstractController
                 'id' => $post->getId(),
                 'caption' => $post->getCaption(),
                 'datePost' => $post->getDatePost()->format('D, d M y h:i A'),
-                'nbReactions' => $post->getNbReactions(),
+                'nbReactions' => $nbReactions,
                 'images' => $imagesArray,
                 'url' => $postUrl,
                 'nbComments' => $nbComments,
@@ -70,6 +117,7 @@ class BlogController extends AbstractController
                 'userSurname' => $userSurname,
                 'userImage' => $userImage,
                 'userId' => $userId,
+                'userReactionType' => $userReactionType, // Add the user's reaction type to the returned array
             ];
         }, $posts);
 
@@ -97,7 +145,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/new', name: 'app_blog_new', methods: ['GET', 'POST'])]
-    public function new(Request $req, ManagerRegistry $doc, ValidatorInterface $validator): Response
+    public function new(RealTimeUpdater $realTimeUpdater, Request $req, ManagerRegistry $doc, ValidatorInterface $validator): Response
     {
         if ($req->isXmlHttpRequest()) {
             $post = new Post();
@@ -105,9 +153,10 @@ class BlogController extends AbstractController
             $imageFiles = $req->files->get('images');
 
             $user = $this->getUser();
-
+            $currentTimestamp = new DateTime();
+            $currentTimestamp->setTimezone(new DateTimeZone('Africa/Tunis'));
             $post->setCaption($caption);
-            $post->setDatePost(new DateTime());
+            $post->setDatePost($currentTimestamp);
             $post->setNbReactions(0);
             $post->setUser($user);
 
@@ -135,7 +184,6 @@ class BlogController extends AbstractController
             $em = $doc->getManager();
             $em->persist($post);
 
-            // Persist images to the database
             foreach ($post->getImages() as $postImage) {
                 $em->persist($postImage);
             }
@@ -155,6 +203,8 @@ class BlogController extends AbstractController
             $userSurname = $user->getFirstName();
             $userImage = $user->getImage();
             $userId = $user->getId();
+
+            $realTimeUpdater->notifyApp(['Data' => ['idPost' => $post->getId()], 'action' => 'postEvent', 'subAction' => 'ADD'], $userId);
 
             return new JsonResponse([
                 'success' => true,
@@ -178,20 +228,23 @@ class BlogController extends AbstractController
 
 
     #[Route('/blog/{id}', name: 'app_blog_delete', methods: ['DELETE'])]
-    public function delete(ManagerRegistry $doctrine, $id, PostRepository $postRepository, Request $req): Response
+    public function delete(RealTimeUpdater $realTimeUpdater, ManagerRegistry $doctrine, $id, PostRepository $postRepository, Request $req): Response
     {
         if ($req->isXmlHttpRequest()) {
             $auteur = $postRepository->find($id);
             $em = $doctrine->getManager();
             $em->remove($auteur);
             $em->flush();
+
+            $realTimeUpdater->notifyApp(['Data' => ['idPost' => $id], 'action' => 'postEvent', 'subAction' => 'DELETE'], $this->getUser()->getId());
+
             return new Response('Post supprimé avec succès', Response::HTTP_OK);
         }
         return $this->redirectToRoute('app_blog');
     }
 
     #[Route('/edit/{id}', name: 'app_blog_update', methods: ['POST'])]
-    public function update(ManagerRegistry $doctrine, $id, Request $req): Response
+    public function update(RealTimeUpdater $realTimeUpdater, ManagerRegistry $doctrine, $id, Request $req): Response
     {
         $post = $doctrine->getRepository(Post::class)->find($id);
 
@@ -200,8 +253,9 @@ class BlogController extends AbstractController
         }
         $caption = $req->get('caption');
         $imageFiles = $req->files->get('images');
-
-        $post->setDatePost(new DateTime());
+        $currentTimestamp = new DateTime();
+        $currentTimestamp->setTimezone(new DateTimeZone('Africa/Tunis'));
+        $post->setDatePost($currentTimestamp);
         $post->setCaption($caption);
 
         if ((empty($caption) && empty($imageFiles)) || (ctype_space($caption) && empty($imageFiles))) {
@@ -239,6 +293,8 @@ class BlogController extends AbstractController
         $userId = $user->getId();
 
         $this->addFlash('success', 'Le post a bien été modifié.');
+
+        $realTimeUpdater->notifyApp(['Data' => ['idPost' => $post->getId()], 'action' => 'postEvent', 'subAction' => 'UPDATE'], $this->getUser()->getId());
 
         return new JsonResponse([
             'success' => true,
@@ -337,7 +393,6 @@ class BlogController extends AbstractController
             $userId = $user->getId();
 
 
-
             $comments = $post->getComments()->toArray();
             $commentsArray = array_map(function ($comment) {
                 return [
@@ -398,7 +453,7 @@ class BlogController extends AbstractController
                 'id' => $comment->getIdComment(),
                 'idPost' => $comment->getPost()->getId(),
                 'caption' => $comment->getCaption(),
-                'dateComment' => $comment->getDateComment()->format('Y-m-d H:i A'),
+                'dateComment' => $comment->getDateComment()->format('d M y, h:i A'),
                 'userName' => $comment->getUser()->getLastName(),
                 'userSurname' => $comment->getUser()->getFirstName(),
                 'userImage' => $comment->getUser()->getImage(),
@@ -408,14 +463,14 @@ class BlogController extends AbstractController
         }, $comments);
 
 
-
-        return $this->render('blog/postDetails.html.twig', [
+        return $this->render('blog/postDetails2.html.twig', [
             'post' => $post,
             'images' => $imagesArray,
             'comments' => $commentsArray,
             'nbComments' => count($comments),
             'nom' => $post->getUser()->getLastName(),
             'prenom' => $post->getUser()->getFirstName(),
+            'imguser' => $post->getUser()->getImage(),
             'currentUser' => $currentUser,
         ]);
     }
@@ -552,5 +607,51 @@ class BlogController extends AbstractController
         }
 
         return new JsonResponse(['error' => 'Aucune image n\'a été reçue.']);
+    }
+
+
+    #[Route('/addReaction', name: 'add_reaction', methods: ['POST'])]
+    public function addReaction(Request $request, PostRepository $postRepository, ReactionPostRepository $reactionPostRepository, ManagerRegistry $doc): Response
+    {
+        $postId = $request->request->get('postId');
+        $reactionType = $request->request->get('reactionType');
+
+        $post = $postRepository->find($postId);
+        $user = $this->getUser();
+
+        $reaction = $reactionPostRepository->findOneBy(['post' => $post, 'user' => $user]);
+
+        if (!$reaction) {
+            $reaction = new ReactionPost();
+            $reaction->setPost($post);
+            $reaction->setUser($user);
+        }
+
+        $reaction->setType($reactionType);
+
+        $entityManager = $doc->getManager();
+        $entityManager->persist($reaction);
+        $entityManager->flush();
+
+        return new JsonResponse(['status' => 'success']);
+    }
+
+    #[Route('/deleteReaction', name: 'delete_reaction', methods: ['POST'])]
+    public function deleteReaction(Request $request, ReactionPostRepository $reactionPostRepository, ManagerRegistry $doc): Response
+    {
+        $postId = $request->request->get('postId');
+        $user = $this->getUser(); // Get the logged-in user
+
+        // Find the user's reaction to this post
+        $userReaction = $reactionPostRepository->findOneBy(['post' => $postId, 'user' => $user]);
+
+        if ($userReaction) {
+            // If the user has reacted to this post, delete the reaction
+            $em = $doc->getManager();
+            $em->remove($userReaction);
+            $em->flush();
+        }
+
+        return new JsonResponse(['message' => 'Reaction deleted successfully']);
     }
 }
