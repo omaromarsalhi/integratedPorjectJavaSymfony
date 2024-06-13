@@ -25,7 +25,7 @@ import java.util.Collections;
 public class GoogleApi {
 
     private static final String CLIENT_ID = "529672508780-tn5i6m5r03pkv4boi5c4qr1hp0cispnp.apps.googleusercontent.com"; // Replace with your actual client ID
-    private static final String CLIENT_SECRET = "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"; // Replace with your actual client secret
+    private static final String CLIENT_SECRET = ""; // Replace with your actual client secret
     private static final String REDIRECT_URI = "http://localhost:8080"; // Replace with your redirect URI
     private static final String TOKEN_ENDPOINT = "https://www.googleapis.com/oauth2/v4/token";
     private static final String USER_INFO_ENDPOINT = "https://www.googleapis.com/oauth2/v1/userinfo";

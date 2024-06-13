@@ -9,37 +9,38 @@ $(document).ready(function () {
 
 
 
-const socket = new WebSocket("ws://localhost:8091?userId=" + currentUser+"&app=symfony");
+    const socket = new WebSocket("ws://192.168.152.239:8091?userId=" + currentUser + "&app=symfony");
 // const socket = new WebSocket("ws://192.168.1.7:8090?userId=" + currentUser);
-socket.addEventListener("open", function () {
-    console.log("CONNECTED");
-});
+    socket.addEventListener("open", function () {
+        console.log("CONNECTED");
+    });
 
-socket.addEventListener('message', (event) => {
-    const messageData = JSON.parse(event.data);
-    if (messageData.action === 'chat') {
-        receiveMsg(messageData)
-    } else if (messageData.action === 'productEvent') {
-        if (messageData.subAction === 'ADD')
-            filterByPrice();
-        else if (messageData.subAction === 'UPDATE') {
-            updateProductOfOtherUser(messageData.Data.idProduct)
-        } else if (messageData.subAction === 'DELETE') {
-            filterByPrice();
+    socket.addEventListener('message', (event) => {
+        const messageData = JSON.parse(event.data);
+        console.log(messageData)
+        if (messageData.action === 'chat') {
+            receiveMsg(messageData)
+        } else if (messageData.action === 'productEvent') {
+            if (messageData.subAction === 'ADD')
+                filterByPrice();
+            else if (messageData.subAction === 'UPDATE') {
+                updateProductOfOtherUser(messageData.Data.idProduct)
+            } else if (messageData.subAction === 'DELETE') {
+                filterByPrice();
+            }
+        } else if (messageData.action === 'postEvent') {
+            if (messageData.subAction === 'ADD')
+                showInRealTimePost(messageData.Data.idPost);
+        } else if (messageData.action === 'accountDeletion') {
+            if (currentUser === messageData.recipientId) {
+                $('#btnPopUp').attr('href', '/logout')
+                $('#btnPopUp').removeAttr('data-bs-dismiss')
+                $('#error-message').html(messageData.message);
+                $('#statusErrorsModal').modal('show')
+            }
         }
-    }else if (messageData.action === 'postEvent') {
-        if (messageData.subAction === 'ADD')
-            showInRealTimePost(messageData.Data.idPost);
-    }
-    else if(messageData.action === 'accountDeletion'){
-        if(currentUser===messageData.recipientId){
-            $('#btnPopUp').attr('href','/logout')
-            $('#btnPopUp').removeAttr('data-bs-dismiss')
-            $('#error-message').html(messageData.message);
-            $('#statusErrorsModal').modal('show')
-        }
-    }
-});
+    });
+
 
 function updateProductOfOtherUser(idProduct) {
     if (document.getElementById('container_product_' + idProduct)) {

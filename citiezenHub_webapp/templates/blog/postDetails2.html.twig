@@ -19,7 +19,7 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-12">
                     <ul class="breadcrumb-list">
-                        <li class="item"><a href="index.html">Home</a></li>
+                        <li class="item"><a href="">Home</a></li>
                         <li class="separator"><i class="feather-chevron-right"></i></li>
                         <li class="item current">Forum Details</li>
                     </ul>
@@ -76,9 +76,9 @@
                                 <div class="hr"></div>
                                 <div class="rn-community-footer">
                                     <div class="community-reaction">
-                                        <a href="#" class="likes">
-                                            <i class="feather-heart"></i>
-                                            <span>2.1k</span>
+                                        <a class="likes">
+                                            <i class="fa-regular fa-thumbs-up"></i>
+                                            <span>{{ nbReactions }}</span>
                                         </a>
                                         <a class="comments">
                                             <i class="feather-message-circle"></i>
@@ -92,7 +92,7 @@
 
                         <!-- comment Box -->
                         <div class="forum-input-ans-wrapper">
-                            <img src="{{ asset('../usersImg/' ~ imguser) }}" alt="Nft-Profile">
+                            <img src="{{ asset('../usersImg/' ~ currentUserImg) }}" alt="Nft-Profile">
                             <input type="text" id="contact-message" placeholder="Write Answer...">
                             <input type="hidden" name="post_id" id="post_id" value="{{ post.id }}"/>
                             <button class="btn btn-primary rounded" onclick="addComment(event)">Answer</button>

@@ -2,15 +2,14 @@
 
     <!-- start single product -->
     <div
-            class="lg-product-wrapper colum-2 two-colum-parent-product col-lg-6"
+            class="lg-product-wrapper colum-2 two-colum-parent-product col-lg-4"
     >
         <div class="inner">
             <div class="lg-left-content">
-
                 <a class="thumbnail"
                    onclick="document.getElementById('form_details_{{ type }}_{{ i }}').submit(); return false;">
                     <img
-                            src="{{ asset(transaction.product.images[0].path()) }}"
+                            src="{{ asset('usersImg/'~transaction.product.images[0].path()) }}"
                             alt="Nft_Portfolio"
                     />
                 </a>
@@ -25,16 +24,16 @@
                                     data-tooltip="Seller:Mr.{{ transaction.product.user.firstName|capitalize~' '~transaction.product.user.lastName|capitalize }}"
                                     tabindex="0"
                             ><img
-                                        src="{{ asset('/marketPlaceImages/ic_haha.png') }}"
+                                        src="{{ asset('usersImg/'~transaction.product.user.getImage()) }}"
                                         alt="Nft_Profile"
                                 /></a>
                             <a
                                     href=""
                                     class="avatar"
-                                    data-tooltip="Buyer:Mr.{{ app.user.firstName|capitalize~' '~app.user.lastName|capitalize }}"
+                                    data-tooltip="Buyer:Mr.{{ transaction.product.user.firstName|capitalize~' '~app.user.lastName|capitalize }}"
                                     tabindex="0"
                             ><img
-                                        src="{{ asset('/marketPlaceImages/omar.jpg') }}"
+                                        src="{{ asset('usersImg/'~app.user.getImage()) }}"
 
                                         alt="Nft_Profile"
                                 /></a>

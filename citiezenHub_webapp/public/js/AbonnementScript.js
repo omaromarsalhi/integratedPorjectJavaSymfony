@@ -32,7 +32,11 @@ function closePopup() {
 }
 
 function addPost(event) {
-    event.preventDefault();
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#addAbnBtn').html('<img src="' + value + '" width="30"/>')
+    $('#addAbnBtn').addClass('btnTransparent');
+    $('#addAbnBtn').prop('disabled', true)
+
     const selectedOption = document.querySelector('.nice-select ul li.selected');
     const type_text = selectedOption.textContent.trim();
 
@@ -43,7 +47,7 @@ function addPost(event) {
     const isNameValid = validateName();
     const isLastNameValid = validateLastName();
 
-    if (isNameValid && isLastNameValid) {
+        if (isNameValid && isLastNameValid) {
 
         formData.append('image', $('#createinputfile').prop('files')[0]);
         formData.append('name', name);
@@ -57,16 +61,25 @@ function addPost(event) {
             processData: false,
             contentType: false,
             success: function (response) {
+                $('#addAbnBtn').html('Submit Item')
+                $('#addAbnBtn').removeClass('btnTransparent');
+                $('#addAbnBtn').prop('disabled', false)
                 showValidPop("Subscription Inserted")
                 redirectToAnotherRoute();
             },
             error: function (response) {
+                $('#addAbnBtn').html('Submit Item')
+                $('#addAbnBtn').removeClass('btnTransparent');
+                $('#addAbnBtn').prop('disabled', false)
                 console.error("error");
                  showInvalidPop("Image not inserted !!!!")
             },
         });
     } else {
-        alert("fields arent write §§§§§§§§!");
+            $('#addAbnBtn').html('Submit Item')
+            $('#addAbnBtn').removeClass('btnTransparent');
+            $('#addAbnBtn').prop('disabled', false)
+            showInvalidPop("fields are not written")
     }
 }
 

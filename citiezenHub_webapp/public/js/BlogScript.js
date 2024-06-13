@@ -25,14 +25,6 @@ function showInRealTimePost(idPost) {
             var newPostHTML = createPostHTML(response.post, response.post.url, response.post.userId);
             $('#postsContainer').prepend(newPostHTML);
             posts.unshift(response.post);
-            $('html, body').animate({
-                scrollTop: 950
-            }, 300);
-            $('#contact-message').val('');
-            $('#nipa').val('');
-            document.getElementById("previousImage").style.display = "none";
-            document.getElementById("nextImage").style.display = "none";
-            $('#rbtinput2').attr('src', 'images/blog/aucuneImg.png');
         }
     });
 }
@@ -44,8 +36,8 @@ function createPostHTML(post, postUrl, idU) {
     var captiontext = '';
     if (post.caption !== '') {
         captiontext = `
-            <p class="desc" style="color: white">${post.caption}</p>
-            <a class="translateBtn" style="color: #a2a2a3; font-size: 12px;" data-post-id="${post.id}" data-original-caption="${post.caption}" onclick="translateText('${post.id}', '${post.caption}', 'fr', 'ar')">Translate</a>
+            <p class="desc">${post.caption}</p>
+            <a class="translateBtn" style="color: #a2a2a3; font-size: 12px; cursor: pointer" data-post-id="${post.id}" data-original-caption="${post.caption}" onclick="translateText('${post.id}', '${post.caption}', 'en', 'ar')">Translate</a>
         `;
     }
 
@@ -134,13 +126,12 @@ function createPostHTML(post, postUrl, idU) {
                                             <div class="dropdown-react">
                                                 ${reactionButtonHTML}
                                                 <div class="dropdown-content-react">
-                                                        <img src="images/blog/ic_like.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Like', this)">
-    <img src="images/blog/ic_haha.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Haha', this)">
-    <img src="images/blog/ic_sad.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Sad', this)">
-    <img src="images/blog/ic_angry.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Angry', this)">
+                                                    <img src="images/blog/ic_like.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Like', this)">
+                                                    <img src="images/blog/ic_haha.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Haha', this)">
+                                                    <img src="images/blog/ic_sad.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Sad', this)">
+                                                    <img src="images/blog/ic_angry.png" alt="like" style="width: 25px; height: 25px; cursor: pointer;" onclick="addReaction(${post.id}, 'Angry', this)">
                                                 </div>
                                             </div>
-                                            
                                             
                                             <span id="reactions-count-${post.id}">${post.nbReactions}</span>
 
@@ -319,12 +310,7 @@ function addPost(event) {
 
                                 document.getElementById("delImage").style.display = "none";
 
-                                rep = " ";
-                                rep = "Votre post a été ajouté avec succès";
-                                console.log(rep);
-                                $('#sucess-message').text(rep);
-
-                                $('#statusSuccessModal').modal('show');
+                                showValidPop("Post added successfully")
                             } else {
                                 console.error('Failed to create post: ' + response.message);
                             }
@@ -335,7 +321,7 @@ function addPost(event) {
                             // document.getElementById('overlay').style.display = 'none';
                         },
                         error: function (response) {
-                            console.error("error");
+                            console.log("error");
                             $('#ajoutPost').html('publish')
                             $('#ajoutPost').removeClass('btnTransparent');
                             $('#ajoutPost').prop('disabled', false)
@@ -344,11 +330,12 @@ function addPost(event) {
                         },
                     });
                 } else {
-                    rep = " ";
-                    rep = "Votre post a ete refuse a cause d'un contenu : " + categorie;
-                    console.log(rep);
-                    $('#error-message').text(rep);
-                    $('#statusErrorsModal').modal('show');
+                   // rep = " ";
+                    //rep = "Votre post a ete refuse a cause d'un contenu : " + categorie;
+
+                    //$('#error-message').text(rep);
+                    //$('#statusErrorsModal').modal('show');
+                    showInvalidPop("Your post was rejected due to content : " + categorie)
 
                     $('#contact-message').val('');
                     $('#nipa').val('');
@@ -405,12 +392,12 @@ function addPost(event) {
 
                     document.getElementById("delImage").style.display = "none";
 
-                    rep = " ";
-                    rep = "Votre post a été ajouté avec succès";
-                    console.log(rep);
-                    $('#sucess-message').text(rep);
+                   // rep = " ";
+                   // rep = "Votre post a été ajouté avec succès";
+                   // $('#sucess-message').text(rep);
 
-                    $('#statusSuccessModal').modal('show');
+                    //$('#statusSuccessModal').modal('show');*
+                    showValidPop("Post added successfully")
                 } else {
                     console.error('Failed to create post: ' + response.message);
                 }
@@ -421,7 +408,7 @@ function addPost(event) {
                 // document.getElementById('overlay').style.display = 'none';
             },
             error: function (response) {
-                console.error("error");
+                console.log(response);
                 $('#ajoutPost').html('publish')
                 $('#ajoutPost').removeClass('btnTransparent');
                 $('#ajoutPost').prop('disabled', false)
@@ -430,7 +417,6 @@ function addPost(event) {
             },
         });
     }
-
 }
 
 function handleMenuAction(button, postId, caption, image, action) {
@@ -449,6 +435,7 @@ function deletePost(postId) {
         type: 'DELETE',
         success: function (response) {
             $("div[data-post-id='" + postId + "']").remove();
+            showInvalidPop("Post deleted successfully")
         },
         error: function (xhr, status, error) {
             console.error(error);
@@ -534,6 +521,7 @@ function submitModifierForm(event) {
             $('html, body').animate({
                 scrollTop: 890
             }, 500);
+            showValidPop("Post updated successfully")
         },
         error: function (response) {
             console.log("error");
@@ -679,11 +667,13 @@ function translateText(postId, textToTranslate, sourceLanguage, targetLanguage) 
     const apiKey = "db017c40fad98dc5b9fc";
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate)}&langpair=${sourceLanguage}|${targetLanguage}&key=${apiKey}`;
 
+
+    console.log(postId)
     fetch(url)
         .then(response => response.json())
         .then(data => {
             if (data.responseData && data.responseData.translatedText) {
-                let postElement = document.querySelector(`div[data-post-id="${postId}"] .title a`);
+                let postElement = document.querySelector(`div[data-post-id="${postId}"] .desc`);
                 let translateButton = document.querySelector(`div[data-post-id="${postId}"] .translateBtn`);
 
                 if (translateButton.textContent === 'Translate') {
@@ -700,6 +690,7 @@ function translateText(postId, textToTranslate, sourceLanguage, targetLanguage) 
         .catch(error => console.error("Erreur lors de l'analyse de la réponse JSON : ", error));
 }
 
+
 function addReaction(postId, reactionType, imageElement) {
     $.ajax({
         url: '/addReaction',
@@ -715,7 +706,8 @@ function addReaction(postId, reactionType, imageElement) {
                 let currentCount = parseInt(reactionsCountElement.text());
                 reactionsCountElement.text(currentCount + 1);
             }
-            $('.dropbtn-react').html('<img src="' + imageElement.src + '" alt="' + reactionType + '" width="25px" height="25px">');
+            buttonElement.innerHTML = `<img src="${imageElement.src}" alt="${reactionType}" width="22px" height="22px">`;
+
         },
         error: function (xhr, status, error) {
             console.error(error);

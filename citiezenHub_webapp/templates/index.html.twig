@@ -13,7 +13,7 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Phoenix</title>
+    <title>CitizenHub</title>
 
     <!-- ===============================================-->
     <!--    Favicons-->
@@ -257,7 +257,7 @@
                 <a class="navbar-brand me-1 me-sm-3" href="index.html">
                     <div class="d-flex align-items-center">
                         <div class="d-flex align-items-center"><img src="{{ asset('assetsAdmin/img/icons/logo.png') }}"
-                                                                    alt="phoenix"/>
+                                                                    alt="phoenix" style="width: 160px"/>
                         </div>
                     </div>
                 </a>
@@ -6114,7 +6114,119 @@
 
 
 </main>
+<style>
+    .chat-message-div {
+        display: flex;
+        margin-bottom: 10px;
+    }
 
+    .chat-message-sent {
+        background-color: #0084ff;
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 60%;
+        align-self: flex-end;
+    }
+
+    .chat-message-received {
+        background-color: #e5e5ea;
+        color: black;
+        padding: 10px;
+        border-radius: 10px;
+        max-width: 60%;
+        align-self: flex-start;
+    }
+
+    #message-box {
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #888 #e5e5ea;
+    }
+
+    .scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scrollbar::-webkit-scrollbar-track {
+        background: #e5e5ea;
+    }
+
+    .scrollbar::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 10px;
+        border: 3px solid #e5e5ea;
+    }
+
+    .card-footer {
+        display: flex;
+        align-items: center;
+    }
+
+    .card-footer .d-flex {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Adjust this value as needed for spacing */
+    }
+
+    #startRecording1 {
+        margin: 0 10px; /* Adjust this value as needed */
+    }
+
+    .send-btn {
+        margin-left: 10px; /* Adjust this value as needed */
+    }
+
+</style>
+
+
+<div class="support-chat-container">
+    <div class="container-fluid support-chat">
+        <div class="card bg-body-emphasis">
+            <div class="card-header d-flex flex-between-center px-4 py-3 border-bottom border-translucent">
+                <h5 class="mb-0 d-flex align-items-center gap-2">
+                    ChatBot
+                    <span class="fa-solid fa-circle text-success fs-11"></span>
+                </h5>
+                <div class="btn-reveal-trigger"></div>
+            </div>
+            <div class="card-body chat p-0">
+                <div class="d-flex flex-column scrollbar h-100 p-3" id="message-box">
+                    <!-- Default bot message -->
+                    <div class="chat-message-div">
+                        <div class="chat-message-received">
+                            Ask me anything – I'm here to assist 24 hours a day.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer d-flex align-items-center gap-2 border-top border-translucent ps-3 pe-4 py-3">
+                <div class="d-flex align-items-center flex-1 gap-3 border border-translucent rounded-pill px-4">
+                    <input class="form-control outline-none border-0 flex-1 fs-9 px-0" type="text" placeholder="Write message" id="messagebot" />
+                </div>
+                <button class="form-control outline-none border-0 flex-1 fs-9 px-0" id="startRecording1" style="margin: 0 10px;">
+                    🎤
+                </button>
+                <button class="btn p-0 border-0 send-btn" onclick="send()">
+                    <span class="fa-solid fa-paper-plane fs-9"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <button class="btn p-0 border border-translucent btn-support-chat">
+        <span class="fs-8 btn-text text-primary text-nowrap">
+            ChatBot
+        </span>
+        <span class="fa-solid fa-circle text-success fs-9 ms-2"></span>
+        <span class="fa-solid fa-chevron-down text-primary fs-7"></span>
+    </button>
+</div>
 
 
 
@@ -6131,6 +6243,7 @@
 
 
 
+<script src={{ asset('assetsAdmin/js/chat.js') }}></script>
 
 <script src={{ asset('assetsAdmin/vendors/popper/popper.min.js') }}></script>
 <script src={{ asset('assetsAdmin/vendors/bootstrap/bootstrap.min.js') }}></script>

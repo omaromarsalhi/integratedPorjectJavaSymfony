@@ -69,7 +69,7 @@ public class ItemController implements Initializable {
         priceLable.setText( "$" + bien.getPrice() );
 //        stateLabel.setText((bien.getState())?"In Stock":"Out Of Stock");
         categoryLable.setText( bien.getCategorie().name() );
-        Image image = new Image( GlobalVariables.IMAGEPATH + bien.getImgSource() );
+        Image image = new Image( GlobalVariables.IMAGEPATH4USER + bien.getImgSource() );
         img.setImage( image );
         hbox = createItemsBtns();
     }
@@ -87,7 +87,7 @@ public class ItemController implements Initializable {
                 translateTransition.setOnFinished( event1 -> {
                     if (bien.getAllImagesSources().size() == (++imageIndex))
                         imageIndex = 0;
-                    img.setImage( new Image( GlobalVariables.IMAGEPATH + bien.getImageSourceByIndex( imageIndex ) ) );
+                    img.setImage( new Image( GlobalVariables.IMAGEPATH4USER + bien.getImageSourceByIndex( imageIndex ) ) );
                     translateTransition.setByX( 100 );
                     fadeTransition.setFromValue( 0 );
                     fadeTransition.setDelay( Duration.seconds( 0.2 ) );

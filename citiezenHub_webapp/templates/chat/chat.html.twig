@@ -1,5 +1,4 @@
 <div id="chat-css">
-
     <div class="container lg-product-wrapper">
         <div class="row no-gutters">
             <div class="col-md-4 border-right " >
@@ -14,7 +13,7 @@
                     </div>
                 </div>
                 <div id="usersContainer">
-
+                    {% if users %}
                     {% for index,user in users %}
                     {% if user!=app.user %}
                     <div class="friend-drawer friend-drawer--onhover" data-value="{{ index }}:{{ user.getId() }}"
@@ -22,9 +21,8 @@
                         <img class="profile-image" id="userImg_{{ index }}"
                              src="{{ asset('usersImg/'~user.getImage()) }}" alt="">
                         <div class="text">
-
                             <h6 id="userFullName_{{ index }}">{{ user.firstName|capitalize~' '~user.lastName|capitalize }}</h6>
-                            {% if messages[user.getId()][2]==1 or messages[user.getId()][2]==-1  %}
+                            {% if messages[user.getId()][2]==1 or messages[user.getId()][2]==-1 %}
                             <p class="text-muted "
                                id="userLastMessage_{{ index }}">{{ messages[user.getId()][0] }}</p>
                         </div>
@@ -37,12 +35,14 @@
                           id="userLastMessageTime_{{ index }}">{{ messages[user.getId()][1]|date('H:i') }}</span>
                     {% endif %}
                 </div>
-                        <hr>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+                <hr>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </div>
             </div>
             <div class="col-md-8">
+                {% if users %}
                 {% set i=0 %}
                 {% if app.user==users[0] %}
                 {% set i=1 %}
@@ -51,7 +51,7 @@
                     <div class="friend-drawer no-gutters friend-drawer--grey" id="currentUserInChat"
                          data-value="{{ users[i].getId() }}">
                         <img class="profile-image" id="currentUserInChatImg"
-                             src="https://www.clarity-enhanced.net/wp-content/uploads/2020/06/robocop.jpg" alt="">
+                             src="{{ asset('usersImg/'~users[i].getImage()) }}" alt="">
                         <div class="text">
                             <h6 id="currentUserInChatName">{{ users[i].firstName|capitalize~' '~users[i].lastName|capitalize }}</h6>
                             <p class="text-muted">{{ messages[users[i].getId()][0] }}...</p>
@@ -77,6 +77,7 @@
                     </div>
                 </div>
             </div>
+        {% endif %}
         </div>
     </div>
 </div>

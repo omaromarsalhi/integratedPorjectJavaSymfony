@@ -6,12 +6,18 @@ import OCRID
 
 app = Flask(__name__)
 
-url='https://3688-34-68-251-87.ngrok-free.app'
+url=''
 model='llava:13b'
 
 
 
-
+@app.route('/get-descreptionJava', methods=['POST'])
+def generateJava():
+    data = request.get_json()
+    title = data.get('title', '')
+    text=ov.generate_produxt_description(title,url)
+    tuned_response=ov.finetune_resp(text)
+    return jsonify(tuned_response),200
 
 @app.route('/get-descreption',methods=['POST'])
 def generate():

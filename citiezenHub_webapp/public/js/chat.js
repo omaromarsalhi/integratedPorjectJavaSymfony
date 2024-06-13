@@ -33,7 +33,7 @@ function receiveMsg(messageData) {
             skip = false
         }
     }
-    if(senderId == currentUser){
+    if (senderId == currentUser) {
         if (document.getElementById('chatContainer')) {
             $('#chatContainer').append('<div class="row no-gutters ">\n' +
                 '                        <div class="dynamic-resizing-reverse right">\n' +
@@ -100,54 +100,54 @@ function sendMsg() {
 
     let reciverId
     let message
+    if ($('#msgToSend').val()||$('#miniMsgToSend').val()) {
+        if (document.getElementById('chatContainer')) {
+            message = $('#msgToSend').val();
+            $('#chatContainer').append('<div class="row no-gutters ">\n' +
+                '                        <div class="dynamic-resizing-reverse right">\n' +
+                '                            <div class="chat-bubble chat-bubble--right">\n' +
+                '                                ' + message + ' ' +
+                '                            </div>\n' +
+                '                        </div>\n' +
+                '                    </div>')
+            $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
+            $('#msgToSend').val('');
+            reciverId = $('#currentUserInChat').attr('data-value');
+        }
+        if (document.getElementById('miniChatContainer')) {
+            message = $('#miniMsgToSend').val();
+            $('#miniChatContainer').append('<div class="message">\n' +
+                '                        <p class="text">' + message + ' ' +
+                '                        </p>' +
+                '                    </div>')
+            $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
+            $('#miniMsgToSend').val('');
+            reciverId = $('#miniCurrentUserInChat').val();
+        }
 
-    if (document.getElementById('chatContainer')) {
-        message = $('#msgToSend').val();
-        $('#chatContainer').append('<div class="row no-gutters ">\n' +
-            '                        <div class="dynamic-resizing-reverse right">\n' +
-            '                            <div class="chat-bubble chat-bubble--right">\n' +
-            '                                ' + message + ' ' +
-            '                            </div>\n' +
-            '                        </div>\n' +
-            '                    </div>')
-        $("#chatContainer").scrollTop($("#chatContainer")[0].scrollHeight);
-        $('#msgToSend').val('');
-        reciverId = $('#currentUserInChat').attr('data-value');
+
+        let msg = {
+            'action': 'chat',
+            'message': message,
+            'senderId': currentUser,
+            'recipientId': reciverId
+        }
+
+        socket.send(JSON.stringify(msg));
+
+        $.ajax({
+            url: "/chat/new",
+            type: "POST",
+            data: {
+                reciverId: reciverId,
+                msg: msg,
+            },
+            async: true,
+            success: function (response) {
+
+            },
+        });
     }
-    if (document.getElementById('miniChatContainer')) {
-        message = $('#miniMsgToSend').val();
-        $('#miniChatContainer').append('<div class="message">\n' +
-            '                        <p class="text">' + message + ' ' +
-            '                        </p>' +
-            '                    </div>')
-        $("#miniChatContainer2").scrollTop($("#miniChatContainer2")[0].scrollHeight);
-        $('#miniMsgToSend').val('');
-        reciverId = $('#miniCurrentUserInChat').val();
-    }
-
-
-    let msg = {
-        'action': 'chat',
-        'message': message,
-        'senderId': currentUser,
-        'recipientId': reciverId
-    }
-
-    socket.send(JSON.stringify(msg));
-
-    $.ajax({
-        url: "/chat/new",
-        type: "POST",
-        data: {
-            reciverId: reciverId,
-            msg: msg,
-        },
-        async: true,
-        success: function (response) {
-
-        },
-    });
-
 
 }
 

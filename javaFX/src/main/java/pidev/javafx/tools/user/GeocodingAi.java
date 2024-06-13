@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 
 public class GeocodingAi {
     public   static  String getAddressInformation(String adresse) {
-        String API_KEY = "AIzaSyC_T-LX7HSxtA_4NkvIw1dBmjA0Lf2KPrk";
+        String API_KEY = "";
 
         String url;
         try {

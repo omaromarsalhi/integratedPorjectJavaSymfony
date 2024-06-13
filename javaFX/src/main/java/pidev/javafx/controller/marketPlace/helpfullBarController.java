@@ -156,7 +156,7 @@ public class helpfullBarController implements Initializable {
         }
         else {
             var list = CrudBien.getInstance().filterItems( fromDateResult, toDateResult, minPriceSliderResult, maxPriceSliderResult, quantitySliderResult, categoryChoiceResult );
-            CustomMouseEvent<ObservableList<Bien>> customMouseEvent = new CustomMouseEvent<>( list );
+            CustomMouseEvent<ObservableList<Integer>> customMouseEvent = new CustomMouseEvent<>( list );
             EventBus.getInstance().publish( "filterProducts", customMouseEvent );
         }
     }

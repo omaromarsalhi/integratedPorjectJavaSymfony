@@ -8,6 +8,7 @@ use App\Service\GeocodingService;
 use Carbon\Traits\Timestamp;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -51,8 +52,9 @@ class UserController extends AbstractController
 
 
     #[Route('/user/generatePdfWithoutMail/{idUser}', name: 'app_user_generatePdfWithoutMail')]
-    public function generatePdfWithoutMail($idUser,HttpClientInterface $client,Pdf $knpSnappyPdf): PdfResponse|Response
+    public function generatePdfWithoutMail($idUser,UserRepository $userRepository,HttpClientInterface $client,Pdf $knpSnappyPdf): PdfResponse|Response
     {
+        $user=$userRepository->find($idUser);
         $path = '../../files/usersJsonFiles/' . md5('user' . ($idUser * 1000 + 17)) . '.json';
         $filesystem = new Filesystem();
         if (!$filesystem->exists([$path]))
@@ -61,7 +63,7 @@ class UserController extends AbstractController
         $jsonString = file_get_contents($path);
         $jsonDataCin = json_decode($jsonString, true);
         $geocoder = new GeocodingService($client);
-        $addressDetails=$geocoder->getMadhmounData($this->getUser()->getAddress());
+        $addressDetails=$geocoder->getMadhmounData($jsonDataCin['العنوان']['data']);
 
 
         $html = $this->renderView('user_dashboard/madhmoun.html.twig',[
@@ -69,26 +71,26 @@ class UserController extends AbstractController
             'lastName'=>$jsonDataCin['اللقب']['data'],
             'dob'=>$jsonDataCin['الولادة']['data'],
             'location'=>$jsonDataCin['مكانها']['data'],
-            'gender'=>'dhkar',
+            'gender'=>($user->getGender()=='Male')?'ذكر':'أنثى',
             'fatherName'=>$jsonDataCin['بن']['data'],
             'motherName'=>$jsonDataCin['الأم']['data'],
-            'addressDetails'=>$addressDetails
+            'addressDetails'=>$addressDetails,
         ]);
 
-//        return new PdfResponse(
-//            $knpSnappyPdf->getOutputFromHtml($html),
-//            'file.pdf'
-//        );
-        $pdfOutput = $knpSnappyPdf->getOutputFromHtml($html);
-
-        return new Response(
-            $pdfOutput,
-            200,
-            [
-                'Content-Type' => 'application/pdf',
-                'Content-Disposition' => 'attachment; filename="file.pdf"'
-            ]
+        return new PdfResponse(
+            $knpSnappyPdf->getOutputFromHtml($html),
+            'file.pdf'
         );
+//        $pdfOutput = $knpSnappyPdf->getOutputFromHtml($html);
+//
+//        return new Response(
+//            $pdfOutput,
+//            200,
+//            [
+//                'Content-Type' => 'application/pdf',
+//                'Content-Disposition' => 'attachment; filename="file.pdf"'
+//            ]
+//        );
     }
 
     #[Route('/cinTimeInfo', name: 'app_cinTimeInfo', methods: ['GET', 'POST'])]
@@ -138,7 +140,7 @@ class UserController extends AbstractController
 
     private function updateState(MessageBusInterface $messageBus, EntityManagerInterface $entityManager, $state, $user)
     {
-        $user->setIsVerified($state);
+        $user->setIsVerified(intval($state));
         $user->setState($state);
         $user->setUMID(Uuid::v4()->toBase32());
         $entityManager->flush();
@@ -148,7 +150,7 @@ class UserController extends AbstractController
                 'idUser' => $user->getId(),
                 'UMID' => $user->getUMID()
             ];
-            $delayInSeconds = 2 * 60;
+            $delayInSeconds = 1 * 60;
             $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
         }
     }
@@ -187,7 +189,7 @@ class UserController extends AbstractController
             try {
                 $aiVerification->runOcr($obj);
             } catch (\Exception $exception) {
-                $this->updateState($messageBus, $entityManager, 0);
+                $this->updateState($messageBus, $entityManager, 0,$this->getUser());
                 return new Response('error', Response::HTTP_OK);
             }
 
@@ -322,7 +324,7 @@ class UserController extends AbstractController
             if ($fichierImage != null)
                 $user->setImage($imageHelper->saveImages($fichierImage));
             $entityManager->flush();
-            return new Response(' supprimé avec succès false ', Response::HTTP_OK);
+            return new JsonResponse(['image'=>$user->getImage()], Response::HTTP_OK);
         }
         return new Response('bad');
     }

@@ -259,4 +259,47 @@ class ProductRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+
+
+
+
+    public function getStat2($user)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('count(p.idProduct) as number');
+        $qb->where(
+            $qb->expr()->gte('p.timestamp', ':startOfMonth')
+        )
+            ->andWhere(
+                $qb->expr()->lt('p.timestamp', ':startOfNextMonth')
+            )
+            ->andWhere('p.user = :user'
+            )
+            ->setParameter('startOfMonth', new \DateTime('first day of this month'))
+            ->setParameter('startOfNextMonth', new \DateTime('first day of next month'))
+            ->setParameter('user', $user);
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getStat4($user)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('count(p.idProduct) as number');
+        $qb->where(
+            $qb->expr()->gte('p.timestamp', ':startOfMonth')
+        )
+            ->andWhere(
+                $qb->expr()->lt('p.timestamp', ':startOfNextMonth')
+            )
+            ->andWhere('p.user = :user'
+            )
+            ->setParameter('startOfMonth', new \DateTime('first day of this year'))
+            ->setParameter('startOfNextMonth', new \DateTime('first day of next year'))
+            ->setParameter('user', $user);
+        return $qb->getQuery()->getResult();
+    }
+
+
+
+
 }

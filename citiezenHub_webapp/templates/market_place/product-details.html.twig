@@ -63,7 +63,7 @@
                                     >
                                     <span class="rn-pd-sm-thumbnail">
                                       <img
-                                              src="{{ asset(image.path)|default("Not available") }}"
+                                              src="{{ asset('usersImg/'~image.path)|default("Not available") }}"
                                               class="fixedSubImagesSize4Details"
                                               alt="Nft_Profile"
                                       />
@@ -88,7 +88,7 @@
                                     >
                                         <div class="rn-pd-thumbnail">
                                             <img
-                                                    src="{{ asset(product.images[i].path)|default("Not available") }}"
+                                                    src="{{ asset('usersImg/'~product.images[i].path)|default("Not available") }}"
                                                     class="fixedImagesSize4Details"
                                                     alt="Nft_Profile"
                                             />

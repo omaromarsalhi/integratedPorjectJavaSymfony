@@ -20,7 +20,7 @@
                                     <div class="swiper-slide">
                                         <a href="#"
                                            onclick="document.getElementById('form_details_{{ i }}').submit(); return false;">
-                                            <img src="{{ asset(image.path)|default("Not available") }}"
+                                            <img src="{{ asset('usersImg/'~image.path)|default("Not available") }}"
                                                  alt="NFT_portfolio"
                                                  class="fixedSubImages4MarketPlace"/>
                                         </a>
@@ -32,7 +32,7 @@
                     {% else %}
                         <div>
                             <a href="#" onclick="document.getElementById('form_details_{{ i }}').submit(); return false;">
-                                <img src="{{ asset(product.images[0].path) }}"
+                                <img src="{{ asset('usersImg/'~product.images[0].path) }}"
                                      alt="NFT_portfolio"
                                      class="fixedSubImages4MarketPlace"
                                 >
@@ -95,7 +95,7 @@
                             class="avatar"
                             data-tooltip="Owener:Mr.{{ product.user.firstName|capitalize~' '~ product.user.lastName|capitalize }}"
                     ><img
-                                src="{{ asset('/marketPlaceImages/omar.jpg') }}"
+                                src="{{ asset('usersImg/'~product.user.getImage()) }}"
                                 alt="Nft_Profile"
                         />
                     </a>

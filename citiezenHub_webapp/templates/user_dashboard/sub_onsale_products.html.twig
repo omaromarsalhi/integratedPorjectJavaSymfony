@@ -12,7 +12,7 @@
                                     <div class="swiper-slide">
                                         <a href="#"
                                            onclick="document.getElementById('form_details_{{ type }}_{{ i }}').submit(); return false;">
-                                            <img src="{{ asset(image.path)|default("Not available") }}"
+                                            <img src="{{ asset('usersImg/'~image.path)|default("Not available") }}"
                                                  alt="NFT_portfolio"
                                                  class="fixedImagesSize4owner"/>
                                         </a>
@@ -25,7 +25,7 @@
                         <div>
                             <a href="#"
                                onclick="document.getElementById('form_details_{{ type }}_{{ i }}').submit(); return false;">
-                                <img src="{{ asset(product.images[0].path) }}"
+                                <img src="{{ asset('usersImg/'~product.images[0].path) }}"
                                      alt="NFT_portfolio"
                                      class="fixedImagesSize4owner"
                                 >
@@ -34,14 +34,10 @@
                     {% endif %}
                 </a>
                 {% if underverif %}
-                        {% if aiResult[i] is defined %}
-                            {% if aiResult[i].idProduct == product.idProduct %}
                                 <div class="countdown" data-date="{{ aiResult[i].getTerminationDateDate() }}"
                                      data-time="{{ aiResult[i].getTerminationDateTime() }}"
                                      data-value="{{ product.iDProduct }}:{{ i }}">
                                 </div>
-                            {% endif %}
-                        {% endif %}
                 {% endif %}
                 <div class="rbt-quick-action--btns">
                     {% if underverif %}

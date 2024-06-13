@@ -74,14 +74,6 @@ class MessageHandler implements MessageComponentInterface
 
             $serializer = $this->createSerializer();
             $json = $serializer->serialize($data, 'json');
-            if($recipientConnectionJava)
-                echo '1\n';
-            if($recipientConnectionSymfony)
-                echo '2\n';
-            if($senderConnectionJava)
-                echo '3\n';
-            if($senderConnectionSymfony)
-                echo '4\n';
 
             if ((($recipientConnectionJava && $recipientConnectionJava !== $from) || ($recipientConnectionSymfony && $recipientConnectionSymfony !== $from)) && $senderConnectionJava === $from) {
                 echo "Message sent from {$senderId} (java) to {$recipientId}\n";
@@ -89,8 +81,9 @@ class MessageHandler implements MessageComponentInterface
                     $recipientConnectionJava->send($json);
                 if ($recipientConnectionSymfony)
                     $recipientConnectionSymfony->send($json);
-                if ($senderConnectionSymfony)
+                if ($senderConnectionSymfony) {
                     $senderConnectionSymfony->send($json);
+                }
             }
 
             if ((($recipientConnectionJava && $recipientConnectionJava !== $from) || ($recipientConnectionSymfony && $recipientConnectionSymfony !== $from)) && $senderConnectionSymfony === $from) {
@@ -114,19 +107,7 @@ class MessageHandler implements MessageComponentInterface
         // Serialize broadcast data
         $serializer = $this->createSerializer();
         $json = $serializer->serialize($data, 'json');
-        // Broadcast the message to all connected users
-//        foreach ($this->userConnections as $userId => $connections) {
-//            echo "Broadcasting message to user {$userId} ({'symfony})\n";
-//            $connections['symfony']->send($json);
-//            if($connections['java']) {
-//                echo "Broadcasting message to user {$userId} ({'java})\n";
-//                $connections['java']->send($json);
-//            }
-//            if($connections['symfony']) {
-//                echo "Broadcasting message to user {$userId} ({'symfony})\n";
-//                $connections['symfony']->send($json);
-//            }
-//        }
+
         foreach ($this->userConnections as $userId => $apps) {
             foreach ($apps as $app => $conn) {
                 echo "Broadcasting message to user {$userId} ({$app})\n";

@@ -44,7 +44,7 @@ class ImageHelper
                 $fileName
             );
 
-            $product_image->setPath('usersImg/' . $fileName);
+            $product_image->setPath($fileName);
             $product_image->setProduct($product);
 
             $this->entityManager->persist($product_image);

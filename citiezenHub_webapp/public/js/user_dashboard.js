@@ -7,10 +7,10 @@
 
 function generatePdfMadhmoun() {
     let value = "../../marketPlaceImages/basketAnimation.gif"
-    $('#generatePdfBtnMafhmoun').html('<img class="loaderPdf" src="' + value + '" />')
+    $('#generatePdfBtnMafhmoun').html('<img class="loaderPdf" src="' + value + '" width="28" />')
 
     setTimeout(function () {
-        $('#generatePdfBtnMafhmoun' ).html('<i class="fa-solid fa-file-pdf"></i> <span>Madhmoun</span>')
+        $('#generatePdfBtnMafhmoun' ).html('<i class="fa-solid fa-file-pdf"></i> <span>مضمون</span>')
     }, 2000)
 }
 

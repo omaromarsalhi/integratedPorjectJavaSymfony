@@ -227,17 +227,17 @@
                     axisLabel: {color: t("quaternary-color")},
                     axisTick: {show: !1},
                     splitLine: {show: !1},
-                    data: ["Food", "Sports", "Entertainment", "RealEstate", "Vehicles"]
+                    data: ["Electronics", "Vehicule"]
                 },
                 series: [{
                     name: "unverified",
                     type: "bar",
-                    data: [response.food.unverified, response.sports.unverified, response.entertainment.unverified, response.realestate.unverified, response.vehicul.unverified],
+                    data: [response.Electronics.unverified, response.Vehicule.unverified],
                     itemStyle: {barBorderRadius: [0, 3, 3, 0]}
                 }, {
                     name: "verified",
                     type: "bar",
-                    data: [response.food.verified, response.sports.verified, response.entertainment.verified, response.realestate.verified, response.vehicul.verified],
+                    data: [response.Electronics.verified, response.Vehicule.verified],
                     itemStyle: {barBorderRadius: [0, 3, 3, 0]}
                 }],
                 grid: {right: 15, left: "12%", bottom: "10%", top: 5}

@@ -125,10 +125,13 @@ class BasketController extends AbstractController
             $userId = $user->getId();
 
             $basket_items = $basketRepository->findBy(['user' => $this->getUser()]);
-            $new_transaction = new Transaction();
-            $new_contract = new Contract();
+
 
             for ($i = 0; $i < sizeof($basket_items); $i++) {
+                $new_transaction = new Transaction();
+                $new_contract = new Contract();
+
+
                 $new_contract->setTitle("Contract of selling " . $basket_items[$i]->getProduct()->getName());
                 $new_contract->setTerminationDate(new \DateTime());
                 $new_contract->setPurpose("Buying this Item");
@@ -174,9 +177,9 @@ class BasketController extends AbstractController
 
             $basketRepository->clear($this->getUser());
 
-
-            return new Response('success', Response::HTTP_OK);
+            return new Response(dump(sizeof($basket_items)), Response::HTTP_OK);
         }
+
         return $this->render('contract/success.html.twig');
     }
 

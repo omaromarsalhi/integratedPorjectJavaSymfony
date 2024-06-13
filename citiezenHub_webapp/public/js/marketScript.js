@@ -95,7 +95,6 @@ function filterByPrice() {
         async: true,
         success: function (response) {
             console.log(response.idlist);
-
             $("#sub-market-block").html(response.subMarket);
             $("#navPages").html(response.nav);
 

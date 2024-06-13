@@ -1,5 +1,7 @@
 package pidev.javafx.crud;
 
+import pidev.javafx.tools.GlobalVariables;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -15,8 +17,8 @@ public class ConnectionDB {
 
     private ConnectionDB(){
             try{
-                connect= DriverManager.getConnection("jdbc:mysql://localhost/pi_dev", "root", "");
-//                connect= DriverManager.getConnection("jdbc:mysql://192.168.1.7/pi_dev", "root", "omar");
+//                connect= DriverManager.getConnection("jdbc:mysql://localhost/pi_dev", "root", "");
+                connect= DriverManager.getConnection("jdbc:mysql://"+ GlobalVariables.IP +"/pi_dev", "root", "omar");
             }
             catch(Exception e){
                 System.out.println(e.getMessage());

@@ -1,5 +1,17 @@
 
 var maVariableGlobale =1;
+document.getElementById('cancelButton').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent the default action
+    event.stopPropagation(); // Stop the event from propagating
+    const modal = bootstrap.Modal.getInstance(document.querySelector('[data-bs-dismiss="modal"]'));
+    modal.hide(); // Hide the modal programmatically
+});
+document.getElementById('cancelButton1').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent the default action
+    event.stopPropagation(); // Stop the event from propagating
+    const modal = bootstrap.Modal.getInstance(document.querySelector('[data-bs-dismiss="modal"]'));
+    modal.hide(); // Hide the modal programmatically
+});
 
 function addStation(event) {
     event.preventDefault();
@@ -34,15 +46,12 @@ function addStation(event) {
 
 
 
-
-                  // Handle success
-
-
                   $('#addDealModal').modal('hide');
                   $('#name').val('');
                   $('#adressStation').val('');
                   $('#createinputfile').val('');
                   $('#createinputfile').closest('form').get(0).reset();
+                  console.log(response.stations);
                 updateStationList(response.stations); 
             } 
         },
@@ -74,7 +83,12 @@ function addStation(event) {
 }
 
 
-    
+document.getElementById('cancelButton').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent the default action
+    event.stopPropagation(); // Stop the event from propagating
+    const modal = bootstrap.Modal.getInstance(document.querySelector('[data-bs-dismiss="modal"]'));
+    modal.hide(); // Hide the modal programmatically
+});
 
 function updateStation(event) {
     event.preventDefault();
@@ -319,10 +333,10 @@ function deleteStation() {
         success: function(response) {
             $('#verticallyCentered').modal('hide');
 
-            updateStationList(response.stations);
+            document.getElementById('station-' + itemId).remove();
 
 
-            $('#alert').html('         <div class="alert alert-subtle-success" role="alert">Station deleted succefully !!!</div>\n');
+            $('#alert').html('         <div class="alert alert-subtle-success" role="alert">Station deleted succesfully !!!</div>\n');
             setTimeout(function() {
                 $('#alert').empty();
             }, 4000);
@@ -333,7 +347,8 @@ function deleteStation() {
             $('#alert').html('         <div class="alert alert-subtle-danger" role="alert">An error occured while Deleting the station!</div>\n');
             setTimeout(function() {
                 $('#alert').empty();
-            }, 4000);        }
+            }, 4000);
+        }
     });
 }
 
@@ -344,7 +359,6 @@ function fetchUpdatedStationList() {
 }
 
 function updateStationList(stationList) {
-    console.log(stationList);
     // Clear the existing station list
     $('#table-latest-review-body').empty();
 
@@ -355,20 +369,16 @@ function updateStationList(stationList) {
  
 
     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
-                                            <td class="fs-9 align-middle ps-0">
-                                                <div class="form-check mb-0 fs-8"><input class="form-check-input"
-                                                                                         type="checkbox"
-                                                                                         data-bulk-select-row='{"product":"Apple MacBook Pro 13 inch-M1-8/256GB-space","productImage":"/products/60x60/3.png","customer":{"name":"Woodrow Burton","avatar":"/team/40x40/58.webp"},"rating":4.5,"review":"It&#39;s a Mac, after all. Once you&#39;ve gone Mac, there&#39;s no going back. My first Mac lasted over nine years, and this is my second.","status":{"title":"Pending","badge":"warning","icon":"clock"},"time":"Just now"}'/>
-                                                </div>
-                                            </td>
+                                          
 
                                             <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                                                                                    href="">${station.nomstation}</a>
                                             </td>
                                             <td class="align-middle customer white-space-nowrap"><a
                                                         class="d-flex align-items-center text-body"
-                                                        href="apps/e-commerce/landing/profile.html">
+                                                       >
                                                     <div class="avatar avatar-l"><img class="rounded-circle"
+                                                                                      data-gallery="gallery-posts-1"
                                                                                       src="/usersImg/${station.image_station}"
                                                                                       alt=""/></div>
                                                 </a></td>
@@ -385,30 +395,17 @@ function updateStationList(stationList) {
                                                 </div>
                                             </td>
                                             <td class="align-middle white-space-nowrap text-end pe-0">
-                                                <div class="position-relative">
+                                                <div >
                                                     <div class="hover-actions">
                                                         <button class="btn btn-sm btn-phoenix-secondary me-1 fs-10"
                                                                 onclick=" showModifierPopup('${ station.id }','${ station.nomstation }','${ station.addressstation }','${ station.image_station }','${ station.Type_Vehicule }')">
-                                                            <span class=" fas fa-check"></span>
+                                                            <span class=" fas fa-clipboard"></span>
                                                         </button>
                                                         <button class="btn btn-sm btn-phoenix-secondary fs-10 open-DeleteModal"
                                                                  onclick="handleDelete('${ station.id }')"
                                                                  data-bs-toggle="modal" data-bs-target="#verticallyCentered">
                                                             <span class="fas fa-trash"></span>
                                                         </button>
-                                                    </div>
-                                                </div>
-                                                <div class="btn-reveal-trigger position-static">
-                                                    <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                                            type="button" data-bs-toggle="dropdown"
-                                                            data-boundary="window" aria-haspopup="true"
-                                                            aria-expanded="false" data-bs-reference="parent"><span
-                                                                class="fas fa-ellipsis-h fs-10"></span></button>
-                                                    <div class="dropdown-menu dropdown-menu-end py-2"><a
-                                                                class="dropdown-item" href="#!">View</a><a
-                                                                class="dropdown-item" href="#!">Update</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item text-danger" href="#!">Remove</a>
                                                     </div>
                                                 </div>
                                             </td>

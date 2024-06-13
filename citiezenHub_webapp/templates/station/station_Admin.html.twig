@@ -188,14 +188,13 @@
                                     {% for station in stationlist %}
 
 
-                                        <tr class="hover-actions-trigger btn-reveal-trigger position-static">
+                                        <tr class="hover-actions-trigger btn-reveal-trigger position-static " id="station-{{station.id}}">
 
                                             <td class="align-middle product white-space-nowrap"><a class="fw-semibold"
                                                                                                    href="">{{ station.NomStation }}</a>
                                             </td>
                                             <td class="align-middle customer white-space-nowrap"><a
-                                                        class="d-flex align-items-center text-body"
-                                                        href="apps/e-commerce/landing/profile.html">
+                                                        class="d-flex align-items-center text-body">
                                                     <div class="avatar avatar-l"><img class="rounded-circle"
                                                                                       data-gallery="gallery-posts-1"
                                                                                       src="/usersImg/{{station.imagestation }}"
@@ -210,15 +209,15 @@
 
                                             <td class="align-middle text-end time white-space-nowrap">
                                                 <div class="hover-hide">
-                                                    <h6 class="text-body-highlight mb-0">Old Data</h6>
+                                                    <h6 class="text-body-highlight mb-0">manege Data</h6>
                                                 </div>
                                             </td>
                                             <td class="align-middle white-space-nowrap text-end pe-0">
-                                                <div class="position-relative">
+                                                <div >
                                                     <div class="hover-actions">
                                                         <button class="btn btn-sm btn-phoenix-secondary me-1 fs-10"
                                                                 onclick="showModifierPopup('{{ station.id }}','{{ station.NomStation }}','{{ station.AddressStation }}','{{ station.imagestation }}','{{ station.TypeVehicule }}')">
-                                                            <span class=" fas fa-check"></span>
+                                                            <span class=" fas fa-clipboard"></span>
                                                         </button>
                                                         <button  class="btn btn-sm btn-phoenix-secondary fs-10 open-DeleteModal"
                                                                  onclick="handleDelete('{{ station.id }}')"
@@ -228,16 +227,8 @@
                                                     </div>
                                                 </div>
                                                 <div class="btn-reveal-trigger position-static">
-                                                    <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10"
-                                                            type="button" data-bs-toggle="dropdown"
-                                                            data-boundary="window" aria-haspopup="true"
-                                                            aria-expanded="false" data-bs-reference="parent"><span
-                                                                class="fas fa-ellipsis-h fs-10"></span></button>
-                                                    <div class="dropdown-menu dropdown-menu-end py-2"><a
-                                                                class="dropdown-item" href="#!">View</a><a
-                                                                class="dropdown-item" href="#!">Update</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item text-danger" href="#!">Remove</a>
+
+                                                    <div class="dropdown-menu dropdown-menu-end py-2">
                                                     </div>
                                                 </div>
                                             </td>
@@ -255,13 +246,7 @@
                             </div>
                             <div class="row align-items-center py-1">
                                 <div class="pagination d-none"></div>
-                                <div class="col d-flex fs-9">
-                                    <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body"
-                                       data-list-info="data-list-info"></p><a class="fw-semibold" href="#!"
-                                                                              data-list-view="*">View all<span
-                                                class="fas fa-angle-right ms-1" data-fa-transform="down-1"></span></a><a
-                                            class="fw-semibold d-none" href="#!" data-list-view="less">View Less</a>
-                                </div>
+
                                 <div class="col-auto d-flex">
                                     <button class="btn btn-link px-1 me-1" type="button" title="Previous"
                                             data-list-pagination="prev"><span class="fas fa-chevron-left me-2"></span>Previous
@@ -276,25 +261,6 @@
                     </div>
 
 
-                    <div class="row align-items-center justify-content-between py-2 pe-0 fs-9">
-                        <div class="col-auto d-flex">
-                            <p class="mb-0 d-none d-sm-block me-3 fw-semibold text-body"
-                               data-list-info="data-list-info"></p><a
-                                    class="fw-semibold" href="#!" data-list-view="*">View all<span
-                                        class="fas fa-angle-right ms-1"
-                                        data-fa-transform="down-1"></span></a><a
-                                    class="fw-semibold d-none" href="#!" data-list-view="less">View Less<span
-                                        class="fas fa-angle-right ms-1"
-                                        data-fa-transform="down-1"></span></a>
-                        </div>
-                        <div class="col-auto d-flex">
-                            <button class="page-link" data-list-pagination="prev"><span
-                                        class="fas fa-chevron-left"></span></button>
-                            <ul class="mb-0 pagination"></ul>
-                            <button class="page-link pe-0" data-list-pagination="next"><span
-                                        class="fas fa-chevron-right"></span></button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -452,7 +418,7 @@
                     </div>
 
                     <div class="modal-footer border-0 pt-6 px-0 pb-0">
-                        <button class="btn btn-link text-danger px-3 my-0" data-bs-dismiss="modal fade" aria-label="Close">
+                        <button class="btn text-danger px-3 my-0" data-bs-dismiss="modal" aria-label="Close" id="cancelButton">
                             Cancel
                         </button>
                         <button class="btn btn-primary my-0" type="submit" onclick="updateStation(event)">
@@ -514,7 +480,7 @@
                         </div>
                     </div>
                     <div class="modal-footer border-0 pt-6 px-0 pb-0">
-                        <button class="btn btn-link text-danger px-3 my-0" data-bs-dismiss="modal" aria-label="Close">
+                        <button class="btn  text-danger px-3 my-0" data-bs-dismiss="modal" aria-label="Close"  id="cancelButton1">
                             Cancel
                         </button>
                         <button class="btn btn-primary my-0" type="submit" onclick="addStation(event)">Create Deal

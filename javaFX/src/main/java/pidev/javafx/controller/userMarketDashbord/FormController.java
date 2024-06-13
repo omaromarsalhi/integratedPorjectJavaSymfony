@@ -173,23 +173,23 @@ public class FormController implements Initializable {
 
     public void dealWithImages4Update() {
         AtomicInteger curentIndex = new AtomicInteger( 0 );
-        relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ) );
+        relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH4USER + product.getImageSourceByIndex( curentIndex.get() ) ) );
         rightArrow.setOnAction( event -> {
             curentIndex.getAndIncrement();
             if (curentIndex.get() >= product.getAllImagesSources().size()) {
                 curentIndex.set( 0 );
             }
-            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ) );
+            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH4USER + product.getImageSourceByIndex( curentIndex.get() ) ) );
         } );
         leftArrow.setOnAction( event -> {
-            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ) );
+            relativeImageVieur.setImage( new Image( GlobalVariables.IMAGEPATH4USER + product.getImageSourceByIndex( curentIndex.get() ) ) );
             curentIndex.getAndDecrement();
             if (curentIndex.get() < 0)
                 curentIndex.set( product.getAllImagesSources().size() - 1 );
         } );
         deleteBtn.setOnAction( event -> {
             if (product.getAllImagesSources().size() > 1) {
-                new File( GlobalVariables.IMAGEPATH + product.getImageSourceByIndex( curentIndex.get() ) ).delete();
+                new File( GlobalVariables.IMAGEPATH4USER + product.getImageSourceByIndex( curentIndex.get() ) ).delete();
                 product.deleteFromImagesSources( curentIndex.get() );
                 rightArrow.fire();
             }
@@ -226,7 +226,7 @@ public class FormController implements Initializable {
         Task<String> myTask = new Task<>() {
             @Override
             protected String call() throws Exception {
-                return ChatGPTAPIDescriber.chatGPT( "describe " + Pname.getText() + " for sale specifying its benefits" );
+                return ChatGPTAPIDescriber.chatGPT( Pname.getText() );
             }
         };
 
@@ -393,11 +393,9 @@ public class FormController implements Initializable {
             if (usageOfThisForm.equals( "add_prod" )) {
                 CrudBien.getInstance().addItem( bien );
                 bien = CrudBien.getInstance().selectLastItem();
-                MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             } else if (usageOfThisForm.equals( "update_prod" )) {
                 bien.setState( "unverified" );
                 CrudBien.getInstance().updateItem( bien );
-//                MyTools.getInstance().notifyUser4NewAddedProduct( bien );
             }
             product = bien;
             aiVerifyThread().start();
@@ -428,7 +426,7 @@ public class FormController implements Initializable {
 
         myTask.setOnSucceeded( e -> {
             if (usageOfThisForm.equals( "add_prod" ))
-                EventBus.getInstance().publish( "updateTabProds", new CustomMouseEvent<>( product ) );
+                EventBus.getInstance().publish( "updateTabProds", new CustomMouseEvent<>( product.getId() ) );
             else {
                 EventBus.getInstance().publish( "refreshProdContainer", event );
                 var customMouseEvent = new CustomMouseEvent<>( product);
@@ -529,11 +527,11 @@ public class FormController implements Initializable {
         }
     }
 
-    public static String createMessage(int idProduct) {
+    public static String createMessage(int idProduct,String subAction) {
         JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder()
                 .add( "Data", Json.createObjectBuilder().add( "idProduct",idProduct ) )
                 .add( "action", "productEvent" )
-                .add( "subAction", usageOfThisForm.equals( "update_prod" ) ? "UPDATE" : "ADD" );
+                .add( "subAction", subAction );
         JsonObject jsonMessage = jsonObjectBuilder.build();
         return jsonMessage.toString();
     }

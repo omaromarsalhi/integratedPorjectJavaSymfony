@@ -406,6 +406,8 @@ class BlogController extends AbstractController
                 ];
             }, $comments);
 
+            $nbeReaction = $post->getReactions()->toArray();
+
             return [
                 'id' => $post->getId(),
                 'caption' => $post->getCaption(),
@@ -418,6 +420,7 @@ class BlogController extends AbstractController
                 'userSurname' => $userSurname,
                 'userImage' => $userImage,
                 'userId' => $userId,
+                'reactionsNbr' => count($nbeReaction)
             ];
         }, $posts);
 
@@ -427,7 +430,7 @@ class BlogController extends AbstractController
     }
 
     #[Route('/PostDetail/{id}', name: 'app_PostDetail')]
-    public function indexPostDetail($id, PostRepository $postRepository, CommentPostRepository $commentPostRepository, UserRepository $userRepository): Response
+    public function indexPostDetail($id, PostRepository $postRepository, CommentPostRepository $commentPostRepository, UserRepository $userRepository, ReactionPostRepository $reactionPostRepository): Response
     {
         $post = $postRepository->find($id);
 
@@ -447,6 +450,9 @@ class BlogController extends AbstractController
         $user = $userRepository->findOneBy(['email' => $userEmail]);
         $currentUser = $user->getId();
 
+        $currentUserImg = $user->getImage();
+
+        $nbReactions = $reactionPostRepository->count(['post' => $post]);
 
         $commentsArray = array_map(function ($comment) {
             return [
@@ -471,7 +477,9 @@ class BlogController extends AbstractController
             'nom' => $post->getUser()->getLastName(),
             'prenom' => $post->getUser()->getFirstName(),
             'imguser' => $post->getUser()->getImage(),
+            'currentUserImg' => $currentUserImg,
             'currentUser' => $currentUser,
+            'nbReactions' => $nbReactions,
         ]);
     }
 
@@ -574,6 +582,8 @@ class BlogController extends AbstractController
         $userSurname = $user->getFirstName();
         $userImage = $user->getImage();
         $userId = $user->getId();
+
+
 
         return new JsonResponse([
             'success' => true,

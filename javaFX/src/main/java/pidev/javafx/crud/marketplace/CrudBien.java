@@ -38,38 +38,24 @@ public class CrudBien implements CrudInterface<Bien> {
 
 
 
-    public ObservableList<Bien> searchItems(String culumn,String value) {
+    public ObservableList<Integer> searchItems(String culumn,String value) {
 
         Bien bien = null;
-        String sql = "SELECT * FROM product where "+culumn+" like ? ";
+        String sql = "SELECT idProduct FROM product where "+culumn+" like ? ";
 
         connect = ConnectionDB.getInstance().getCnx();
-        ObservableList<Bien> BienList = FXCollections.observableArrayList();
+        ObservableList<Integer> list = FXCollections.observableArrayList();
         try {
             prepare = connect.prepareStatement(sql);
-            prepare.setString(  1, "%"+value+"%");
+            prepare.setString( 1,value );
             result = prepare.executeQuery();
             while (result.next()) {
-                bien=new Bien(result.getInt("idProduct"),
-                        result.getInt("idUser"),
-                        result.getString("name"),
-                        result.getString("description"),
-                        "",
-                        result.getFloat("price"),
-                        result.getFloat("quantity"),
-                        result.getString("state"),
-                        result.getTimestamp("timestamp"),
-                        Categorie.valueOf(result.getString("category")));
-                bien.setAllImagesSources( selectImagesById(bien.getId()) );
-                bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 35, 35, false, false ) ) );
-                BienList.add(bien);
+                list.add( result.getInt( "idProduct" ) );
             }
         } catch (SQLException e) {
             System.out.println("Error selecting items: " + e.getMessage());
         }
-
-        return BienList;
+        return list;
     }
 
 
@@ -194,39 +180,42 @@ public class CrudBien implements CrudInterface<Bien> {
     }
 
 
-    public ObservableList<Bien> selectItemsById() {
-        Bien bien = null;
-        String sql = "SELECT * FROM product  where isDeleted=false and idUser= ? order by idProduct desc"; // Retrieve all items
+    public ObservableList<Integer> selectIds() {
+        String sql = "SELECT idProduct FROM product order by idProduct desc"; // Retrieve all items
 
         connect = ConnectionDB.getInstance().getCnx();
-        ObservableList<Bien> BienList = FXCollections.observableArrayList();
+        ObservableList<Integer> list = FXCollections.observableArrayList();
         try {
             prepare = connect.prepareStatement(sql);
-            prepare.setInt( 1, UserController.getInstance().getCurrentUser().getId() );
             result = prepare.executeQuery();
             while (result.next()) {
-                bien=new Bien(result.getInt("idProduct"),
-                        result.getInt("idUser"),
-                        result.getString("name"),
-                        result.getString("description"),
-                        "",
-                        result.getFloat("price"),
-                        result.getFloat("quantity"),
-                        result.getString("state"),
-                        result.getTimestamp("timestamp"),
-                        Categorie.valueOf(result.getString("category")));
-                bien.setAllImagesSources( selectImagesById(bien.getId()) );
-                if(bien.getAllImagesSources().size()>0) {
-                    bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                    bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 40, 40, false, false ) ) );
-                }
-                BienList.add(bien);
+                list.add( result.getInt( "idProduct" ) );
             }
         } catch (SQLException e) {
             System.out.println("Error selecting items: " + e.getMessage());
         }
 
-        return BienList;
+        return list;
+    }
+
+    public ObservableList<Integer> selectItemsById() {
+        Bien bien = null;
+        String sql = "SELECT idProduct FROM product  where isDeleted=false and idUser= ? order by idProduct desc"; // Retrieve all items
+
+        connect = ConnectionDB.getInstance().getCnx();
+        ObservableList<Integer> list = FXCollections.observableArrayList();
+        try {
+            prepare = connect.prepareStatement(sql);
+            prepare.setInt( 1, UserController.getInstance().getCurrentUser().getId() );
+            result = prepare.executeQuery();
+            while (result.next()) {
+                list.add( result.getInt( "idProduct" ) );
+            }
+        } catch (SQLException e) {
+            System.out.println("Error selecting items: " + e.getMessage());
+        }
+
+        return list;
     }
 
     @Override
@@ -266,7 +255,8 @@ public class CrudBien implements CrudInterface<Bien> {
     }
 
 
-    public ObservableList<Bien> filterItems(String fromDate,String todate,int minPrice,int maxPrice,int quantity,String categoryChoice) {
+    public ObservableList<Integer> filterItems(String fromDate,String todate,int minPrice,int maxPrice,int quantity,String categoryChoice) {
+
         Bien bien = null;
         String sql = "SELECT * FROM product where isDeleted=false  " ;
         sql+=(categoryChoice.isEmpty()||categoryChoice.equals( "ALL" ))?"":"and category = ?";
@@ -277,7 +267,7 @@ public class CrudBien implements CrudInterface<Bien> {
         sql+=(quantity==-1)?"":" and quantity = ?";
 
         connect = ConnectionDB.getInstance().getCnx();
-        ObservableList<Bien> BienList = FXCollections.observableArrayList();
+        ObservableList<Integer> list = FXCollections.observableArrayList();
         try {
             int i=1;
             prepare = connect.prepareStatement(sql);
@@ -295,29 +285,15 @@ public class CrudBien implements CrudInterface<Bien> {
                 prepare.setInt(  i++, quantity);
 
 
-            System.out.println(prepare.toString());
             result = prepare.executeQuery();
             while (result.next()) {
-                bien=new Bien(result.getInt("idProduct"),
-                        result.getInt("idUser"),
-                        result.getString("name"),
-                        result.getString("description"),
-                        "",
-                        result.getFloat("price"),
-                        result.getFloat("quantity"),
-                        result.getString("state"),
-                        result.getTimestamp("timestamp"),
-                        Categorie.valueOf(result.getString("category")));
-                bien.setAllImagesSources( selectImagesById(bien.getId()) );
-                bien.setImgSource( bien.getImageSourceByIndex( 0 ) );
-                bien.setImage( new ImageView( new Image( GlobalVariables.IMAGEPATH + bien.getImgSource(), 35, 35, false, false ) ) );
-                BienList.add(bien);
+                list.add( result.getInt("idProduct") );
             }
         } catch (SQLException e) {
             System.out.println("Error selecting items: " + e.getMessage());
         }
 
-        return BienList;
+        return list;
     }
 
 

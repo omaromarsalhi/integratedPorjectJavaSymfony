@@ -16,8 +16,8 @@ public class EmailController {
 
         String host = "smtp.gmail.com";
         int port = 587;
-        String username = "latifabenzaied23@gmail.com";
-        String password = "zipe psyi qacj vmkl";
+        String username = "";
+        String password = "";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -34,7 +34,7 @@ public class EmailController {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("omarmarrakchi22@gmail.com"));
+            message.setFrom(new InternetAddress("@.com"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
             message.setSubject(subject);
             message.setText(body);

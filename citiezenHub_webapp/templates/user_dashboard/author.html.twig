@@ -38,9 +38,6 @@
                             <div class="rn-author-info-content">
                                 <h4 class="title">{{ app.user.firstName|upper~' '~app.user.lastName }}</h4>
                                 <div class="author-button-area">
-                                    <!--{#<span class="btn at-follw follow-button"
-                                    ><i class="fa-solid fa-file-pdf"></i> Madhmoun</span>#}-->
-
                                     <a
                                             href="{{ path('app_user_generatePdfWithoutMail',{'idUser':app.user.getId()}) }}"
                                             id="generatePdfBtnMafhmoun"
@@ -49,7 +46,7 @@
                                             onclick="generatePdfMadhmoun()"
                                     >
                                         <i class="fa-solid fa-file-pdf"></i>
-                                        <span class="">Madhmoun</span>
+                                        <span class="">مضمون</span>
                                     </a>
                                     <a
                                             href="{{ path('editProfile') }}"
@@ -141,7 +138,6 @@
                                         role="tab"
                                         aria-controls="nav-stat"
                                         aria-selected="false"
-                                        onclick="mafhemetChay()"
                                 >
                                     Stat
                                 </button>
@@ -237,7 +233,7 @@
                                 <div class="row g-5">
                                     <div class="col-lg-12">
                                         <div
-                                                class="tab-pane lg-product_tab-pane lg-product-col-2 fade show active"
+                                                class="tab-pane lg-product-col-2 fade show active"
                                                 {#                                            id="nav-home-main" #}
                                                 id="sub-purchased-block"
                                                 role="tabpanel"
@@ -289,7 +285,7 @@
                                     <div class="row g-5">
                                         <div class="col-lg-12">
                                             <div
-                                                    class="tab-pane lg-product_tab-pane lg-product-col-2 fade show active"
+                                                    class="tab-pane lg-product-col-2 fade show active"
                                                     {#                                                id="nav-home-main" #}
                                                     id="sub-sold-block"
                                                     role="tabpanel"
@@ -533,8 +529,8 @@
                                                                          alt="Shape">
                                                                 </div>
                                                                 <h3 class="counter">
-                                                                    <span class="odometer odometer-auto-theme"
-                                                                          data-count="50"><div
+                                                                    <span class="odometer odometer-auto-theme" id="countTotalProdSold"
+                                                                          ><div
                                                                                 class="odometer-inside"><span
                                                                                     class="odometer-digit"><span
                                                                                         class="odometer-digit-spacer">8</span><span
@@ -567,8 +563,8 @@
                                                                          alt="Shape">
                                                                 </div>
                                                                 <h3 class="counter">
-                                                                    <span class="odometer odometer-auto-theme"
-                                                                          data-count="20"><div
+                                                                    <span class="odometer odometer-auto-theme" id="countAddedProdsPerMonth"
+                                                                          ><div
                                                                                 class="odometer-inside"><span
                                                                                     class="odometer-digit"><span
                                                                                         class="odometer-digit-spacer">8</span><span
@@ -601,8 +597,8 @@
                                                                          alt="Shape">
                                                                 </div>
                                                                 <h3 class="counter">
-                                                                    <span class="odometer odometer-auto-theme"
-                                                                          data-count="100"><div
+                                                                    <span class="odometer odometer-auto-theme" id="countPurshasedProds"
+                                                                          ><div
                                                                                 class="odometer-inside"><span
                                                                                     class="odometer-digit"><span
                                                                                         class="odometer-digit-spacer">8</span><span
@@ -635,8 +631,8 @@
                                                                          alt="Shape">
                                                                 </div>
                                                                 <h3 class="counter">
-                                                                    <span class="odometer odometer-auto-theme"
-                                                                          data-count="50"><div
+                                                                    <span class="odometer odometer-auto-theme" id="countAddedProdsPerYear"
+                                                                          ><div
                                                                                 class="odometer-inside"><span
                                                                                     class="odometer-digit"><span
                                                                                         class="odometer-digit-spacer">5</span><span

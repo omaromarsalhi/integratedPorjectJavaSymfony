@@ -86,6 +86,7 @@
 
 <!-- start header area -->
 <!-- Start Header -->
+{% if app.user %}
 <header class="rn-header haeder-default header--sticky">
     <div class="container">
         <div class="header-inner">
@@ -165,10 +166,8 @@
             </div>
 
 
-            <div class="header-right mr-2 ml-2">
-
-
-                <div class="setting-option d-none d-lg-block">
+            <div class="header-right mr-3 ml-2">
+                <div class="setting-option d-none d-lg-block ">
                     <form class="search-form-wrapper" action="#">
                         <input
                                 type="search"
@@ -180,7 +179,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="setting-option rn-icon-list d-block d-lg-none">
+                <div class="setting-option rn-icon-list d-block d-lg-none ml-2">
                     <div class="icon-box search-mobile-icon">
                         <button><i class="feather-search"></i></button>
                     </div>
@@ -198,37 +197,22 @@
                         </div>
                     </form>
                 </div>
-
-                <!--
-                <div class="setting-option rn-icon-list notification-badge">
-                    <div class="icon-box">
-                        <a href="../pages/activity.html"
-                        ><i class="feather-bell"></i><span class="badge">6</span></a
-                        >
-                    </div>
-                </div>
-                -->
-
-                <div class="setting-option mobile-menu-bar d-block d-xl-none">
+                <div class="setting-option mobile-menu-bar d-block d-xl-none ml-2">
                     <div class="hamberger">
                         <button class="hamberger-button">
                             <i class="feather-menu"></i>
                         </button>
                     </div>
                 </div>
-
                 {% if app.user == null %}
-                    <div class="setting-option header-btn rbt-site-header">
+                    <div class="setting-option header-btn rbt-site-header " style="margin: 0 4px !important;">
                         <div class="icon-box">
                             <a id="" class="btn btn-primary-alta btn-small" href="{{ path('app_login') }}">Login</a>
                         </div>
                     </div>
                 {% endif %}
-
-
                 {% if app.user %}
-
-                    <div class="rbt-mini-cart-wrap">
+                    <div class="rbt-mini-cart-wrap " style="margin: 0 4px !important;">
                         <a href="{{ path('app_basket_index') }}">
                         <span class="mini-cart">
                             <i class=" feather-shopping-cart"
@@ -238,32 +222,33 @@
                         </span>
                         </a>
                     </div>
-
-
-
-                    <div class="has-menu-child-item" id="header_admin" style="max-width: 100px !important;">
+                    <div class="has-menu-child-item " style="margin: 0 4px !important;" id="header_admin" >
                         <div class="setting-option rn-icon-list user-account">
                             <div class="icon-box">
                                 <a href="{{ path('app_user_dashboard_index') }}"
                                 ><img
-                                            src="{{ asset('usersImg/'~app.user.getImage()) }}"
+                                            {% if(app.user.getImage()) %}
+                                                src="{{ asset('usersImg/'~app.user.getImage()) }}"
+                                            {% else %}
+                                                src="{{ asset('images/user/defaultImg.png') }}"
+                                            {% endif %}
                                             alt="Images"
+                                            id="userImageIndex"
                                     /></a>
-                                <div class="rn-dropdown" style="max-width: 100px !important;">
+                                <div class="rn-dropdown">
                                     <ul class="list-inner">
-                                        <li><a href="{{ path('app_user_dashboard_index') }}">My Profile</a></li>
+                                        <li><a href="{{ path('app_user_dashboard_index') }}">My Profile <i class="fa-solid fa-user" style="margin-right: 4px !important;"></i></a> </li>
                                         <li>
-                                            <a href="{{ path('editProfile') }}">Edit Profile</a>
+                                            <a href="{{ path('editProfile') }}">Edit Profile <i class="fa-solid fa-user-pen"></i></a>
                                         </li>
-                                        <li><a href="{{ path('app_logout') }}">Sign Out</a></li>
+                                        <li><a href="{{ path('app_logout') }}">Sign Out <i class="fa-solid fa-arrow-right-from-bracket" style="margin-right: 2px !important;"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 {% endif %}
-
-                <div id="my_switcher" class="my_switcher setting-option">
+                <div id="my_switcher" class="my_switcher setting-option  " style="margin: 0 4px !important;">
                     <ul>
                         <li>
                             <a
@@ -293,13 +278,12 @@
                         </li>
                     </ul>
                 </div>
-
-
             </div>
         </div>
     </div>
 </header>
 <!-- End Header Area -->
+
 
 <div class="popup-mobile-menu">
     <div class="inner">
@@ -698,7 +682,7 @@
     </div>
 </div>
 <!-- ENd Header Area -->
-
+{% endif %}
 
 {% block body %}
 
@@ -749,6 +733,7 @@
 
 <!-- Start Footer Area  -->
 <!-- Start Footer Area -->
+
 <div
         class="rn-footer-one rn-section-gap bg-color--1 mt--100 mt_md--80 mt_sm--80"
 >
@@ -988,11 +973,10 @@
 <script src="{{ asset('assetsOfOutsiderElements/libs/swiper/swiper-bundle.min.js') }}"></script>
 <script src="{{ asset('assetsOfOutsiderElements/js/pages/extended-swiper.js') }}"></script>
 
-
+<script src="{{ asset('js/main.js') }}"></script>
 <script src="{{ asset('js/loader.js') }}"></script>
 <script src="{{ asset('js/error_success.js') }}"></script>
 <script src="{{ asset('js/userScript.js') }}"></script>
-<script src="{{ asset('js/main.js') }}"></script>
 
 {% block scripts %}
     {{ encore_entry_link_tags('app') }}

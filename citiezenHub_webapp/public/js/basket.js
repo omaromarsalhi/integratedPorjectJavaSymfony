@@ -1,7 +1,10 @@
 
 
 function checkOut() {
-    loader_start()
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#checkOutBtn').html('<img src="' + value + '" width="30"/>')
+    $('#checkOutBtn').addClass('btnTransparent');
+    $('#checkOutBtn').prop('disabled', true)
     let address=$('#City').val() + ', ' + $('#Postcode').val() + ', ' + $('#County').val()
     $.ajax({
         url: "/basket/proceedCheckOut",

@@ -1,5 +1,16 @@
 
-
+document.getElementById('cancelButton').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent the default action
+    event.stopPropagation(); // Stop the event from propagating
+    const modal = bootstrap.Modal.getInstance(document.querySelector('[data-bs-dismiss="modal"]'));
+    modal.hide(); // Hide the modal programmatically
+});
+document.getElementById('cancelButton1').addEventListener('click', function(event) {
+    event.preventDefault();  // Prevent the default action
+    event.stopPropagation(); // Stop the event from propagating
+    const modal = bootstrap.Modal.getInstance(document.querySelector('[data-bs-dismiss="modal"]'));
+    modal.hide(); // Hide the modal programmatically
+});
 
 function addTransport(event) {
     event.preventDefault();

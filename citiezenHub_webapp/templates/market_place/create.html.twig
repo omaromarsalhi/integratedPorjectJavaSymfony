@@ -92,59 +92,12 @@
                                             Drag or choose your file to upload
                                         </p>
                                     </div>
-                                    <!--                                        this-->
-                                    <!--{# <div class="swiper rounded effect-creative-swiper" id="product_images_">
-                                        <input hidden="" name="createinputfile" id="createinputfile" type="file"
-                                               class="inputfile">
-                                        {% if product.images|length == 1 %}
-                                            <div class="brows-file-wrapper">
-                                                <img id="createfileImage"
-                                                     src="{{ asset(product.images[0].path) }}" alt=""
-                                                     data-black-overlay="6">
-                                                &lt;!&ndash; our custom upload button &ndash;&gt;
-                                                <label for="createinputfile" title="No File Choosen">
-                                                    <i class="feather-upload"></i>
-                                                    <span class="text-center">Choose a File</span>
-                                                    <p class="text-center mt&#45;&#45;10">PNG, GIF, WEBP, MP4 or MP3. <br> Max
-                                                        1Gb.</p>
-                                                </label>
-                                            </div>
-                                        {% else %}
-                                            <div class="swiper-wrapper" id="swiperContainer">
-                                                {% for index,image in product.images %}
-                                                    <div class="swiper-slide swiper_{{ index }}">
-                                                        <div class="brows-file-wrapper">
-                                                            <img id="createfileImage"
-                                                                 src="{{ asset(image.path) }}" alt=""
-                                                                 data-black-overlay="6"
-                                                            >
-                                                            <label for="" title="No File Choosen"
-                                                                   class="updateImageLabel_{{ index }}"
-                                                                   id="updateImageLabel_{{ index }}">
-                                                                <button type="button"
-                                                                        name="deleteBtns"
-                                                                        style="border: none !important;"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#confirmModel"
-                                                                        data-value="{{ index }}">
-                                                                    <i class="fa-regular fa-trash-can"></i>
-                                                                </button>
-                                                                <span class="text-center">Delete a File</span>
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        {% endif %}
-                                        <div class="swiper-pagination" id="paginationContent"></div>
-                                    </div> #}-->
-
                                     {% if product.images|length <= 1 %}
                                         <input hidden="" name="createinputfile" id="createinputfile" type="file"
                                                class="inputfile" multiple>
                                         <div class="brows-file-wrapper" id="singLeImageUploaded"  data-value="{{ product.images[0].getIdImage() }}">
                                             <img id="createfileImage"
-                                                 src="{{ asset(product.images[0].path) }}" alt=""
+                                                 src="{{ asset('usersImg/'~product.images[0].path) }}" alt=""
                                                  data-black-overlay="6">
                                             <label for="" title="No File Choosen"
                                                    class="updateImageLabel_0"
@@ -171,7 +124,7 @@
                                                             data-value="{{ image.getIdImage() }}">
                                                             <div class="brows-file-wrapper">
                                                                 <img id="createfileImage"
-                                                                     src="{{ asset(image.path) }}" alt=""
+                                                                     src="{{ asset('usersImg/'~image.path) }}" alt=""
                                                                      data-black-overlay="6"
                                                                 >
                                                                 <label for="" title="No File Choosen"
@@ -314,11 +267,14 @@
                                             <label for="category" class="title mt--10" style="margin: 10px 0 -10px 0; !important;">Category</label>
                                             <div class="create-collection-input" >
                                                 <select id="category">
-                                                    <option id="food" value="food" selected>Food</option>
-                                                    <option value="sports" id="sports">Sports</option>
+                                                    <option id="books" value="books" selected>Books</option>
+                                                    <option value="clothing" id="clothing">Clothing</option>
+                                                    <option value="cosmetics" id="cosmetics">Cosmetics</option>
+                                                    <option value="electronics" id="electronics">Electronics</option>
                                                     <option value="entertainment" id="entertainment">Entertainment</option>
-                                                    <option value="realestate" id="realestate">RealEstate</option>
-                                                    <option value="vehicul" id="vehicul">Vehicul</option>
+                                                    <option value="furniture " id="furniture ">Furniture </option>
+                                                    <option value="realestate" id="realestate">Realestate</option>
+                                                    <option value="vehicule" id="vehicule">Vehicule</option>
                                                 </select>
                                             </div>
                                         </div>

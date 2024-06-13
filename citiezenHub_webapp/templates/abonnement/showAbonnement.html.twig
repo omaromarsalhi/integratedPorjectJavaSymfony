@@ -23,6 +23,9 @@
 
     <div class="rn-banner-area">
         <div class="slider-activation-banner-4 game-banner-short-slick-wrapper slick-arrow-style-one rn-slick-dot-style">
+
+
+            {% if l|length > 0 %}
             {% for abonnement in l %}
                 <div class="slider-style-7 border-radious-none bg_image--2 pt--150 pb--190 pt_sm--70 pb_sm--70 bg_image"
                      data-black-overlay="6">
@@ -98,6 +101,73 @@
                     </div>
                 </div>
             {% endfor %}
+                <div class="slider-style-7 border-radious-none bg_image--2 pt--150 pb--190 pt_sm--70 pb_sm--70 bg_image"
+                     data-black-overlay="6">
+                    <div class="rn-banner-wrapper g-5 row">
+                        <div class="col-xl-4 col-lg-12 col-12 order-3 order-xl-1 order-sm-1">
+
+                        </div>
+                        <div class="col-xl-6 col-lg-12 col-12 order-2 order-xl-2 order-sm-2">
+                            <div class="item-description">
+                                <div class="product-share-wrapper"></div>
+                                <div class="row d-flex justify-content-center">
+                                    <div class="col col-md-9 col-lg-7 col-xl-7">
+                                        <div data-sal="slide-up " data-sal-delay="150" data-sal-duration="800" style="height: 400px !important;" class="rn-service-one color-shape-7 sal-animate">
+                                            <div class="inner">
+                                                <div class="icon">
+                                                    <img src="{{ asset('assets/images/icons/shape-7.png')}}" alt="Shape"></div>
+                                                <div class="subtitle">  Add Subscritpion </div>
+                                                <div class="content">
+                                                    <h4 class="title"><a href="{{ path('app_addAbonnement') }}">Buy a now subscription from here</a></h4>
+                                                    <p class="description">You can  Add a new Subscribtion in few minutes and in a fast way click here
+                                                        to get it for you your friend or family .</p>
+                                                    <a class="read-more-button" href="{{ path('app_addAbonnement') }}"><i class="feather-arrow-right"></i></a>
+                                                </div>
+                                            </div>
+                                            <a class="over-link" href="{{ path('app_addAbonnement') }}"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            {% else %}
+                <div class="slider-style-7 border-radious-none bg_image--2 pt--150 pb--190 pt_sm--70 pb_sm--70 bg_image"
+                     data-black-overlay="6">
+                    <div class="rn-banner-wrapper g-5 row">
+                        <div class="col-xl-4 col-lg-12 col-12 order-3 order-xl-1 order-sm-1">
+
+                        </div>
+                        <div class="col-xl-6 col-lg-12 col-12 order-2 order-xl-2 order-sm-2">
+                            <div class="item-description">
+                                <div class="product-share-wrapper"></div>
+                                <div class="row d-flex justify-content-center">
+                                    <div class="col-xxl-6 col-lg-4 col-md-6 col-sm-6 col-12">
+                                        <div data-sal="slide-up" data-sal-delay="150" data-sal-duration="800" class="rn-service-one color-shape-7 sal-animate">
+                                            <div class="inner">
+                                                <div class="icon">
+                                                    <img src="assets/images/icons/shape-7.png" alt="Shape"></div>
+                                                <div class="subtitle">No subscriptions</div>
+                                                <div class="content">
+                                                    <h4 class="title"><a href="{{ path('app_addAbonnement') }}">No Subscriptions Found</a></h4>
+                                                    <p class="description">You can  get your first subscrition in few minutes and in a fast way click here
+                                                        to get your first one .</p>
+                                                    <a class="read-more-button" href="{{ path('app_addAbonnement') }}"><i class="feather-arrow-right"></i></a>
+                                                </div>
+                                            </div>
+                                            <a class="over-link" href="{{ path('app_addAbonnement') }}"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
         </div>
     </div>
 

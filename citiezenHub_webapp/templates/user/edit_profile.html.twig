@@ -128,7 +128,7 @@
                                                                     {% if(app.user.getImage()) %}
                                                                         src="{{ asset('usersImg/'~app.user.getImage()) }}"
                                                                     {% else %}
-                                                                        src="{{ asset('assets/images/portfolio/portfolio-05.jpg') }}"
+                                                                        src="{{ asset('images/user/defaultImg.png') }}"
                                                                     {% endif %}
                                                                     alt=""
                                                                     data-black-overlay="6"
@@ -151,7 +151,7 @@
                                                 <div class="button-area">
                                                     <div class="brows-file-wrapper">
                                                         <label for="fatima" title="No File Choosen">
-                                                            <span class="text-center color-white" onclick="editImage()">Save Profile</span>
+                                                            <span id="editImg_button" class="text-center color-white" onclick="editImage()">Save</span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -159,7 +159,7 @@
 
                                             <div class="profile-left right col-lg-8 d-flex justify-content-center align-items-center">
                                                 <div class="profile-image mb--30">
-                                                    <img id="rbtinput2" src="assets/images/profile/cover-04.png"
+                                                    <img id="rbtinput2" src="{{ asset('/images/user/coverFoto.png') }}"
                                                          alt="Profile-NFT">
                                                 </div>
                                             </div>
@@ -349,6 +349,7 @@
                                             <input name="Password" id="rePass" type="password" value="">
                                         </div>
                                         <a href="#" class="btn btn-primary save-btn-edit"
+                                           id="editPwd_button"
                                            onclick="editPassword(event)">Save</a>
                                     </div>
                                     <!-- change password area ENd -->

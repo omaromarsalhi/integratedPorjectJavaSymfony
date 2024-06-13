@@ -33,10 +33,8 @@ class AiVerificationMessengerHandler
 
         $aiDataHolder = $aiVerification->run($obj);
 
-        ProductController::changeState( $obj['initiator'], $obj['mode'], $obj['idUser'], $this->realTimeUpdater, $this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
+        ProductController::changeState($this->productRepository, $this->entityManager, $aiDataHolder, $obj['id']);
 
-        if ($obj['initiator'] === 'java')
-            $this->realTimeUpdater->notifyFromSystem(['action' => 'aiTermination', 'senderId' => -100, 'recipientId' => $obj['idUser'], 'idProduct' => strval($obj['id']), 'message' => 'done']);
 
 
         $product = $this->productRepository->findOneBy(['idProduct' => $obj['id']]);
@@ -44,10 +42,18 @@ class AiVerificationMessengerHandler
         if ($product->getState() == 'verified')
             FavoriteController::filterProductForFavorite($favorites, $product);
 
+        if ($obj['mode'] === 'edit' && $obj['initiator'] !== 'java' && $product->getState()=="verified") {
+            $this->realTimeUpdater->notifyFromSystem(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'UPDATE']);
+        } else if ($obj['mode'] === 'add' && $obj['initiator'] !== 'java' && $product->getState()=="verified") {
+            $this->realTimeUpdater->notifyFromSystem(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'ADD']);
+        }
+        if ($obj['initiator'] === 'java')
+            $this->realTimeUpdater->notifyFromSystem(['action' => 'aiTermination', 'senderId' => -100, 'recipientId' => $obj['idUser'], 'idProduct' => strval($obj['id']), 'message' => $product->getState()]);
+
 
         $aiResultController = new AiResultController();
 
-        $serializer = new Serializer([new ObjectNormalizer()], [new JsonEncoder()]);
+        $serializer = new Serializer([new ObjectNormalizer(    )], [new JsonEncoder()]);
         $serializedData = $serializer->serialize($aiDataHolder, 'json');
         $aiResult = new AiResult();
 

@@ -7,7 +7,7 @@
                     {% for image in product.images %}
                         <div class="swiper-slide">
                             <a href="#">
-                                <img src="{{ asset(image.path)|default("Not available") }}"
+                                <img src="{{ asset('usersImg/'~image.path)|default("Not available") }}"
                                      alt="NFT_portfolio"
                                      class="fixedSubImages4MarketPlace"/>
                             </a>
@@ -19,7 +19,7 @@
         {% else %}
             <div>
                 <a href="#">
-                    <img src="{{ asset(product.images[0].path) }}"
+                    <img src="{{ asset('usersImg/'~product.images[0].path) }}"
                          alt="NFT_portfolio"
                          class="fixedSubImages4MarketPlace"
                     >

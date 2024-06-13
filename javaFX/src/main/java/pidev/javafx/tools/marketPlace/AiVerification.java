@@ -1,5 +1,6 @@
 package pidev.javafx.tools.marketPlace;
 
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.UserController;
 
 import java.io.BufferedReader;
@@ -19,7 +20,7 @@ public class AiVerification {
 
     private void Http(int idProduct, String mode) {
         try {
-            URL url = new URL( "http://localhost:8000/java/request/verifyProduct" ); // Replace with your API endpoint
+            URL url = new URL( "http://"+ GlobalVariables.IP +":8000/java/request/verifyProduct" ); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod( "POST" );
             connection.setDoOutput( true );
@@ -37,7 +38,6 @@ public class AiVerification {
             }
             reader.close();
 
-            System.out.println( STR."Server response: \{response.toString()}" );
         } catch (IOException e) {
             throw new RuntimeException( e );
         }
@@ -45,7 +45,7 @@ public class AiVerification {
 
     public String HttpAiResultState(int idProduct) {
         try {
-            URL url = new URL( "http://localhost:8000/java/request/verifyAiResultState" ); // Replace with your API endpoint
+            URL url = new URL( "http://"+ GlobalVariables.IP +":8000/java/request/verifyAiResultState" ); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod( "POST" );
             connection.setDoOutput( true );
@@ -71,7 +71,7 @@ public class AiVerification {
 
     public static String HttpCinVerification(int idUser, String frontId, String backId) {
         try {
-            URL url = new URL( "http://localhost:8000/java/request/getCinData" ); // Replace with your API endpoint
+            URL url = new URL( "http://"+ GlobalVariables.IP +":8000/java/request/getCinData" ); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod( "POST" );
             connection.setDoOutput( true );
@@ -96,7 +96,7 @@ public class AiVerification {
 
     public static String HttpCinInfoVerification(int idUser) {
         try {
-            URL url = new URL( "http://localhost:8000/java/testForJava"); // Replace with your API endpoint
+            URL url = new URL( "http://"+ GlobalVariables.IP +":8000/java/testForJava"); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod( "POST" );
             connection.setDoOutput( true );
@@ -121,7 +121,7 @@ public class AiVerification {
     }
     public static void counter(int idUser) {
         try {
-            URL url = new URL( "http://localhost:8000/java/launchCounter"); // Replace with your API endpoint
+            URL url = new URL( "http://"+ GlobalVariables.IP +":8000/java/launchCounter"); // Replace with your API endpoint
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod( "POST" );
             connection.setDoOutput( true );

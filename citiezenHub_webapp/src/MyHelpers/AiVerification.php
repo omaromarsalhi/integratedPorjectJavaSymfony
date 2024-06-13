@@ -26,7 +26,6 @@ class AiVerification
     }
 
 
-
     public function runImageSearch($fileName, $data): array
     {
         $imageDescription = $this->generateImageDescriptionWithNoTitle($fileName);
@@ -67,7 +66,7 @@ class AiVerification
         $this->getOcrResult($obj['pathFrontCin'], $obj['fileNameFront']);
         $this->getOcrResult($obj['pathBackCin'], $obj['fileNameBackCin']);
         try {
-            $this->formatJsonFilesOfCin($obj['fileNameFront'], $obj['fileNameBackCin'], $obj['path']);
+        $this->formatJsonFilesOfCin($obj['fileNameFront'], $obj['fileNameBackCin'], $obj['path']);
         } catch (Exception $e) {
             throw new \Exception('something went wrong');
         }
@@ -76,169 +75,168 @@ class AiVerification
     public function formatJsonFilesOfCin($filePathFrontCin, $filePathBackCin, $path): void
     {
         try {
-            $pathFrontCin = '../../files/usersJsonFiles/' . $filePathFrontCin . '.json';
-            $pathBackCin = '../../files/usersJsonFiles/' . $filePathBackCin . '.json';
+        $pathFrontCin = '../../files/usersJsonFiles/' . $filePathFrontCin . '.json';
+        $pathBackCin = '../../files/usersJsonFiles/' . $filePathBackCin . '.json';
 
-            $jsonString = file_get_contents($pathFrontCin);
-            $jsonDataFrontCin = json_decode($jsonString, true);
+        $jsonString = file_get_contents($pathFrontCin);
+        $jsonDataFrontCin = json_decode($jsonString, true);
 
-            $jsonString = file_get_contents($pathBackCin);
-            $jsonDataBackCin = json_decode($jsonString, true);
+        $jsonString = file_get_contents($pathBackCin);
+        $jsonDataBackCin = json_decode($jsonString, true);
 
-            $bounding_boxesFront = $jsonDataFrontCin['google']['bounding_boxes'];
-            $bounding_boxesBack = $jsonDataBackCin['google']['bounding_boxes'];
+        $bounding_boxesFront = $jsonDataFrontCin['google']['bounding_boxes'];
+        $bounding_boxesBack = $jsonDataBackCin['google']['bounding_boxes'];
 
-            $userCinData = [
-                'الاسم' => ['topPlusHeight' => 0]
-            ];
-            for ($i = 0; $i < sizeof($bounding_boxesFront); $i++) {
-                switch ($bounding_boxesFront[$i]['text']) {
-                    case 'اللقب':
-                        $userCinData['اللقب']['top'] = $bounding_boxesFront[$i]['top'];
-                        $userCinData['اللقب']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
-                        $userCinData['اللقب']['data'] = '';
-                        break;
-                    case 'الاسم':
-                        $userCinData['الاسم']['top'] = $bounding_boxesFront[$i]['top'];
-                        $userCinData['الاسم']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
-                        $userCinData['الاسم']['data'] = '';
-                        break;
-                    case 'بن':
-                        if (!array_key_exists('بن', $userCinData) && $bounding_boxesFront[$i]['top'] > $userCinData['الاسم']['topPlusHeight']) {
-                            $userCinData['بن']['top'] = $bounding_boxesFront[$i]['top'];
-                            $userCinData['بن']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
-                            $userCinData['بن']['data'] = '';
+        $userCinData = [
+            'الاسم' => ['topPlusHeight' => 0]
+        ];
+        for ($i = 0; $i < sizeof($bounding_boxesFront); $i++) {
+            switch ($bounding_boxesFront[$i]['text']) {
+                case 'اللقب':
+                    $userCinData['اللقب']['top'] = $bounding_boxesFront[$i]['top'];
+                    $userCinData['اللقب']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
+                    $userCinData['اللقب']['data'] = '';
+                    break;
+                case 'الاسم':
+                    $userCinData['الاسم']['top'] = $bounding_boxesFront[$i]['top'];
+                    $userCinData['الاسم']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
+                    $userCinData['الاسم']['data'] = '';
+                    break;
+                case 'بن':
+                    if (!array_key_exists('بن', $userCinData) && $bounding_boxesFront[$i]['top'] > $userCinData['الاسم']['topPlusHeight']) {
+                        $userCinData['بن']['top'] = $bounding_boxesFront[$i]['top'];
+                        $userCinData['بن']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
+                        $userCinData['بن']['data'] = '';
 
-                        }
-                        break;
-                    case'الولادة':
-                        $userCinData['الولادة']['top'] = $bounding_boxesFront[$i]['top'];
-                        $userCinData['الولادة']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
-                        $userCinData['الولادة']['left'] = $bounding_boxesFront[$i]['left'];
-                        $userCinData['الولادة']['data'] = '';
-                        break;
-                    case 'مكانها':
-                        $userCinData['مكانها']['top'] = $bounding_boxesFront[$i]['top'];
-                        $userCinData['مكانها']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
-                        $userCinData['مكانها']['data'] = '';
-                        break;
-                }
+                    }
+                    break;
+                case'الولادة':
+                    $userCinData['الولادة']['top'] = $bounding_boxesFront[$i]['top'];
+                    $userCinData['الولادة']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
+                    $userCinData['الولادة']['left'] = $bounding_boxesFront[$i]['left'];
+                    $userCinData['الولادة']['data'] = '';
+                    break;
+                case 'مكانها':
+                    $userCinData['مكانها']['top'] = $bounding_boxesFront[$i]['top'];
+                    $userCinData['مكانها']['topPlusHeight'] = $bounding_boxesFront[$i]['height'] + $bounding_boxesFront[$i]['top'];
+                    $userCinData['مكانها']['data'] = '';
+                    break;
             }
+        }
 
 
-            for ($i = 0;
-                 $i < sizeof($bounding_boxesBack);
-                 $i++) {
-                switch ($bounding_boxesBack[$i]['text']) {
-                    case 'المهنة':
-                        $userCinData['المهنة']['top'] = $bounding_boxesBack[$i]['top'];
-                        $userCinData['المهنة']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
-                        $userCinData['المهنة']['data'] = '';
-                        break;
-                    case 'الأم':
-                        $userCinData['الأم']['top'] = $bounding_boxesBack[$i]['top'];
-                        $userCinData['الأم']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
-                        $userCinData['الأم']['left'] = $bounding_boxesBack[$i]['left'];
-                        $userCinData['الأم']['data'] = '';
-                        break;
-                    case 'العنوان':
-                        $userCinData['العنوان']['top'] = $bounding_boxesBack[$i]['top'];
-                        $userCinData['العنوان']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
-                        $userCinData['العنوان']['data'] = '';
-                        break;
-                    case 'في':
-                        $userCinData['في']['top'] = $bounding_boxesBack[$i]['top'];
-                        $userCinData['في']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
-                        $userCinData['في']['left'] = $bounding_boxesBack[$i]['left'];
-                        $userCinData['في']['data'] = '';
-                        break;
-                }
+        for ($i = 0;
+             $i < sizeof($bounding_boxesBack);
+             $i++) {
+            switch ($bounding_boxesBack[$i]['text']) {
+                case 'المهنة':
+                    $userCinData['المهنة']['top'] = $bounding_boxesBack[$i]['top'];
+                    $userCinData['المهنة']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
+                    $userCinData['المهنة']['data'] = '';
+                    break;
+                case 'الأم':
+                    $userCinData['الأم']['top'] = $bounding_boxesBack[$i]['top'];
+                    $userCinData['الأم']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
+                    $userCinData['الأم']['left'] = $bounding_boxesBack[$i]['left'];
+                    $userCinData['الأم']['data'] = '';
+                    break;
+                case 'العنوان':
+                    $userCinData['العنوان']['top'] = $bounding_boxesBack[$i]['top'];
+                    $userCinData['العنوان']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
+                    $userCinData['العنوان']['data'] = '';
+                    break;
+                case 'في':
+                    $userCinData['في']['top'] = $bounding_boxesBack[$i]['top'];
+                    $userCinData['في']['topPlusHeight'] = $bounding_boxesBack[$i]['height'] + $bounding_boxesBack[$i]['top'];
+                    $userCinData['في']['left'] = $bounding_boxesBack[$i]['left'];
+                    $userCinData['في']['data'] = '';
+                    break;
             }
+        }
 
-            for ($i = 0; $i < sizeof($bounding_boxesFront); $i++) {
-                if (($bounding_boxesFront[$i]['text'] !== 'اللقب' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['اللقب']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['اللقب']['top'])||($bounding_boxesFront[$i]['text'] !== 'اللقب' && ($bounding_boxesFront[$i]['top']>$userCinData['اللقب']['top']&&$bounding_boxesFront[$i]['top']<$userCinData['اللقب']['topPlusHeight'])  )) {
-                    $userCinData['اللقب']['data'] = $userCinData['اللقب']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
-                } else if (($bounding_boxesFront[$i]['text'] !== 'الاسم' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الاسم']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الاسم']['top'])||($bounding_boxesFront[$i]['text'] !== 'الاسم' && ($bounding_boxesFront[$i]['top']>$userCinData['الاسم']['top']&&$bounding_boxesFront[$i]['top']<$userCinData['الاسم']['topPlusHeight'])  )) {
-                    $userCinData['الاسم']['data'] = $userCinData['الاسم']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
-                } else if ((($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الاسم']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الولادة']['top'])) {
-                    $userCinData['بن']['data'] = $userCinData['بن']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
-                } else if ($bounding_boxesFront[$i]['text'] !== 'الولادة' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الولادة']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الولادة']['top'] && $bounding_boxesFront[$i]['left'] < $userCinData['الولادة']['left']) {
-                    $userCinData['الولادة']['data'] = $userCinData['الولادة']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
-                } else if ($bounding_boxesFront[$i]['text'] !== 'مكانها' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['مكانها']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['مكانها']['top']) {
-                    $userCinData['مكانها']['data'] = $userCinData['مكانها']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
-                } else if (intval($bounding_boxesFront[$i]['text']) > 9999999 && is_numeric($bounding_boxesFront[$i]['text'])) {
-                    $userCinData['cart id']['data'] = $userCinData['مكانها']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
-                }
+        for ($i = 0; $i < sizeof($bounding_boxesFront); $i++) {
+            if (($bounding_boxesFront[$i]['text'] !== 'اللقب' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['اللقب']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['اللقب']['top']) || ($bounding_boxesFront[$i]['text'] !== 'اللقب' && ($bounding_boxesFront[$i]['top'] > $userCinData['اللقب']['top'] && $bounding_boxesFront[$i]['top'] < $userCinData['اللقب']['topPlusHeight']))) {
+                $userCinData['اللقب']['data'] = $userCinData['اللقب']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
+            } else if (($bounding_boxesFront[$i]['text'] !== 'الاسم' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الاسم']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الاسم']['top']) || ($bounding_boxesFront[$i]['text'] !== 'الاسم' && ($bounding_boxesFront[$i]['top'] > $userCinData['الاسم']['top'] && $bounding_boxesFront[$i]['top'] < $userCinData['الاسم']['topPlusHeight']))) {
+                $userCinData['الاسم']['data'] = $userCinData['الاسم']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
+            } else if ((($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الاسم']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الولادة']['top'])) {
+                $userCinData['بن']['data'] = $userCinData['بن']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
+            } else if ($bounding_boxesFront[$i]['text'] !== 'الولادة' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['الولادة']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['الولادة']['top'] && $bounding_boxesFront[$i]['left'] < $userCinData['الولادة']['left']) {
+                $userCinData['الولادة']['data'] = $userCinData['الولادة']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
+            } else if ($bounding_boxesFront[$i]['text'] !== 'مكانها' && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) < $userCinData['مكانها']['topPlusHeight'] && ($bounding_boxesFront[$i]['top'] + $bounding_boxesFront[$i]['height'] / 2) > $userCinData['مكانها']['top']) {
+                $userCinData['مكانها']['data'] = $userCinData['مكانها']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
+            } else if (intval($bounding_boxesFront[$i]['text']) > 9999999 && is_numeric($bounding_boxesFront[$i]['text'])) {
+                $userCinData['cart id']['data'] = $userCinData['مكانها']['data'] . ' ' . $bounding_boxesFront[$i]['text'];
             }
+        }
 
 
-            for ($i = 0; $i < sizeof($bounding_boxesBack); $i++) {
-                if ($bounding_boxesBack[$i]['text'] !== 'المهنة' && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['المهنة']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['المهنة']['top']) {
-                    $userCinData['المهنة']['data'] = $userCinData['المهنة']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
-                } else if ($bounding_boxesBack[$i]['text'] !== 'الأم' && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['الأم']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['الأم']['top'] && $bounding_boxesBack[$i]['left'] < $userCinData['الأم']['left']) {
-                    $userCinData['الأم']['data'] = $userCinData['الأم']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
-                } else if ($bounding_boxesBack[$i]['text'] !== 'العنوان' && ((($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['العنوان']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['العنوان']['top']) || (($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['العنوان']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['في']['top']))) {
-                    $userCinData['العنوان']['data'] = $userCinData['العنوان']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
-                } else if ($bounding_boxesBack[$i]['text'] !== 'في' && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['في']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['في']['top'] && $bounding_boxesBack[$i]['left'] < $userCinData['في']['left']) {
-                    $userCinData['في']['data'] = $userCinData['في']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
-                }
+        for ($i = 0; $i < sizeof($bounding_boxesBack); $i++) {
+            if ($bounding_boxesBack[$i]['text'] !== 'المهنة' && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['المهنة']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['المهنة']['top']) {
+                $userCinData['المهنة']['data'] = $userCinData['المهنة']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
+            } else if ($bounding_boxesBack[$i]['text'] !== 'الأم' && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['الأم']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['الأم']['top'] && $bounding_boxesBack[$i]['left'] < $userCinData['الأم']['left']) {
+                $userCinData['الأم']['data'] = $userCinData['الأم']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
+            } else if ($bounding_boxesBack[$i]['text'] !== 'العنوان' && ((($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['العنوان']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['العنوان']['top']) || (($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['العنوان']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['في']['top']))) {
+                $userCinData['العنوان']['data'] = $userCinData['العنوان']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
+            } else if ($bounding_boxesBack[$i]['text'] !== 'في' && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) < $userCinData['في']['topPlusHeight'] && ($bounding_boxesBack[$i]['top'] + $bounding_boxesBack[$i]['height'] / 2) > $userCinData['في']['top'] && $bounding_boxesBack[$i]['left'] < $userCinData['في']['left']) {
+                $userCinData['في']['data'] = $userCinData['في']['data'] . ' ' . $bounding_boxesBack[$i]['text'];
             }
+        }
 
 
+        $filesystem = new Filesystem();
+        $filesystem->remove($pathFrontCin);
+        $filesystem->remove($pathBackCin);
 
-            $userCinData['الولادة']['data'] = trim($userCinData['الولادة']['data']);
-            $userCinData['في']['data'] = trim($userCinData['في']['data']);
-            $date = explode(" ", $userCinData['الولادة']['data']);
-            $date2 = explode(" ", $userCinData['في']['data']);
+        $userCinData['الولادة']['data'] = trim($userCinData['الولادة']['data']);
+        $userCinData['في']['data'] = trim($userCinData['في']['data']);
+        $date = explode(" ", $userCinData['الولادة']['data']);
+        $date2 = explode(" ", $userCinData['في']['data']);
 
-            for ($i = 0; $i < sizeof($date); $i++) {
-                if (is_numeric($date[$i]) && intval($date[$i]) < 100)
-                    $day = $date[$i];
-                elseif (is_numeric($date[$i]))
-                    $year = $date[$i];
-                else
-                    $arabicMonth = $date[$i];
-            }
-            for ($i = 0; $i < sizeof($date2); $i++) {
-                if (is_numeric($date2[$i]) && intval($date2[$i]) < 100)
-                    $day2 = $date2[$i];
-                elseif (is_numeric($date2[$i]))
-                    $year2 = $date2[$i];
-                else
-                    $arabicMonth2 = $date2[$i];
-            }
+        for ($i = 0; $i < sizeof($date); $i++) {
+            if (is_numeric($date[$i]) && intval($date[$i]) < 100)
+                $day = $date[$i];
+            elseif (is_numeric($date[$i]))
+                $year = $date[$i];
+            else
+                $arabicMonth = $date[$i];
+        }
+        for ($i = 0; $i < sizeof($date2); $i++) {
+            if (is_numeric($date2[$i]) && intval($date2[$i]) < 100)
+                $day2 = $date2[$i];
+            elseif (is_numeric($date2[$i]))
+                $year2 = $date2[$i];
+            else
+                $arabicMonth2 = $date2[$i];
+        }
 
-            $englishMonth = [
-                'جانفي' => 'January',
-                'فيفري' => 'February',
-                'مارس' => 'March',
-                'أفريل' => 'April',
-                'ماي' => 'May',
-                'جوان' => 'June',
-                'جويلية' => 'July',
-                'أوت' => 'August',
-                'سبتمبر' => 'September',
-                'أكتوبر' => 'October',
-                'نوفمبر' => 'November',
-                'ديسمبر' => 'December',
-            ];
+        $englishMonth = [
+            'جانفي' => 'January',
+            'فيفري' => 'February',
+            'مارس' => 'March',
+            'افريل' => 'April',
+            'ماي' => 'May',
+            'جوان' => 'June',
+            'جويلية' => 'July',
+            'اوت' => 'August',
+            'سبتمبر' => 'September',
+            'اكتوبر' => 'October',
+            'نوفمبر' => 'November',
+            'ديسمبر' => 'December',
+        ];
 
-            $englishMonthName = $englishMonth[$arabicMonth];
-            $englishMonthName2 = $englishMonth[$arabicMonth2];
+        $englishMonthName = $englishMonth[trim($arabicMonth)];
+        $englishMonthName2 = $englishMonth[trim($arabicMonth2)];
 
-            $dateString = $day . '' . $englishMonthName . ' ' . $year;
-            $dateString2 = $day2 . '' . $englishMonthName2 . ' ' . $year2;
-            $userCinData['الولادة']['data'] = date('m-d-Y', strtotime($dateString));
-            $userCinData['في']['data'] = date('m-d-Y', strtotime($dateString2));
+        $dateString = $day . '' . $englishMonthName . ' ' . $year;
+        $dateString2 = $day2 . '' . $englishMonthName2 . ' ' . $year2;
+        $userCinData['الولادة']['data'] = date('m-d-Y', strtotime($dateString));
+        $userCinData['في']['data'] = date('m-d-Y', strtotime($dateString2));
 //
 
-            $filesystem = new Filesystem();
 
-            $filesystem->remove($pathFrontCin);
-            $filesystem->remove($pathBackCin);
-
-            $modifiedJsonString = json_encode($userCinData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-            file_put_contents('../../files/usersJsonFiles/' . $path . '.json', $modifiedJsonString);
+        $modifiedJsonString = json_encode($userCinData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        file_put_contents('../../files/usersJsonFiles/' . $path . '.json', $modifiedJsonString);
         } catch (Exception $e) {
             throw new \Exception('something went wrong');
         }

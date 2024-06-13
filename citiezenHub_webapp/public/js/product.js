@@ -21,8 +21,24 @@ $(document).ready(function () {
     changeImageUpdate()
 });
 
+setTimeout(function (){
+    setStat()
+},1000)
 
 
+function setStat(){
+    $.ajax({
+        url: '/product/getStat',
+        type: "POST",
+        async: true,
+        success: function (response) {
+            $('#countTotalProdSold').attr('data-count',response.one);
+            $('#countAddedProdsPerMonth').attr('data-count',response.two[0].number);
+            $('#countPurshasedProds').attr('data-count',response.three);
+            $('#countAddedProdsPerYear').attr('data-count',response.for[0].number);
+        },
+    });
+}
 
 
 function changeImageUpdate() {
@@ -92,8 +108,8 @@ function updateProduct(id) {
     let description = $('#description').val();
     let price = $('#price').val();
     let quantity = $('#quantity').val();
-    let category = $('#category').val();
-
+    var elements = document.getElementsByClassName("option selected");
+    let category = elements[0].dataset.value;
     let form_data = new FormData();
     const list = $('#createinputfile').prop('files');
 
@@ -178,7 +194,8 @@ function createProduct(e) {
         let description = $('#description').val();
         let price = $('#price').val();
         let quantity = $('#quantity').val();
-        let category = $('#category').val();
+        var elements = document.getElementsByClassName("option selected");
+        let category = elements[0].dataset.value;
 
         let form_data = new FormData();
         const list = $('#createinputfile').prop('files');

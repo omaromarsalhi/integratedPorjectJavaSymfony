@@ -159,17 +159,17 @@ public class MainDashbordController implements Initializable {
 
     }
 
-    public void updateTabProds(CustomMouseEvent<Bien> customMouseEvent) {
+    public void updateTabProds(CustomMouseEvent<Integer> customMouseEvent) {
         loadingAllProductsThread( FXCollections.observableArrayList( customMouseEvent.getEventData() ) ).start();
     }
 
 
-    public Thread loadingAllProductsThread(ObservableList<Bien> prods) {
+    public Thread loadingAllProductsThread(ObservableList<Integer> ids) {
         showOrHideTabHead( true, "" );
         Task<Void> myTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                loadListOfProducts( prods );
+                loadListOfProducts( ids );
                 return null;
             }
         };
@@ -375,6 +375,8 @@ public class MainDashbordController implements Initializable {
         AiResultController aiResultController = fxmlLoader.getController();
         aiResultController.setData( jsonObject );
         aiResultController.getRestartAiVerifBtn().setOnMouseClicked( event -> {
+            var customMouseEvent = new CustomMouseEvent<>( CrudBien.getInstance().selectItemById( idProduct ));
+            EventBus.getInstance().publish( "doUpdateTabprodAfterAIverif", customMouseEvent );
             var aiVerification = new AiVerification();
             aiVerification.run( idProduct, "edit" );
         } );
@@ -569,10 +571,10 @@ public class MainDashbordController implements Initializable {
     }
 
 
-    public void loadListOfProducts(ObservableList<Bien> biens) {
-        var executer = Executors.newFixedThreadPool( 10 );
-        for (int i = 0; i < biens.size(); i++) {
-            executer.submit( loadingItemsThread( biens.get( i ) ) );
+    public void loadListOfProducts(ObservableList<Integer> ids) {
+        var executer = Executors.newFixedThreadPool( 2 );
+        for (int i = 0; i < ids.size(); i++) {
+            executer.submit( loadingItemsThread( CrudBien.getInstance().selectItemById( ids.get( i ) ) ) );
         }
         executer.shutdown();
     }
@@ -617,9 +619,16 @@ public class MainDashbordController implements Initializable {
                     );
                 } );
 
-                EventBus.getInstance().subscribe( "refreshProdContainerAi_"+prod.getId(), event1 -> {
+                EventBus.getInstance().subscribe( "refreshProdContainerAi_" + prod.getId(), event1 -> {
                             CustomMouseEvent customMouseEvent = (CustomMouseEvent<Integer>) event1;
-                            myTask.getValue().getSecond().setData( CrudBien.getInstance().selectItemById((Integer)customMouseEvent.getEventData()) );
+                            myTask.getValue().getSecond().setData( CrudBien.getInstance().selectItemById( (Integer) customMouseEvent.getEventData() ) );
+
+                            if (myTask.getValue().getSecond().getVerificationState().equals( "half-verified" )) {
+                                myTask.getValue().getFirst().lookup( "#aiResultBtn" ).setOnMouseClicked( event -> {
+                                    doShowDetails( myTask.getValue().getSecond().getJsonObject(), (Integer)customMouseEvent.getEventData() );
+                                } );
+                            }
+
                             MyTools.getInstance().getTextNotif().setText( "Product Has Been Modified" );
                             MyTools.getInstance().showNotif();
                         }
@@ -644,18 +653,8 @@ public class MainDashbordController implements Initializable {
     public void doUpdateTabprodAfterAIverif(CustomMouseEvent<Bien> bienCustomMouseEvent) {
         for (Node node : showAllProdsInfo.getChildren()) {
             if (Integer.parseInt( ((Label) ((HBox) node).getChildren().get( 0 )).getText() ) == bienCustomMouseEvent.getEventData().getId()) {
-//                if (bienCustomMouseEvent.getEventData().getState().equals( "verified" )) {
-//                    ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/icons/marketPlace/approve24C.png", 24, 24, true, true ) );
-//                    ((Label) ((HBox) node).getChildren().get( 6 )).setText( "verified" );
-//                } else
-//                if (bienCustomMouseEvent.getEventData().getState().equals( "unverified" )){
-                    ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/img/marketPlace/Dual Ball-1s-398px.gif", 24, 24, true, true ) );
-                    ((Label) ((HBox) node).getChildren().get( 6 )).setText( "unverified" );
-//                }
-//                else{
-//                    ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/icons/marketPlace/mark.png", 24, 24, true, true ) );
-//                    ((Label) ((HBox) node).getChildren().get( 6 )).setText( "unverified" );
-//                }
+                ((ImageView) ((HBox) node).getChildren().get( 6 ).lookup( "#stateImage" )).setImage( new Image( "file:src/main/resources/img/marketPlace/Dual Ball-1s-398px.gif", 24, 24, true, true ) );
+                ((Label) ((HBox) node).getChildren().get( 6 )).setText( "unverified" );
             }
         }
     }

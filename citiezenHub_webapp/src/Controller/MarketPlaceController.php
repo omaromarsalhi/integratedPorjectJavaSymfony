@@ -31,6 +31,7 @@ class MarketPlaceController extends AbstractController
                 $prods = $session->get('allProducts');
                 $current_page = 1;
                 $previous_page = 2;
+                $session->set('nbr_pages', ceil(sizeof($prods) / 12));
                 $session->set('idList', [-1]);
             }else{
                 $prods = $session->get('allProducts');
@@ -54,6 +55,7 @@ class MarketPlaceController extends AbstractController
                 'current_page' => $current_page,
                 'previous_page' => $previous_page,
             ]);
+
             $nav=$this->render('market_place/nav.html.twig', [
                 'nbr_pages' => $session->get('nbr_pages'),
             ]);

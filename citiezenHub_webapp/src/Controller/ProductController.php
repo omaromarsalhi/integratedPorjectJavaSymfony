@@ -11,6 +11,7 @@ use App\MyHelpers\RealTimeUpdater;
 use App\Repository\AiResultRepository;
 use App\Repository\FavoriteRepository;
 use App\Repository\ProductRepository;
+use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,6 +36,19 @@ class ProductController extends AbstractController
     public function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    #[Route('/getStat', name: '_getStat', methods: ['GET', 'POST'])]
+    public function getStat(Request $request,ProductRepository $productRepository,TransactionRepository $transactionRepository): Response
+    {
+        if($request->isXmlHttpRequest()){
+            $one=$transactionRepository->countSold($this->getUser()->getId());
+            $two=$productRepository->getStat2($this->getUser());
+            $three=$transactionRepository->countPurchased($this->getUser()->getId());
+            $for=$productRepository->getStat4($this->getUser());
+            return new  JsonResponse(['one'=>$one,'two'=>$two,'three'=>$three,'for'=>$for]);
+        }
+        return new Response('something went wrong', Response::HTTP_BAD_REQUEST);
     }
 
     #[Route('/new', name: '_new', methods: ['GET', 'POST'])]
@@ -104,18 +118,23 @@ class ProductController extends AbstractController
         return $this->render('market_place/create.html.twig', ['update' => false]);
     }
 
-    #[Route('/generate_description', name: '_show', methods: ['GET', 'POST'])]
+    #[Route('/generate_description', name: '_show', methods: ['POST'])]
     public function generateDescription(Request $request): Response
     {
         if ($request->isXmlHttpRequest()) {
             $title = $request->get("title");
             $client = HttpClient::create();
             $response = $client->request('POST', 'http://127.0.0.1:5000/get-descreption?title=' . $title);
-            $substringsToRemove = ['\"', '""\\', '"\n', '"', '\n',' \u'];
+            $substringsToRemove = ['\"', '""\\', '"\n', '"', '\n',' \u','Title','\u0027',' :'];
             $content = str_replace($substringsToRemove, "", $response->getContent());
             return new JsonResponse(['description' => $content]);
         }
-        return new Response('something went wrong', Response::HTTP_BAD_REQUEST);
+        $title = $request->get("title");
+        $client = HttpClient::create();
+        $response = $client->request('POST', 'http://127.0.0.1:5000/get-descreption?title=' . $title);
+        $substringsToRemove = ['\"', '""\\', '"\n', '"', '\n',' \u','Title','\u0027',' :'];
+        $content = str_replace($substringsToRemove, "", $response->getContent());
+        return new JsonResponse(['description' => $content]);
     }
 
 
@@ -150,7 +169,7 @@ class ProductController extends AbstractController
             $product->setDescription($description);
             $product->setPrice(floatval($price));
             $product->setQuantity(floatval($quantity));
-            $product->setCategory($category);
+            $product->setCategory($category!=null?:'food');
             $product->setState('unverified');
 
 
@@ -202,22 +221,16 @@ class ProductController extends AbstractController
 
 
     #[Route('/test', name: 'test', methods: ['POST', 'GET'])]
-    public static function changeState($initiator, $mode, $idUser, RealTimeUpdater $realTimeUpdater, ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
+    public static function changeState( ProductRepository $productRepository, EntityManagerInterface $entityManager, AiDataHolder $aiDataHolder, int $idProduct): Response
     {
         for ($i = 0; $i < sizeof($aiDataHolder->getDescriptions()); $i++) {
-            if (!str_starts_with(strtolower($aiDataHolder->getDescriptions()[$i]), " yes")&&(str_starts_with(strtolower($aiDataHolder->getTitleValidation()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no")))
+            if (str_starts_with(strtolower($aiDataHolder->getTitleValidation()[$i]), " no") || str_starts_with(strtolower($aiDataHolder->getCategoryValidation()[$i]), " no"))
                 return new Response('done', Response::HTTP_OK);
         }
 
         $product = $productRepository->findOneBy(['idProduct' => $idProduct]);
         $product->setState('verified');
         $entityManager->flush();
-
-        if ($mode === 'edit' && $initiator !== 'java') {
-            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'UPDATE'], $idUser);
-        } else if ($initiator !== 'java') {
-            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $product->getIdProduct()], 'action' => 'productEvent', 'subAction' => 'ADD'], $idUser);
-        }
 
 
         return new Response('done', Response::HTTP_OK);
@@ -246,11 +259,11 @@ class ProductController extends AbstractController
             else
                 $state = 'unverified';
 
-            $map[$page]->setProducts($productRepository->findBy(['isDeleted' => false, 'state' => $state]));
+            $map[$page]->setProducts($productRepository->findBy(['isDeleted' => false, 'state' => $state,'user'=>$this->getUser()]));
 
-//            $session->set('user_products_map', $map);
+            $session->set('user_products_map', $map);
 
-//            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $request->get('id')], 'action' => 'productEvent', 'subAction' => 'DELETE'], $this->getUser()->getId());
+            $realTimeUpdater->notifyApp(['Data' => ['idProduct' => $request->get('id')], 'action' => 'productEvent', 'subAction' => 'DELETE'], $this->getUser()->getId());
 
             return new JsonResponse(['page' => $map[$page]->getCurrentPage()]);
         }

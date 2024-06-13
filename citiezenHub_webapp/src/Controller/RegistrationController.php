@@ -66,6 +66,7 @@ class RegistrationController extends AbstractController
                         );
 
                         $user->setPassword($hashedPassword);
+                        $user->setImage("169c9ac2d0f798407cb29f38d0e76822.png");
                         $user->setRole("Citoyen");
                         $user->setDate(new \DateTime('now', new \DateTimeZone('Africa/Tunis')));
                         $user->setUMID(Uuid::v4()->toBase32());
@@ -77,7 +78,7 @@ class RegistrationController extends AbstractController
                             'idUser' => $user->getId(),
                             'UMID' => $user->getUMID()
                         ];
-                        $delayInSeconds = 5*60;
+                        $delayInSeconds = 1*60;
                         $messageBus->dispatch(new UserVerifierMessage($obj), [new DelayStamp($delayInSeconds * 1000),]);
 
 

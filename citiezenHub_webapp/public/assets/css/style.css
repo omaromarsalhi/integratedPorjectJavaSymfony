@@ -7101,15 +7101,15 @@ Background Image
 }
 
 .bg_image--9 {
-  background-image: url(../../images/user/530ea0146664409.62b4ac6f7466b.png);
+  background-image: url(../../images/user/coverFoto.png);
 }
 
 .bg_image--10 {
-  background-image: url(../images/bg/user/coverImg.png);
+  background-image: url(../images/bg/user/coverFoto.png);
 }
 
 .bg_image--11 {
-  background-image: url(../images/bg/530ea0146664409.62b4ac6f7466b.png);
+  background-image: url(../images/bg/coverFoto.png);
 }
 
 .bg_image--12 {
@@ -12462,11 +12462,11 @@ body.sal-disabled [data-sal|=flip] {
 }
 
 .rn-icon-list.user-account .rn-dropdown {
-  min-width: 320px;
+  min-width: 250px;
   height: auto;
   position: absolute;
   top: 90%;
-  right: 0;
+  right: 10%;
   z-index: 90;
   opacity: 0;
   visibility: hidden;
@@ -18158,7 +18158,7 @@ figcaption {
   padding: 40px 35px;
   border-radius: 6px;
   background: var(--background-color-1);
-  height: 100%;
+  /*height: 100%;*/
   border: 1px solid var(--color-border);
 }
 
@@ -18693,8 +18693,8 @@ button .small-image {
 }
 
 .author-wrapper .author-inner .user-thumbnail img {
-  border: 15px solid #13131d;
-  border-radius: 5px;
+  border: 2px solid #13131d;
+  border-radius: 50%;
   position: relative;
   max-width: 170px;
 }
@@ -25050,7 +25050,7 @@ fieldset.checkbox-group {
 }
 
 .single-community-box .community-content .desc {
-  margin-bottom: 15px;
+  margin-bottom: 1px;
 }
 
 .single-community-box .community-content img.community-img {

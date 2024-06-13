@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import pidev.javafx.crud.marketplace.CrudBien;
 import pidev.javafx.model.MarketPlace.Bien;
 import pidev.javafx.model.MarketPlace.Product;
+import pidev.javafx.tools.GlobalVariables;
 import pidev.javafx.tools.marketPlace.*;
 import pidev.javafx.tools.marketPlace.AiVerification;
 
@@ -81,7 +82,7 @@ public class ProductsHboxController implements Initializable {
             id.setVisible( false );
 //            image.setImage( new Image( GlobalVariables.IMAGEPATH + bien.getImageSourceByIndex( 0 ),40,40,false,false ) );
 //            image.setImage( new Image( "file:src/main/resources/usersImg/0a82a778-9301-4cd1-a535-63a1df7e18c7.png",40,40,false,false ) );
-            image.setImage( new Image( "http://127.0.0.1:8000/" + bien.getImageSourceByIndex( 0 ), 40, 40, false, false ) );
+            image.setImage( new Image( GlobalVariables.IMAGEPATH4USER+ bien.getImageSourceByIndex( 0 ), 40, 40, false, false ) );
             name.setText( bien.getName() );
             descreption.setText( bien.getDescreption() );
             price.setText( bien.getPrice().toString() );
@@ -114,13 +115,13 @@ public class ProductsHboxController implements Initializable {
                 "-fx-border-radius: 10;" +
                 "-fx-background-radius: 10;" );
         final ImageView imageView = new ImageView();
-        imageView.setImage( new Image( "http://127.0.0.1:8000/" + bien.getImageSourceByIndex( 0 ), 90, 90, true, true ) );
+        imageView.setImage( new Image( GlobalVariables.IMAGEPATH4USER+ bien.getImageSourceByIndex( 0 ), 90, 90, true, true ) );
         mainContainer.getChildren().add( imageView );
 
         if (bien.getAllImagesSources().size() > 1) {
             AtomicInteger indexOfImage = new AtomicInteger( 1 );
             fiveSecondsWonder.getKeyFrames().add( new KeyFrame( Duration.seconds( 0.8 ), event1 -> {
-                imageView.setImage( new Image( "http://127.0.0.1:8000/" + bien.getImageSourceByIndex( indexOfImage.get() ), 90, 90, true, true ) );
+                imageView.setImage( new Image( GlobalVariables.IMAGEPATH4USER+  bien.getImageSourceByIndex( indexOfImage.get() ), 90, 90, true, true ) );
                 indexOfImage.getAndIncrement();
                 if (indexOfImage.get() >= bien.getAllImagesSources().size())
                     indexOfImage.set( 0 );

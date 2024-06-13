@@ -45,4 +45,24 @@ class TransactionRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+    public function countSold($user): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('SUM(p.pricePerUnit * p.quantity) as total')
+            ->where('p.idSeller = :val')
+            ->setParameter('val', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countPurchased($user): int
+    {
+        return (int) $this->createQueryBuilder('p')
+            ->select('SUM(p.pricePerUnit * p.quantity) as total')
+            ->where('p.idBuyer = :val')
+            ->setParameter('val', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

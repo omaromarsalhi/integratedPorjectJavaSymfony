@@ -1,7 +1,5 @@
 function addComment(event) {
     event.preventDefault();
-
-    // Récupérer les données du formulaire
     let caption = document.querySelector('#contact-message').value;
     let postId = document.querySelector('#post_id').value;
 
@@ -24,6 +22,10 @@ function addComment(event) {
                     var newCommentHTML = createCommentHTML(response.comment, response.comment.userId);
                     $('#commentContainer').prepend(newCommentHTML);
                     document.querySelector('#contact-message').value = '';
+
+                    let commentsCountElement = document.querySelector('.comments span');
+                    let currentCount = parseInt(commentsCountElement.textContent);
+                    commentsCountElement.textContent = (currentCount + 1) + ' Comments';
                 }
             } else {
                 console.error('Une erreur est survenue lors de l\'ajout du commentaire.');
@@ -146,6 +148,9 @@ function deleteComment(id) {
         success: function (response) {
             if (response.success) {
                 document.getElementById('comment-' + id).remove();
+                let commentsCountElement = document.querySelector('.comments span');
+                let currentCount = parseInt(commentsCountElement.textContent);
+                commentsCountElement.textContent = (currentCount === 0 ? 0 : currentCount - 1) + ' Comments';
                 Swal.fire(
                     'Supprimé!',
                     'Votre commentaire a été supprimé.',

@@ -10,7 +10,7 @@
           <div class="product-share-wrapper">
             <div class="profile-share">
               <a href="author.html" class="avatar" data-tooltip="Farik Shaikh" tabindex="0">
-                <img src="../../assets/images/client/client-1.png" alt="Nft_Profile"/>
+                <img src="{{ asset('usersImg/'~app.user.getImage()) }}" alt="Nft_Profile"/>
               </a>
               <a class="more-author-text" href="#" tabindex="0">Mr {{ app.user.firstName }}</a>
             </div>

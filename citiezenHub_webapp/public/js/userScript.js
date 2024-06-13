@@ -50,7 +50,7 @@ function saveCin() {
                     afficherMessage('the date of birth does not match with the id card')
                 else if (splittedResponse[1] === 'cin')
                     afficherMessage('the cin id does not match with the id card')
-                else
+                else if (splittedResponse[1] === 'location')
                     afficherMessage('the given location does not match with the id card location')
 
                 showInvalidPop('please do input the right data')
@@ -177,7 +177,7 @@ function removeInputs() {
 
 function editProfile(event) {
     let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
-    $('#submit_button').html('<img src="' + value + '" width="30"/>')
+    $('#submit_button').html('<img src="' + value + '" width="28" style="margin-left: 6px !important;"/>')
     $('#submit_button').addClass('btnTransparent');
     $('#submit_button').prop('disabled', true)
     event.preventDefault();
@@ -253,6 +253,10 @@ function addErrorMessage(message, classeStyle, inputId) {
 
 
 function editImage() {
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#editImg_button').html('<img src="' + value + '" width="28" style="margin-left: 6px !important;"/>')
+    $('#editImg_button').addClass('btnTransparent');
+    $('#editImg_button').prop('disabled', true)
     let formData = new FormData();
     formData.append('imagee', $('#createinputfile').prop('files')[0]);
     $.ajax({
@@ -263,16 +267,27 @@ function editImage() {
         processData: false,
         contentType: false,
         success: function (response) {
+            $('#userImageIndex').prop('src','/usersImg/'+response.image);
             showValidPop("image updated successfully");
+            $('#editImg_button').html('Save')
+            $('#editImg_button').removeClass('btnTransparent');
+            $('#editImg_button').prop('disabled', false)
         },
         error: function (response) {
             showInvalidPop("image not updated successfully");
+            $('#editImg_button').html('Save')
+            $('#editImg_button').removeClass('btnTransparent');
+            $('#editImg_button').prop('disabled', false)
         },
     });
 }
 
 
 function editPassword(event) {
+    let value = "../../marketPlaceImages/Spinner@1x-1.0s-200px-200px.gif"
+    $('#editPwd_button').html('<img src="' + value + '" width="28" style="margin-left: 6px !important;"/>')
+    $('#editPwd_button').addClass('btnTransparent');
+    $('#editPwd_button').prop('disabled', true)
     event.preventDefault();
     let formData = new FormData();
     let oldPass = $('#oldPass').val();
@@ -280,6 +295,9 @@ function editPassword(event) {
     let rePass = $('#rePass').val();
     if (oldPass === '' || NewPass === '' || rePass === '') {
         showInvalidPop("password not updated successfully");
+        $('#editPwd_button').html('Save')
+        $('#editPwd_button').removeClass('btnTransparent');
+        $('#editPwd_button').prop('disabled', false)
         return
     }
     $.ajax({
@@ -292,11 +310,17 @@ function editPassword(event) {
         },
         async: true,
         success: function (response) {
+            $('#editPwd_button').html('Save')
+            $('#editPwd_button').removeClass('btnTransparent');
+            $('#editPwd_button').prop('disabled', false)
             showValidPop("password updated successfully");
             removeInputsChangePassword();
         },
 
         error: function (response) {
+            $('#editPwd_button').html('Save')
+            $('#editPwd_button').removeClass('btnTransparent');
+            $('#editPwd_button').prop('disabled', false)
             showInvalidPop("password not updated successfully");
             afficherMessagesErreur(messagesErreur);
         },

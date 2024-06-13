@@ -16,8 +16,8 @@ public class Flouci{
     public static String  PayFlouci(double amount) {
 
         JSONObject jsonBody = new JSONObject();
-        jsonBody.put( "app_token", "48b8c8a8-e891-417a-8f3c-1bdc2748b519" );
-        jsonBody.put( "app_secret", "f7783305-c1f9-43d1-abaa-171f79757cfc" );
+        jsonBody.put( "app_token", "" );
+        jsonBody.put( "app_secret", "" );
         jsonBody.put( "accept_card", true );
         jsonBody.put( "amount",amount);
         jsonBody.put( "success_link", "https://ruperhat.com/wp-content/uploads/2020/06/Paymentsuccessful21.png" );

@@ -108,7 +108,7 @@
                                                                         <a href="">
                                                                             <img
                                                                                     width="300" height="300"
-                                                                                    src="{{ asset(product[0].images[0].path()) }}"
+                                                                                    src="{{ asset('usersImg/'~product[0].images[0].path()) }}"
                                                                                     class="attachment-woocommerce_thumbnail size-woocommerce_thumbnail"
                                                                                     alt=""
                                                                                     decoding="async"
@@ -292,6 +292,7 @@
 
                                                             <div class="wc-proceed-to-checkout">
                                                                 <a
+                                                                        id="checkOutBtn"
                                                                    onclick="checkOut()"
                                                                    href="{{ path('app_basket_success')}}"
                                                                    class="checkout-button button alt wc-forward">
